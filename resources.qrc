@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/search.png</file>
+        <file>icons/cancel.png</file>
+        <file>icons/done.png</file>
+        <file>icons/dict_icon.png</file>
+        <file>icons/back.png</file>
+        <file>icons/menu.png</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>icons/open_file.png</file>
+        <file>icons/edit.png</file>
+        <file>icons/reset.png</file>
+        <file>icons/info.png</file>
+        <file>db/dict.sqlite</file>
+        <file>icons/separator_example.png</file>
+        <file>icons/warning.png</file>
+        <file>icons/attention_mark.png</file>
+        <file>icons/revision_assistant_icon.png</file>
+    </qresource>
+</RCC>
