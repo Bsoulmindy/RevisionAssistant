@@ -15,8 +15,9 @@
 class DictController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double progressionQst READ progressionQst WRITE setProgressionQst NOTIFY progressionQstChanged FINAL)
-    Q_PROPERTY(double progressionRsp READ progressionRsp WRITE setprogressionRsp NOTIFY progressionRspChanged FINAL)
+    Q_PROPERTY(int num_rows READ num_rows WRITE set_num_rows NOTIFY num_rowsChanged FINAL)
+    Q_PROPERTY(int num_not_checked_questions READ num_not_checked_questions WRITE set_num_not_checked_questions NOTIFY num_not_checked_questionsChanged FINAL)
+    Q_PROPERTY(int num_not_checked_responses READ num_not_checked_responses WRITE set_num_not_checked_responses NOTIFY num_not_checked_responsesChanged FINAL)
     QML_ELEMENT
 public:
     explicit DictController(QObject *parent = nullptr);
@@ -39,29 +40,31 @@ public:
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
     std::pair<std::unordered_set<QString>, std::unordered_set<QString>> getCheckedQuestionsAndResponses();
 
-    double progressionDict() const;
-    void setprogressionDict(double newProgressionDict);
+    int num_rows() const;
+    void set_num_rows(int newNum_rows);
 
-    double progressionQst() const;
-    void setProgressionQst(double newProgressionQst);
+    int num_not_checked_questions() const;
+    void set_num_not_checked_questions(int newNum_not_checked_questions);
 
-    double progressionRsp() const;
-    void setprogressionRsp(double newProgressionRsp);
+    int num_not_checked_responses() const;
+    void set_num_not_checked_responses(int newNum_not_checked_responses);
 
 signals:
-    void progressionQstChanged();
-    void progressionRspChanged();
     void fileProcessingLineWarning(const QString &output);
+    void num_rowsChanged();
+    void num_not_checked_questionsChanged();
+    void num_not_checked_responsesChanged();
+    void databaseRowInserted(int num_completed_rows, int num_total_rows);
 
 private:
     QSqlDatabase m_database;
-    int m_num_rows = 0;
     std::vector<QVariantMap> m_not_checked_qsts;
     std::vector<QVariantMap> m_not_checked_rsps;
-    double m_progressionQst = 0;
-    double m_progressionRsp = 0;
 
     void initInternalMemory();
+    int m_num_rows;
+    int m_num_not_checked_questions;
+    int m_num_not_checked_responses;
 };
 
 #endif // DICTCONTROLLER_H

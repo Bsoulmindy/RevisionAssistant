@@ -9,7 +9,14 @@ FileController::FileController(QObject *parent)
     : QObject{parent}
 {
     m_actualState = "Idle";
-    QTimer::singleShot(0, this, &FileController::initialized);
+    QTimer::singleShot(0, this, &FileController::init);
+}
+
+
+void FileController::init()
+{
+    QObject::connect(m_dict_controller, &DictController::databaseRowInserted, this, &FileController::databaseRowSaved);
+    emit initialized();
 }
 
 void FileController::constructDictFromFile(QString file_path, QString line_separator)
@@ -89,4 +96,10 @@ void FileController::setDict_controller(DictController *newDict_controller)
         return;
     m_dict_controller = newDict_controller;
     emit dict_controllerChanged();
+}
+
+void FileController::databaseRowSaved(int num_completed_rows, int num_total_rows)
+{
+    if(m_actualState != "Finished")
+        setactualState("Saving to the database (" + QString::number(num_completed_rows) + "/" + QString::number(num_total_rows) + ")");
 }

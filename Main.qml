@@ -17,6 +17,11 @@ Window {
         id: dictController
     }
 
+    FontLoader {
+        id: globalFont
+        source: "qrc:/fonts/stratum2demium.ttf"
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent

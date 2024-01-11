@@ -3,6 +3,7 @@ import QtQuick.Controls 6.5
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import RevisionAssistant
+import "components"
 
 Page {
     id: dictEditPage
@@ -31,7 +32,7 @@ Page {
                 onClicked: stackView.pop()
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: qsTr("Edit Dictionnary")
                 font.pixelSize: 20
@@ -71,14 +72,23 @@ Page {
             ScrollBar.vertical: ScrollBar {}
             model: dictController.getAllRecords()
             delegate: RowLayout {
-                height: Math.max(qText.contentHeight, rText.contentHeight,
-                                 qCheckBox.implicitHeight - 20) + 20
-                anchors.left: parent.left
-                anchors.right: parent.right
+                property bool isVisible: (listView.searchText === "" || modelData.question.includes(listView.searchText) || modelData.response.includes(listView.searchText))
+                id: rowDelegate
+                anchors.left: parent !== null ? parent.left : undefined
+                anchors.right: parent !== null ? parent.right : undefined
                 anchors.rightMargin: 0
                 anchors.leftMargin: 0
                 spacing: 0
-                visible: (listView.searchText === "" || modelData.question.startsWith(listView.searchText) || modelData.response.startsWith(listView.searchText)) ? true : false
+                visible: isVisible
+
+                onVisibleChanged: {
+                    rowDelegate.height = isVisible ? Math.max(qText.contentHeight, rText.contentHeight, qCheckBox.implicitHeight - 20) + 20 : 0;
+                }
+
+                Component.onCompleted: {
+                    rowDelegate.height = isVisible ? Math.max(qText.contentHeight, rText.contentHeight, qCheckBox.implicitHeight - 20) + 20 : 0;
+                }
+
                 Rectangle {
                     id: qBox
                     height: parent.height
@@ -108,16 +118,13 @@ Page {
                         }
                     }
 
-                    Text {
+                    PrimaryText {
                         id: qText
                         text: modelData.question
                         anchors.left: qCheckBox.right
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        font.pixelSize: Math.max(14, Math.min(
-                                                     20,
-                                                     8 + dictEditPage.width / 100))
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.Wrap
@@ -125,7 +132,6 @@ Page {
                         anchors.topMargin: 0
                         anchors.leftMargin: 5
                         anchors.rightMargin: 5
-                        color: Material.primaryTextColor
                     }
                 }
 
@@ -158,24 +164,19 @@ Page {
                         }
                     }
 
-                    Text {
+                    PrimaryText {
                         id: rText
                         text: modelData.response
                         anchors.left: rCheckBox.right
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        font.pixelSize: Math.max(14, Math.min(
-                                                     20,
-                                                     8 + dictEditPage.width / 100))
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
                         anchors.bottomMargin: 0
                         anchors.topMargin: 0
                         anchors.leftMargin: 5
                         anchors.rightMargin: 5
-                        color: Material.primaryTextColor
                     }
                 }
             }
@@ -211,6 +212,9 @@ Page {
                 placeholderText: qsTr("Search")
                 Layout.preferredWidth: 202
                 Layout.preferredHeight: 34
+                onAccepted: {
+                    listView.searchText = searchTextField.text
+                }
             }
 
             RoundButton {

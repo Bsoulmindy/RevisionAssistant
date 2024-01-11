@@ -16,5 +16,6 @@
         <file>icons/warning.png</file>
         <file>icons/attention_mark.png</file>
         <file>icons/revision_assistant_icon.png</file>
+        <file>fonts/stratum2demium.ttf</file>
     </qresource>
 </RCC>

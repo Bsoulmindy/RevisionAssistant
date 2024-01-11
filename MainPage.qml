@@ -4,6 +4,7 @@ import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
+import "components"
 
 Page {
     id: mainPage
@@ -119,26 +120,24 @@ Page {
         width: 350
         height: 200
         contentItem: Item {
-            Text {
+            PrimaryText {
                 height: contentHeight
                 text: "This action will reset all your progression, marking every question and response as NOT CHECKED. Do you want to proceed?"
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignLeft
-                wrapMode: Text.Wrap
                 anchors.rightMargin: 20
                 anchors.leftMargin: 20
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
-
-                color: Material.primaryTextColor
+                font.pixelSize: 13
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
 
-            onAccepted: dictController.resetDict()
-        }
+        standardButtons: Dialog.Ok | Dialog.Cancel
+
+        onAccepted: dictController.resetDict()
+
 
         Overlay.modal: Rectangle {
             color: "#000000"
@@ -151,7 +150,7 @@ Page {
         title: "About"
         anchors.centerIn: parent
         width: 350
-        height: 300
+        height: 350
 
         contentItem: Item {
             ColumnLayout {
@@ -171,24 +170,29 @@ Page {
                     Layout.preferredHeight: 100
                 }
 
-                Text {
+                PrimaryText {
+                    height: contentHeight
+                    text: "Revision Assistant"
+                    horizontalAlignment: Text.AlignHCenter
+                    Layout.fillWidth: true
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+
+                PrimaryText {
                     height: contentHeight
                     text: "Version <b>" + appVersion + "</b>. Based on <b>Qt 6.6</b>"
                     horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    Layout.fillHeight: true
                     Layout.fillWidth: true
-
-                    color: Material.primaryTextColor
+                    font.pixelSize: 15
                 }
 
-                Text {
+                PrimaryText {
                     height: contentHeight
                     text: "Created by Bsoulmindy"
                     horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    Layout.fillHeight: true
                     Layout.fillWidth: true
+                    font.pixelSize: 15
 
                     MouseArea {
                         anchors.fill: parent
@@ -197,15 +201,13 @@ Page {
                         }
                         cursorShape: Qt.PointingHandCursor
                     }
-
-                    color: Material.primaryTextColor
                 }
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+
+        standardButtons: Dialog.Ok
+
 
         Overlay.modal: Rectangle {
             color: "#000000"

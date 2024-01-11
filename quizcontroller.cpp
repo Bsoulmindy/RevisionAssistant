@@ -20,9 +20,6 @@ void QuizController::mark_output()
     }
     m_current_output["id_memory"] = -1; // The hint is not available anymore
     m_current_output["isChecked"] = true;
-    emit current_outputChanged();
-    m_progression = m_isQtoR ? m_dict_controller->progressionQst() : m_dict_controller->progressionRsp();
-    emit progressionChanged();
 }
 
 void QuizController::unmark_output()
@@ -35,8 +32,6 @@ void QuizController::unmark_output()
 
     m_current_output["isChecked"] = false;
     emit current_outputChanged();
-    m_progression = m_isQtoR ? m_dict_controller->progressionQst() : m_dict_controller->progressionRsp();
-    emit progressionChanged();
 }
 
 void QuizController::init()
@@ -44,8 +39,6 @@ void QuizController::init()
     m_current_output = m_isQtoR ? m_dict_controller->selectRandomQuestion() : m_dict_controller->selectRandomResponse();
     m_current_output["isChecked"] = m_isQtoR ? m_current_output["isCheckedQuestion"] : m_current_output["isCheckedResponse"];
     emit current_outputChanged();
-    m_progression = m_isQtoR ? m_dict_controller->progressionQst() : m_dict_controller->progressionRsp();
-    emit progressionChanged();
 }
 
 QVariantMap QuizController::current_output() const
@@ -72,19 +65,6 @@ void QuizController::setisQtoR(bool newIsQtoR)
         return;
     m_isQtoR = newIsQtoR;
     emit isQtoRChanged();
-}
-
-double QuizController::progression() const
-{
-    return m_progression;
-}
-
-void QuizController::setprogression(double newProgression)
-{
-    if (qFuzzyCompare(m_progression, newProgression))
-        return;
-    m_progression = newProgression;
-    emit progressionChanged();
 }
 
 DictController *QuizController::dict_controller() const

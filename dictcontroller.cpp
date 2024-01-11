@@ -111,8 +111,7 @@ void DictController::checkQuestion(int id, int hint_index)
         return;
     }
 
-    m_progressionQst = (m_num_rows - m_not_checked_qsts.size()) / (double)(m_num_rows);
-    emit progressionQstChanged();
+    set_num_not_checked_questions(m_not_checked_qsts.size());
 }
 
 void DictController::checkResponse(int id, int hint_index)
@@ -146,8 +145,7 @@ void DictController::checkResponse(int id, int hint_index)
         return;
     }
 
-    m_progressionRsp = (m_num_rows - m_not_checked_rsps.size()) / (double)(m_num_rows);
-    emit progressionRspChanged();
+    set_num_not_checked_responses(m_not_checked_rsps.size());
 }
 
 void DictController::uncheckQuestion(int id)
@@ -181,8 +179,7 @@ void DictController::uncheckQuestion(int id)
         return;
     }
 
-    m_progressionQst = (m_num_rows - m_not_checked_qsts.size()) / (double)(m_num_rows);
-    emit progressionQstChanged();
+    set_num_not_checked_questions(m_not_checked_qsts.size());
 }
 
 void DictController::uncheckResponse(int id)
@@ -216,8 +213,7 @@ void DictController::uncheckResponse(int id)
         return;
     }
 
-    m_progressionRsp = (m_num_rows - m_not_checked_rsps.size()) / (double)(m_num_rows);
-    emit progressionRspChanged();
+    set_num_not_checked_responses(m_not_checked_rsps.size());
 }
 
 void DictController::checkQuestionInDatabase(int id)
@@ -301,7 +297,8 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
     }
     query.clear();
 
-    for(const QVariantMap& dict_row : dict_rows) {
+    for(int i = 0; i < dict_rows.size(); i++) {
+        const QVariantMap& dict_row = dict_rows[i];
         query.prepare("INSERT INTO dict(question, response, isCheckedQuestion, isCheckedResponse) VALUES (:question, :response, :isCheckedQuestion, :isCheckedResponse)");
         query.bindValue(":question", dict_row["question"]);
         query.bindValue(":response", dict_row["response"]);
@@ -310,8 +307,8 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
 
         if (!query.exec()) {
             qWarning() << "Failed to insert a row :" << query.lastError().text();
-            continue;
         }
+        emit databaseRowInserted(i + 1, dict_rows.size());
     }
 
     initInternalMemory();
@@ -342,32 +339,6 @@ std::pair<std::unordered_set<QString>, std::unordered_set<QString> > DictControl
     }
 
     return {checked_questions, checked_responses};
-}
-
-double DictController::progressionQst() const
-{
-    return m_progressionQst;
-}
-
-void DictController::setProgressionQst(double newProgressionQst)
-{
-    if (qFuzzyCompare(m_progressionQst, newProgressionQst))
-        return;
-    m_progressionQst = newProgressionQst;
-    emit progressionQstChanged();
-}
-
-double DictController::progressionRsp() const
-{
-    return m_progressionRsp;
-}
-
-void DictController::setprogressionRsp(double newProgressionRsp)
-{
-    if (qFuzzyCompare(m_progressionRsp, newProgressionRsp))
-        return;
-    m_progressionRsp = newProgressionRsp;
-    emit progressionRspChanged();
 }
 
 void DictController::initInternalMemory()
@@ -401,7 +372,45 @@ void DictController::initInternalMemory()
         return;
     }
 
-    // Deducting progression
-    m_progressionQst = m_num_rows == 0 ? 0 : (m_num_rows - m_not_checked_qsts.size()) / (double)(m_num_rows);
-    m_progressionRsp = m_num_rows == 0 ? 0 : (m_num_rows - m_not_checked_rsps.size()) / (double)(m_num_rows);
+    set_num_not_checked_questions(m_not_checked_qsts.size());
+    set_num_not_checked_responses(m_not_checked_rsps.size());
+}
+
+int DictController::num_rows() const
+{
+    return m_num_rows;
+}
+
+void DictController::set_num_rows(int newNum_rows)
+{
+    if (m_num_rows == newNum_rows)
+        return;
+    m_num_rows = newNum_rows;
+    emit num_rowsChanged();
+}
+
+int DictController::num_not_checked_questions() const
+{
+    return m_num_not_checked_questions;
+}
+
+void DictController::set_num_not_checked_questions(int newNum_not_checked_questions)
+{
+    if (m_num_not_checked_questions == newNum_not_checked_questions)
+        return;
+    m_num_not_checked_questions = newNum_not_checked_questions;
+    emit num_not_checked_questionsChanged();
+}
+
+int DictController::num_not_checked_responses() const
+{
+    return m_num_not_checked_responses;
+}
+
+void DictController::set_num_not_checked_responses(int newNum_not_checked_responses)
+{
+    if (m_num_not_checked_responses == newNum_not_checked_responses)
+        return;
+    m_num_not_checked_responses = newNum_not_checked_responses;
+    emit num_not_checked_responsesChanged();
 }

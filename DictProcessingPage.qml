@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import RevisionAssistant
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
+import "components"
 
 Page {
     id: dictProcessingPage
@@ -46,12 +47,11 @@ Page {
                 display: AbstractButton.IconOnly
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: qsTr("Processing the File")
                 font.pixelSize: 20
                 verticalAlignment: Text.AlignVCenter
-                color: Material.primaryTextColor
             }
         }
     }
@@ -82,14 +82,12 @@ Page {
         anchors.topMargin: 30
         anchors.rightMargin: 30
         anchors.leftMargin: 30
-        Text {
+        PrimaryText {
             id: statusText
-            color: Material.primaryTextColor
             text: fileController.actualState
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
-            wrapMode: Text.Wrap
         }
 
         ProgressBar {
@@ -119,9 +117,8 @@ Page {
                 icon.color: Material.primaryTextColor
             }
 
-            Text {
+            PrimaryText {
                 id: consoleLegend
-                color: Material.primaryTextColor
                 text: qsTr("Warnings")
                 font.pixelSize: 30
             }
@@ -157,18 +154,12 @@ Page {
                         id: rowConsole
                         height: qText.contentHeight + 20
                         color: "#00ffffff"
-                        Text {
+                        PrimaryText {
                             id: qText
-                            color: Material.primaryTextColor
                             text: model.output
                             anchors.fill: parent
-                            font.pixelSize: Math.max(
-                                                14, Math.min(
-                                                    20,
-                                                    8 + dictProcessingPage.width / 100))
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
-                            wrapMode: Text.Wrap
                             anchors.topMargin: 8
                             anchors.rightMargin: 8
                             anchors.leftMargin: 8

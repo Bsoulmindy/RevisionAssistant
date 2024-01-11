@@ -3,6 +3,7 @@ import QtQuick.Controls 6.5
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import RevisionAssistant
+import "components"
 
 Page {
     id: qrPage
@@ -11,6 +12,7 @@ Page {
 
     z: 0
     required property bool isQtoR
+    property int not_checked_records: isQtoR ? dictController.num_not_checked_questions : dictController.num_not_checked_responses
 
     QuizController {
         id: quizController
@@ -45,12 +47,11 @@ Page {
                 onClicked: stackView.pop()
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: isQtoR ? qsTr("Question To Response") : qsTr("Response To Question")
                 font.pixelSize: 20
                 verticalAlignment: Text.AlignVCenter
-                color: Material.primaryTextColor
             }
         }
     }
@@ -101,8 +102,8 @@ Page {
             delegate: RowLayout {
                 height: Math.max(qText.contentHeight,
                                  rText.contentHeight) + 20
-                anchors.left: parent !== null ? parent.left : 0
-                anchors.right: parent !== null ? parent.right : 0
+                anchors.left: parent !== null ? parent.left : undefined
+                anchors.right: parent !== null ? parent.right : undefined
                 anchors.rightMargin: 0
                 anchors.leftMargin: 0
                 spacing: 0
@@ -116,21 +117,17 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Text {
+                    PrimaryText {
                         id: qText
                         text: model.question
                         anchors.fill: parent
-                        font.pixelSize: Math.max(14, Math.min(
-                                                     20,
-                                                     8 + qrPage.width / 100))
+                        font: globalFont.font
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
                         anchors.rightMargin: 8
                         anchors.leftMargin: 8
                         anchors.bottomMargin: 8
                         anchors.topMargin: 8
-                        color: Material.primaryTextColor
                     }
                 }
 
@@ -144,21 +141,17 @@ Page {
                     border.color: "#49454f"
                     Layout.fillWidth: true
 
-                    Text {
+                    PrimaryText {
                         id: rText
                         text: model.response
                         anchors.fill: parent
-                        font.pixelSize: Math.max(14, Math.min(
-                                                     20,
-                                                     8 + qrPage.width / 100))
+
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
                         anchors.topMargin: 8
                         anchors.rightMargin: 8
                         anchors.leftMargin: 8
                         anchors.bottomMargin: 8
-                        color: Material.primaryTextColor
                     }
                 }
             }
@@ -179,18 +172,9 @@ Page {
         CompleteButton {
             id: completeButton
 
-            Connections {
-                target: completeButton
-
-                function onClicked() {
-                    if(quizController.current_output["isChecked"]) {
-                        quizController.unmark_output();
-                    } else {
-                        quizController.mark_output();
-                    }
-
-                    completeButton.state = quizController.current_output["isChecked"] ? "completed" : "";
-                }
+            onClicked: {
+                quizController.mark_output()
+                quizController.next_output()
             }
         }
 
@@ -212,18 +196,14 @@ Page {
                 height: parent.height
                 clip: true
 
-                Text {
+                PrimaryText {
                     id: outputText
                     text: isQtoR ? quizController.current_output["question"] : quizController.current_output["response"]
                     anchors.verticalCenter: parent.verticalCenter
 
-                    font.pixelSize: Math.max(14,
-                                             Math.min(20,
-                                                      8 + qrPage.width / 100))
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
 
-                    color: Material.primaryTextColor
                     transform: textTranslate
 
                     Translate {
@@ -290,7 +270,11 @@ Page {
             implicitWidth: 50
             height: 50
             width: 50
-            onClicked: quizController.next_output()
+            onClicked: {
+                quizController.next_output()
+                completeButton.state = ""
+            }
+
         }
     }
 
@@ -317,23 +301,17 @@ Page {
             anchors.topMargin: 20
             RowLayout {
                 Layout.fillWidth: true
-                Text {
+                PrimaryText {
                     id: progressTextDesc
-                    color: Material.primaryTextColor
-                    text: qsTr("Your progress : ")
-                    font.pixelSize: Math.max(14,
-                                             Math.min(20,
-                                                      8 + qrPage.width / 100))
+                    text: qsTr("Your progress : ") + "(" + (dictController.num_rows - qrPage.not_checked_records) + " / " + dictController.num_rows + ")"
                     Layout.fillWidth: true
                 }
 
-                Text {
+                PrimaryText {
+
                     id: progressTextPercent
-                    color: Material.primaryTextColor
-                    text: quizController.progression.toFixed(2) * 100 + " %"
-                    font.pixelSize: Math.max(14,
-                                             Math.min(20,
-                                                      8 + qrPage.width / 100))
+                    text: ((dictController.num_rows - qrPage.not_checked_records) / dictController.num_rows * 100).toFixed(0) + " %"
+
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 }
             }
@@ -341,7 +319,7 @@ Page {
             ProgressBar {
                 id: progressRevisionBar
                 Layout.fillWidth: true
-                value: quizController.progression
+                value: ((dictController.num_rows - qrPage.not_checked_records) / dictController.num_rows).toFixed(2)
                 Layout.preferredHeight: 6
 
                 property color valueColor: calculateColor(value)

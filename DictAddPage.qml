@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import QtQuick.Dialogs
 import QtCore
+import "components"
 
 Page {
     id: dictAddPageForm
@@ -30,7 +31,7 @@ Page {
                 onClicked: stackView.pop()
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: qsTr("Add Dictionnary")
                 font.pixelSize: 20
@@ -49,9 +50,8 @@ Page {
             id: selectFileRow
             Layout.preferredWidth: parent.width
             spacing: 0
-            Text {
+            PrimaryText {
                 id: selectionFileText
-                color: Material.primaryTextColor
                 text: qsTr("Select File")
                 font.pixelSize: 16
                 Layout.preferredWidth: parent.width / 2
@@ -82,9 +82,8 @@ Page {
             Layout.preferredWidth: parent.width
             RowLayout {
                 Layout.preferredWidth: parent.width / 2
-                Text {
+                PrimaryText {
                     id: separatorText
-                    color: Material.primaryTextColor
                     text: qsTr("Select Separator")
                     font.pixelSize: 16
                     Layout.fillWidth: false
@@ -174,7 +173,7 @@ Page {
         width: 350
         height: 250
         contentItem: Item {
-            Text {
+            PrimaryText {
                 height: contentHeight
                 text: "A separator is a character or list of characters to differentiate between the question and the response"
                 anchors.fill: parent
@@ -185,7 +184,7 @@ Page {
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
 
-                color: Material.primaryTextColor
+                font.pixelSize: 14
 
                 onLineLaidOut: (line)=> {
                     if (line.y + topPadding <= separator_example.y + separator_example.height) {
@@ -208,9 +207,9 @@ Page {
             }
         }
 
-        footer:  DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+
+        standardButtons: Dialog.Ok
+
 
 
         Overlay.modal: Rectangle {
@@ -235,7 +234,7 @@ Page {
         width: 350
         height: 200
         contentItem: Item {
-            Text {
+            PrimaryText {
                 height: contentHeight
                 text: "You must specify a valid .txt file AND a separator"
                 anchors.fill: parent
@@ -246,13 +245,13 @@ Page {
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
 
-                color: Material.primaryTextColor
+                font.pixelSize: 14
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+
+        standardButtons: Dialog.Ok
+
 
         Overlay.modal: Rectangle {
             color: "#000000"
