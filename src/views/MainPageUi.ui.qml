@@ -1,16 +1,25 @@
-
-
 import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
-import "components"
+import "../components"
 
 Page {
     id: mainPage
     width: root.width
     height: root.height
     objectName: "MainPage"
+
+    property alias dictMenuButtonItem: dictMenuButton
+    property alias menuItemOpenItem: menuItemOpen
+    property alias menuItemEditItem: menuItemEdit
+    property alias menuItemResetItem: menuItemReset
+    property alias menuItemInfoItem: menuItemInfo
+    property alias qTorButtonItem: qTorButton
+    property alias rToqButtonItem: rToqButton
+    property alias resetDialogItem: resetDialog
+    property alias githubLinkItem: githubLink
+
 
     ToolBar {
         id: mainPageToolBar
@@ -35,29 +44,28 @@ Page {
                 icon.source: "qrc:/icons/dict_icon.png"
                 icon.cache: true
                 display: AbstractButton.IconOnly
-                onClicked: dictMenu.open()
 
                 Menu {
                     id: dictMenu
                     y: dictMenuButton.height
 
                     MenuItem {
+                        id: menuItemOpen
                         height: 42
                         text: "Open"
                         icon.source: "qrc:/icons/open_file.png"
-                        onTriggered: stackView.push("DictAddPage.qml")
                     }
                     MenuItem {
+                        id: menuItemEdit
                         height: 42
                         text: "Edit"
                         icon.source: "qrc:/icons/edit.png"
-                        onTriggered: stackView.push("DictEditPage.qml")
                     }
                     MenuItem {
+                        id: menuItemReset
                         text: "Reset"
                         height: 42
                         icon.source: "qrc:/icons/reset.png"
-                        onTriggered: resetDialog.open()
                     }
                 }
             }
@@ -68,18 +76,16 @@ Page {
                 Layout.fillWidth: true
                 icon.source: "qrc:/icons/menu.png"
                 display: AbstractButton.IconOnly
-                onClicked: optionsMenu.open()
 
                 Menu {
                     id: optionsMenu
                     y: dictMenuButton.height
 
                     MenuItem {
+                        id: menuItemInfo
                         text: "About"
                         height: 42
                         icon.source: "qrc:/icons/info.png"
-
-                        onTriggered: aboutDialog.open()
                     }
                 }
             }
@@ -98,7 +104,6 @@ Page {
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor
-            onClicked: stackView.push("QrPage.qml", {"isQtoR": true})
         }
 
         Button {
@@ -109,7 +114,6 @@ Page {
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor
-            onClicked: stackView.push("QrPage.qml", {"isQtoR": false})
         }
     }
 
@@ -133,11 +137,7 @@ Page {
             }
         }
 
-
         standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: dictController.resetDict()
-
 
         Overlay.modal: Rectangle {
             color: "#000000"
@@ -195,19 +195,15 @@ Page {
                     font.pixelSize: 15
 
                     MouseArea {
+                        id: githubLink
                         anchors.fill: parent
-                        onClicked: {
-                            Qt.openUrlExternally("https://github.com/Bsoulmindy")
-                        }
                         cursorShape: Qt.PointingHandCursor
                     }
                 }
             }
         }
 
-
         standardButtons: Dialog.Ok
-
 
         Overlay.modal: Rectangle {
             color: "#000000"

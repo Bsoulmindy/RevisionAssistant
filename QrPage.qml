@@ -121,7 +121,6 @@ Page {
                         id: qText
                         text: model.question
                         anchors.fill: parent
-                        font: globalFont.font
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         anchors.rightMargin: 8

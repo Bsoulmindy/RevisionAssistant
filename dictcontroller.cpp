@@ -322,18 +322,22 @@ std::pair<std::unordered_set<QString>, std::unordered_set<QString> > DictControl
     QSqlQuery query(m_database);
     query.prepare("SELECT question FROM dict WHERE isCheckedQuestion = 1");
 
-    if (query.exec() && query.next()) {
-        QSqlRecord record = query.record();
-        checked_questions.insert(record.value("question").toString());
+    if (query.exec()) {
+        while(query.next()) {
+            QSqlRecord record = query.record();
+            checked_questions.insert(record.value("question").toString());
+        }
     } else {
         qWarning() << "Failed to fetch checked questions : " << query.lastError().text();
     }
 
     query.clear();
     query.prepare("SELECT response FROM dict WHERE isCheckedResponse = 1");
-    if (query.exec() && query.next()) {
-        QSqlRecord record = query.record();
-        checked_responses.insert(record.value("response").toString());
+    if (query.exec()) {
+        while(query.next()) {
+            QSqlRecord record = query.record();
+            checked_responses.insert(record.value("response").toString());
+        }
     } else {
         qWarning() << "Failed to fetch checked responses : " << query.lastError().text();
     }
