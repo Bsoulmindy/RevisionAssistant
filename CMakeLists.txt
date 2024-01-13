@@ -15,23 +15,27 @@ qt_add_executable(appRevisionAssistant
     main.cpp
 )
 
-file(GLOB_RECURSE QMLSOURCES_ABSOLUTE "*.qml")
-set(QMLSOURCES "")
-foreach(QMLFILE_ABSOLUTE ${QMLSOURCES_ABSOLUTE})
-    file(RELATIVE_PATH QMLFILE_RELATIVE ${CMAKE_SOURCE_DIR} ${QMLFILE_ABSOLUTE})
-    list(APPEND QMLSOURCES ${QMLFILE_RELATIVE})
-endforeach()
-
 qt_add_qml_module(appRevisionAssistant
     URI RevisionAssistant
     VERSION 1.0
-    QML_FILES Main.qml CompleteButton.qml DictEditPage.qml src/views/MainPage.qml src/views/MainPageUi.ui.qml QrPage.qml DictAddPage.qml FileSelectionStatus.qml DictProcessingPage.qml
+    QML_FILES
+        src/Main.qml
+        src/views/QrPage/CompleteButton/CompleteButton.qml
+        src/views/DictEditPage/DictEditPage.qml
+        src/views/MainPage.qml
+        src/views/MainPageUi.ui.qml
+        src/views/QrPage/QrPage.qml
+        src/views/DictAddPage/DictAddPage.qml
+        src/views/DictAddPage/FileSelectionStatus/FileSelectionStatus.qml
+        src/views/DictAddPage/DictProcessingPage/DictProcessingPage.qml
     RESOURCES resources.qrc
     SOURCES dictcontroller.h dictcontroller.cpp
     SOURCES quizcontroller.h quizcontroller.cpp
     SOURCES filecontroller.h filecontroller.cpp
-    QML_FILES src/components/PrimaryText.qml
 )
+
+add_subdirectory(src/CustomComponents)
+
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -45,7 +49,7 @@ set_target_properties(appRevisionAssistant PROPERTIES
 )
 
 target_link_libraries(appRevisionAssistant
-    PRIVATE Qt6::Quick Qt6::Sql Qt6::Core
+    PRIVATE Qt6::Quick Qt6::Sql Qt6::Core custom_componentsplugin
 )
 
 include(GNUInstallDirs)
@@ -55,5 +59,7 @@ install(TARGETS appRevisionAssistant
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
-    "Path to the custom QML components defined by the project")
+list(APPEND QML_IMPORT_PATH "${CMAKE_SOURCE_DIR}/src")
+list(REMOVE_DUPLICATES QML_IMPORT_PATH)
+set(QML_IMPORT_PATH ${QML_IMPORT_PATH} CACHE PATH
+    "Path to the custom QML components defined by the project" FORCE)

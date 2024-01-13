@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QSqlDatabase>
 #include <QQmlContext>
+#include <QtQml/QQmlExtensionPlugin>
 #include "config/config.h"
 
 void createDatabaseCopy()
@@ -55,6 +56,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
+    Q_IMPORT_QML_PLUGIN(CustomComponentsPlugin)
     engine.rootContext()->setContextProperty("appVersion", PROJECT_VERSION);
     engine.loadFromModule("RevisionAssistant", "Main");
 

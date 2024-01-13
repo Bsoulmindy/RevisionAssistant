@@ -6,7 +6,7 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import QtQuick.Dialogs
 import QtCore
-import "components"
+import CustomComponents
 
 Page {
     id: dictAddPageForm

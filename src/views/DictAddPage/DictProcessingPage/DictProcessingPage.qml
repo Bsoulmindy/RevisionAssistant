@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 import RevisionAssistant
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
-import "components"
+import CustomComponents
 
 Page {
     id: dictProcessingPage

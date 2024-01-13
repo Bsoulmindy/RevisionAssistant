@@ -2,7 +2,7 @@ import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
-import "../components"
+import CustomComponents
 
 Page {
     id: mainPage
@@ -11,6 +11,10 @@ Page {
     objectName: "MainPage"
 
     property alias dictMenuButtonItem: dictMenuButton
+    property alias optionsButtonItem: optionsButton
+    property alias dictMenuItem: dictMenu
+    property alias optionsMenuItem: optionsMenu
+    property alias aboutDialogItem: aboutDialog
     property alias menuItemOpenItem: menuItemOpen
     property alias menuItemEditItem: menuItemEdit
     property alias menuItemResetItem: menuItemReset

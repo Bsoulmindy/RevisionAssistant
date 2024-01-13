@@ -4,21 +4,34 @@ import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
-import "../components"
 
 Page {
     MainPageUi {
         width: root.width
         height: root.height
 
-        dictMenuButtonItem.onClicked: dictMenu.open()
-        menuItemOpenItem.onTriggered: stackView.push(DictAddPage)
-        menuItemEditItem.onTriggered: stackView.push("DictEditPage.qml")
-        menuItemResetItem.onTriggered: resetDialog.open()
-        menuItemInfoItem.onTriggered: aboutDialog.open()
-        qTorButtonItem.onClicked: stackView.push("QrPage.qml", {"isQtoR": true})
-        rToqButtonItem.onClicked: stackView.push("QrPage.qml", {"isQtoR": false})
+        dictMenuButtonItem.onClicked: dictMenuItem.open()
+        menuItemOpenItem.onTriggered: stackView.push(dictAddPageComponent)
+        menuItemEditItem.onTriggered: stackView.push(dictEditPageComponent)
+        menuItemResetItem.onTriggered: resetDialogItem.open()
+        menuItemInfoItem.onTriggered: aboutDialogItem.open()
+        optionsButtonItem.onClicked: optionsMenuItem.open()
+        qTorButtonItem.onClicked: stackView.push(qrPageComponent, {"isQtoR": true})
+        rToqButtonItem.onClicked: stackView.push(qrPageComponent, {"isQtoR": false})
         resetDialogItem.onAccepted: dictController.resetDict()
         githubLinkItem.onClicked: Qt.openUrlExternally("https://github.com/Bsoulmindy")
+    }
+
+    Component {
+        id: dictAddPageComponent
+        DictAddPage {}
+    }
+    Component {
+        id: dictEditPageComponent
+        DictEditPage {}
+    }
+    Component {
+        id: qrPageComponent
+        QrPage {}
     }
 }

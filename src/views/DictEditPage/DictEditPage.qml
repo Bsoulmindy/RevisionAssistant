@@ -3,7 +3,7 @@ import QtQuick.Controls 6.5
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import RevisionAssistant
-import "components"
+import CustomComponents
 
 Page {
     id: dictEditPage
