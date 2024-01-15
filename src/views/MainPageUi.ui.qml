@@ -6,8 +6,8 @@ import CustomComponents
 
 Page {
     id: mainPage
-    width: root.width
-    height: root.height
+    height: 800
+    width: 400
     objectName: "MainPage"
 
     property alias dictMenuButtonItem: dictMenuButton
@@ -23,7 +23,6 @@ Page {
     property alias rToqButtonItem: rToqButton
     property alias resetDialogItem: resetDialog
     property alias githubLinkItem: githubLink
-
 
     ToolBar {
         id: mainPageToolBar

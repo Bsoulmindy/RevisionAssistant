@@ -56,7 +56,7 @@ Project {
     qt6Project: true
 
     /* List of plugin directories passed to QML runtime */
-    importPaths: [ "imports" ]
+    importPaths: [ "..", "src"]
 
     /* Required for deployment */
     targetDirectory: "/opt/RevisionAssistant"

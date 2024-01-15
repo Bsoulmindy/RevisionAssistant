@@ -25,6 +25,7 @@ qt_add_qml_module(appRevisionAssistant
         src/views/MainPage.qml
         src/views/MainPageUi.ui.qml
         src/views/QrPage/QrPage.qml
+        src/views/QrPage/QrPageUi.ui.qml
         src/views/DictAddPage/DictAddPage.qml
         src/views/DictAddPage/FileSelectionStatus/FileSelectionStatus.qml
         src/views/DictAddPage/DictProcessingPage/DictProcessingPage.qml

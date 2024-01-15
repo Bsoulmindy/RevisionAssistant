@@ -1,2 +1,2 @@
-module CustomComponents
+module RevisionAssistant.src.CustomComponents
 PrimaryText PrimaryText.qml
