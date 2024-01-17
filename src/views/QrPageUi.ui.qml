@@ -20,6 +20,8 @@ Page {
     property alias titlePageItem: titlePage
     property alias progressTextDescItem: progressTextDesc
     property alias progressTextPercentItem: progressTextPercent
+    property alias animItem: anim
+    property alias progressRevisionBarImplItem: progressRevisionBarImpl
 
     ToolBar {
         id: qrPageToolBar
@@ -36,7 +38,7 @@ Page {
             ToolButton {
                 id: backButton
                 text: qsTr("")
-                icon.source: "../../../images/back.png"
+                icon.source: "../../images/back.png"
                 display: AbstractButton.IconOnly
             }
 
@@ -101,60 +103,9 @@ Page {
                 easing.type: Easing.InOutQuad
             }
 
-            delegate: RowLayout {
-                id: rowLayout
-                height: Math.max(qText.contentHeight, rText.contentHeight) + 20
-                anchors.left: parent !== null ? parent.left : undefined
-                anchors.right: parent !== null ? parent.right : undefined
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                spacing: 0
-                Rectangle {
-                    id: qBox
-                    height: Math.max(qText.contentHeight,
-                                     rText.contentHeight) + 20
-                    color: "#00ffffff"
-                    border.color: "#49454f"
-                    border.width: 1
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    PrimaryText {
-                        id: qText
-                        text: model.question
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignLeft
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.rightMargin: 8
-                        anchors.leftMargin: 8
-                        anchors.bottomMargin: 8
-                        anchors.topMargin: 8
-                    }
-                }
-
-                Rectangle {
-                    id: rBox
-                    color: "#00ffffff"
-                    height: Math.max(qText.contentHeight,
-                                     rText.contentHeight) + 20
-                    border.width: 1
-                    Layout.fillHeight: true
-                    border.color: "#49454f"
-                    Layout.fillWidth: true
-
-                    PrimaryText {
-                        id: rText
-                        text: model.response
-                        anchors.fill: parent
-
-                        horizontalAlignment: Text.AlignLeft
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.topMargin: 8
-                        anchors.rightMargin: 8
-                        anchors.leftMargin: 8
-                        anchors.bottomMargin: 8
-                    }
-                }
+            delegate: QrPageListViewDelegate {
+                question: model.question
+                response: model.response
             }
         }
     }
@@ -258,11 +209,11 @@ Page {
                 }
 
                 PrimaryText {
-
                     id: progressTextPercent
                     text: (50.0).toFixed(0) + " %"
-
+                    horizontalAlignment: Text.AlignRight
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                    Layout.minimumWidth: 50
                 }
             }
 
@@ -272,13 +223,12 @@ Page {
                 value: (0.5).toFixed(2)
                 Layout.preferredHeight: 6
 
-                property color valueColor: Qt.rgba(1, 1, 0, 1)
-
                 contentItem: ProgressBarImpl {
+                    id: progressRevisionBarImpl
                     implicitHeight: 6
 
                     scale: progressRevisionBar.mirrored ? -1 : 1
-                    color: progressRevisionBar.valueColor
+                    color: Qt.rgba(1, 1, 0, 1)
                     progress: progressRevisionBar.position
                     indeterminate: progressRevisionBar.visible
                                    && progressRevisionBar.indeterminate

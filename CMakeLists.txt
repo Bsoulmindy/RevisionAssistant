@@ -20,15 +20,16 @@ qt_add_qml_module(appRevisionAssistant
     VERSION 1.0
     QML_FILES
         src/Main.qml
-        src/views/QrPage/CompleteButton/CompleteButton.qml
-        src/views/DictEditPage/DictEditPage.qml
+        src/views/DictEditPage.qml
+        src/views/DictEditPageUi.ui.qml
         src/views/MainPage.qml
         src/views/MainPageUi.ui.qml
-        src/views/QrPage/QrPage.qml
-        src/views/QrPage/QrPageUi.ui.qml
-        src/views/DictAddPage/DictAddPage.qml
-        src/views/DictAddPage/FileSelectionStatus/FileSelectionStatus.qml
-        src/views/DictAddPage/DictProcessingPage/DictProcessingPage.qml
+        src/views/QrPage.qml
+        src/views/QrPageUi.ui.qml
+        src/views/DictAddPage.qml
+        src/views/DictAddPageUi.ui.qml
+        src/views/FileSelectionStatus.qml
+        src/views/DictProcessingPage.qml
     RESOURCES resources.qrc
     SOURCES dictcontroller.h dictcontroller.cpp
     SOURCES quizcontroller.h quizcontroller.cpp

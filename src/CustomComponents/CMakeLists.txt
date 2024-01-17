@@ -4,4 +4,7 @@ qt_add_qml_module(custom_components
     VERSION 1.0
     QML_FILES
         PrimaryText.qml
+        CompleteButton.qml
+        QrPageListViewDelegate.qml
+        DictEditListViewDelegate.qml
 )

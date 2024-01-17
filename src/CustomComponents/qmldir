@@ -1,2 +1,5 @@
-module RevisionAssistant.src.CustomComponents
+module CustomComponents
 PrimaryText PrimaryText.qml
+CompleteButton CompleteButton.qml
+QrPageListViewDelegate QrPageListViewDelegate.qml
+DictEditListViewDelegate DictEditListViewDelegate.qml

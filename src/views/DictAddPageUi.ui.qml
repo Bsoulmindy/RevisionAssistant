@@ -10,6 +10,21 @@ import CustomComponents
 
 Page {
     id: dictAddPageForm
+    width: 400
+    height: 800
+    z: 0
+
+    property alias backButtonItem: backButton
+    property alias selectDictButtonItem: selectDictButton
+    property alias selectSeparatorHelpItem: selectSeparatorHelp
+    property alias addDictButtonItem: addDictButton
+    property alias separatorHelpTextItem: separatorHelpText
+    property alias fileDialogItem: fileDialog
+    property alias searchTextFieldItem: searchTextField
+    property alias invalidFileDialogItem: invalidFileDialog
+    property alias separator_example_item: separator_example
+    property alias fileSelectionStatusItem: fileSelectionStatus
+    property alias separatorHelpDialogItem: separatorHelpDialog
 
     ToolBar {
         id: dictEditPageToolBar
@@ -28,7 +43,7 @@ Page {
                 text: qsTr("")
                 icon.source: "qrc:/icons/back.png"
                 display: AbstractButton.IconOnly
-                onClicked: stackView.pop()
+
             }
 
             PrimaryText {
@@ -66,7 +81,6 @@ Page {
                     Layout.preferredWidth: 105
                     Layout.preferredHeight: 52
                     Layout.fillWidth: false
-                    onClicked: fileDialog.open()
                 }
 
                 FileSelectionStatus {
@@ -97,7 +111,7 @@ Page {
                     radius: 20
                     Layout.preferredHeight: 29
                     Layout.preferredWidth: 29
-                    onClicked: separatorHelpDialog.open()
+
 
                     background: Rectangle {
                         implicitWidth: Material.buttonHeight
@@ -155,14 +169,6 @@ Page {
             Material.background: Material.primaryColor
             Layout.preferredWidth: 105
             Layout.preferredHeight: 52
-            onClicked: {
-                if (fileDialog.selectedFile === "" || searchTextField.text === "") {
-                    invalidFileDialog.open()
-                } else {
-                    stackView.push("DictProcessingPage.qml", {"filePath": fileDialog.selectedFile, "fileSeparator": searchTextField.text})
-                }
-            }
-
         }
     }
 
@@ -174,6 +180,7 @@ Page {
         height: 250
         contentItem: Item {
             PrimaryText {
+                id: separatorHelpText
                 height: contentHeight
                 text: "A separator is a character or list of characters to differentiate between the question and the response"
                 anchors.fill: parent
@@ -185,12 +192,6 @@ Page {
                 anchors.topMargin: 20
 
                 font.pixelSize: 14
-
-                onLineLaidOut: (line)=> {
-                    if (line.y + topPadding <= separator_example.y + separator_example.height) {
-                        line.width = separator_example.x - anchors.leftMargin - anchors.rightMargin;
-                    }
-                }
             }
 
             Image {
@@ -221,10 +222,6 @@ Page {
     FileDialog {
         id: fileDialog
         title: "Please choose a file"
-        currentFolder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
-        onAccepted: {
-            fileSelectionStatus.state = "completed"
-        }
     }
 
     Dialog {
