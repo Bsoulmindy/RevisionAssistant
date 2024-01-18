@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(RevisionAssistant VERSION 0.0.0 LANGUAGES CXX)
 
-configure_file(config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
+configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,7 +12,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Sql Core)
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appRevisionAssistant
-    main.cpp
+    src/main.cpp
 )
 
 qt_add_qml_module(appRevisionAssistant
@@ -28,12 +28,18 @@ qt_add_qml_module(appRevisionAssistant
         src/views/QrPageUi.ui.qml
         src/views/DictAddPage.qml
         src/views/DictAddPageUi.ui.qml
-        src/views/FileSelectionStatus.qml
         src/views/DictProcessingPage.qml
+        src/views/DictProcessingPageUi.ui.qml
     RESOURCES resources.qrc
-    SOURCES dictcontroller.h dictcontroller.cpp
-    SOURCES quizcontroller.h quizcontroller.cpp
-    SOURCES filecontroller.h filecontroller.cpp
+    SOURCES src/controllers/dictcontroller.h
+            src/controllers/dictcontroller.cpp
+            src/controllers/quizcontroller.h
+            src/controllers/quizcontroller.cpp
+            src/controllers/filecontroller.h
+            src/controllers/filecontroller.cpp
+            src/models/question_response_entry.h
+            src/models/question_response_entry.cpp
+            src/repositories/dict_repo_interface.h
 )
 
 add_subdirectory(src/CustomComponents)

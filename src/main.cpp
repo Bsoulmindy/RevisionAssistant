@@ -6,7 +6,7 @@
 #include <QSqlDatabase>
 #include <QQmlContext>
 #include <QtQml/QQmlExtensionPlugin>
-#include "config/config.h"
+#include "../config/config.h"
 
 void createDatabaseCopy()
 {

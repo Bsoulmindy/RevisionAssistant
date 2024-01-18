@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "qqml.h"
+#include "../models/question_response_entry.h"
 #include <QSqlDatabase>
 #include <QString>
 #include <unordered_set>
@@ -58,8 +59,8 @@ signals:
 
 private:
     QSqlDatabase m_database;
-    std::vector<QVariantMap> m_not_checked_qsts;
-    std::vector<QVariantMap> m_not_checked_rsps;
+    std::vector<QuestionResponseEntry> m_not_checked_qsts;
+    std::vector<QuestionResponseEntry> m_not_checked_rsps;
 
     void initInternalMemory();
     int m_num_rows;

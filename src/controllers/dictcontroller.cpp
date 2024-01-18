@@ -1,4 +1,5 @@
 #include "dictcontroller.h"
+#include "../models/question_response_entry.h"
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QGuiApplication>
@@ -64,14 +65,16 @@ QVariantList DictController::getAllRecords()
     if(query.exec()) {
         while(query.next()) {
             QSqlRecord record = query.record();
-            QVariantMap resultMap;
-            resultMap["question"] = record.value("question").toString();
-            resultMap["response"] = record.value("response").toString();
-            resultMap["isCheckedQuestion"] = record.value("isCheckedQuestion").toBool();
-            resultMap["isCheckedResponse"] = record.value("isCheckedResponse").toBool();
-            resultMap["id"] = record.value("id").toInt();
 
-            records_list.append(resultMap);
+            QuestionResponseEntry entry(
+                record.value("id").toInt(),
+                record.value("question").toString(),
+                record.value("response").toString(),
+                record.value("isCheckedQuestion").toBool(),
+                record.value("isCheckedResponse").toBool()
+            );
+
+            records_list.append(entry.getMap());
         }
     } else {
         qCritical() << "Error executing SELECT query:" << query.lastError().text();
@@ -355,18 +358,20 @@ void DictController::initInternalMemory()
     if(query.exec()) {
         while(query.next()) {
             QSqlRecord record = query.record();
-            QVariantMap resultMap;
-            resultMap["question"] = record.value("question").toString();
-            resultMap["response"] = record.value("response").toString();
-            resultMap["isCheckedQuestion"] = record.value("isCheckedQuestion").toBool();
-            resultMap["isCheckedResponse"] = record.value("isCheckedResponse").toBool();
-            resultMap["id"] = record.value("id").toInt();
 
-            if(!resultMap["isCheckedQuestion"].toBool()) {
-                m_not_checked_qsts.push_back(resultMap);
+            QuestionResponseEntry entry(
+                record.value("id").toInt(),
+                record.value("question").toString(),
+                record.value("response").toString(),
+                record.value("isCheckedQuestion").toBool(),
+                record.value("isCheckedResponse").toBool()
+            );
+
+            if(!record.value("isCheckedQuestion").toBool()) {
+                m_not_checked_qsts.push_back(entry);
             }
-            if(!resultMap["isCheckedResponse"].toBool()) {
-                m_not_checked_rsps.push_back(resultMap);
+            if(!record.value("isCheckedResponse").toBool()) {
+                m_not_checked_rsps.push_back(entry);
             }
             m_num_rows++;
         }

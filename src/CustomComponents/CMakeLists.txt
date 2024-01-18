@@ -7,4 +7,5 @@ qt_add_qml_module(custom_components
         CompleteButton.qml
         QrPageListViewDelegate.qml
         DictEditListViewDelegate.qml
+        FileSelectionStatus.qml
 )
