@@ -40,6 +40,9 @@ qt_add_qml_module(appRevisionAssistant
             src/models/question_response_entry.h
             src/models/question_response_entry.cpp
             src/repositories/dict_repo_interface.h
+            SOURCES src/repositories/dict_json_repo.h src/repositories/dict_json_repo.cpp
+            SOURCES
+            SOURCES src/exceptions/json_exception.h src/exceptions/json_exception.cpp
 )
 
 add_subdirectory(src/CustomComponents)
