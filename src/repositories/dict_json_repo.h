@@ -6,7 +6,7 @@
 #include <QJsonDocument>
 
 /*
-Here's an exampel of the structured JSON should be like
+Here's an example of the structured JSON should be like
 [
     {
         "question": "q1",
