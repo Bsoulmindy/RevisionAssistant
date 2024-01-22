@@ -34,16 +34,20 @@ class DictJsonRepo : public DictRepoInterface
 public:
     DictJsonRepo(QString json_path);
 
-    std::list<QuestionResponseEntry> select_all();
-    void update_question(int id, bool is_checked);
-    void update_response(int id, bool is_checked);
-    void mark_all_entries_unchecked();
-    void delete_all();
-    std::list<QuestionResponseEntry> select_questions(bool is_checked);
-    std::list<QuestionResponseEntry> select_responses(bool is_checked);
-    void insert_entry(const QuestionResponseEntry& entry);
-
+    std::list<QuestionResponseEntry> select_all() override;
+    void update_question(int id, bool is_checked) override;
+    void update_response(int id, bool is_checked) override;
+    void mark_all_entries_unchecked() override;
+    void delete_all() override;
+    std::list<QuestionResponseEntry> select_questions(bool is_checked) override;
+    std::list<QuestionResponseEntry> select_responses(bool is_checked) override;
+    void insert_entry(const QuestionResponseEntry& entry) override;
+    void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) override;
 private:
+    // Save the changes to the json file
+    // Called every time when a change has been made to the document
+    void save() const;
+
     QString m_json_path;
     QJsonDocument m_json_document;
 };
