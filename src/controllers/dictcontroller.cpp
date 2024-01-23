@@ -1,32 +1,17 @@
 #include "dictcontroller.h"
 #include "../models/question_response_entry.h"
-#include <QSqlQuery>
-#include <QSqlRecord>
 #include <QGuiApplication>
 #include <QRandomGenerator>
 #include <QStandardPaths>
 #include <QFile>
-#include <QSqlError>
 #include <unordered_set>
+#include "../factories/dict_repo_factory.h"
+#include <memory>
 
 DictController::DictController(QObject *parent)
     : QObject{parent}
 {
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QString databasePath = dataDir + "/dict.sqlite";
-    if (!QFile::exists(databasePath))
-    {
-        qCritical() << "Error: " << databasePath << " doesn't exist!";
-        exit(30001);
-        return;
-    }
-    m_database = QSqlDatabase::database("revision_app");
-    m_database.setDatabaseName(databasePath);
-    if (!m_database.open()) {
-        qCritical() << "Error: Could not open database in " << databasePath;
-        exit(30002);
-        return;
-    }
+    m_dict_repo = DictRepoFactory.create_dict_repo(1, DictRepoEnum::Json);
 
     initInternalMemory();
 }
@@ -60,27 +45,14 @@ QVariantMap DictController::selectRandomResponse()
 QVariantList DictController::getAllRecords()
 {
     QVariantList records_list;
-
-    QSqlQuery query("SELECT * FROM dict", m_database);
-    if(query.exec()) {
-        while(query.next()) {
-            QSqlRecord record = query.record();
-
-            QuestionResponseEntry entry(
-                record.value("id").toInt(),
-                record.value("question").toString(),
-                record.value("response").toString(),
-                record.value("isCheckedQuestion").toBool(),
-                record.value("isCheckedResponse").toBool()
-            );
-
-            records_list.append(entry.getMap());
+    try {
+        std::list<QuestionResponseEntry> entries = m_dict_repo->select_all();
+        for(auto it = entries.begin(); it != entries.end(); it++) {
+            record_list.append(it->getMap());
         }
-    } else {
-        qCritical() << "Error executing SELECT query:" << query.lastError().text();
+    } catch (std::exception& e) {
+        qCritical() << e.what();
     }
-
-    return records_list;
 }
 
 void DictController::checkQuestion(int id, int hint_index)
@@ -101,19 +73,18 @@ void DictController::checkQuestion(int id, int hint_index)
         }
     }
 
+    // Update in memory
     std::swap(m_not_checked_qsts[hint_index], m_not_checked_qsts.back());
     m_not_checked_qsts.pop_back();
 
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedQuestion = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", true);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
-        return;
+    // Save in repository
+    try {
+        m_dict_repo->update_question(id, true);
+    } catch(std::exception e) {
+        qCritical() << e.what();
     }
 
+    // Emit signal of the change
     set_num_not_checked_questions(m_not_checked_qsts.size());
 }
 
@@ -135,50 +106,35 @@ void DictController::checkResponse(int id, int hint_index)
         }
     }
 
+    // Update in memory
     std::swap(m_not_checked_rsps[hint_index], m_not_checked_rsps.back());
     m_not_checked_rsps.pop_back();
 
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedResponse = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", true);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
-        return;
+    // Save in repository
+    try {
+        m_dict_repo->update_response(id, true);
+    } catch(std::exception e) {
+        qCritical() << e.what();
     }
 
+    // Emit signal of the change
     set_num_not_checked_responses(m_not_checked_rsps.size());
 }
 
 void DictController::uncheckQuestion(int id)
-{
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedQuestion = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", false);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+{    
+    try {
+        m_dict_repo->update_question(id, false);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 
-    query.clear();
-    query.prepare("SELECT * FROM dict WHERE id = :id");
-    query.bindValue(":id", id);
-
-    if (query.exec() && query.next()) {
-        QSqlRecord record = query.record();
-        QVariantMap result;
-        result["question"] = record.value("question").toString();
-        result["response"] = record.value("response").toString();
-        result["isCheckedQuestion"] = record.value("isCheckedQuestion").toBool();
-        result["isCheckedResponse"] = record.value("isCheckedResponse").toBool();
-        result["id"] = record.value("id").toInt();
-
-        m_not_checked_qsts.push_back(result);
-    } else {
-        qWarning() << "Failed to select record:" << query.lastError().text();
+    try {
+        QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
+        m_not_checked_qsts.push_back(entry.getMap());
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 
@@ -187,32 +143,18 @@ void DictController::uncheckQuestion(int id)
 
 void DictController::uncheckResponse(int id)
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedResponse = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", false);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+    try {
+        m_dict_repo->update_response(id, false);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 
-    query.clear();
-    query.prepare("SELECT * FROM dict WHERE id = :id");
-    query.bindValue(":id", id);
-
-    if (query.exec() && query.next()) {
-        QSqlRecord record = query.record();
-        QVariantMap result;
-        result["question"] = record.value("question").toString();
-        result["response"] = record.value("response").toString();
-        result["isCheckedQuestion"] = record.value("isCheckedQuestion").toBool();
-        result["isCheckedResponse"] = record.value("isCheckedResponse").toBool();
-        result["id"] = record.value("id").toInt();
-
-        m_not_checked_rsps.push_back(result);
-    } else {
-        qWarning() << "Failed to select record:" << query.lastError().text();
+    try {
+        QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
+        m_not_checked_rsps.push_back(entry.getMap());
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 
@@ -221,63 +163,50 @@ void DictController::uncheckResponse(int id)
 
 void DictController::checkQuestionInDatabase(int id)
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedQuestion = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", true);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+    try {
+        m_dict_repo->update_question(id, true);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 }
 
 void DictController::checkResponseInDatabase(int id)
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedResponse = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", true);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+    try {
+        m_dict_repo->update_response(id, true);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 }
 
 void DictController::uncheckQuestionInDatabase(int id)
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedQuestion = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", false);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+    try {
+        m_dict_repo->update_question(id, false);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 }
 
 void DictController::uncheckResponseInDatabase(int id)
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedResponse = :isChecked WHERE id = :id");
-    query.bindValue(":isChecked", false);
-    query.bindValue(":id", id);
-
-    if (!query.exec()) {
-        qWarning() << "Failed to update record:" << query.lastError().text();
+    try {
+        m_dict_repo->update_response(id, false);
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 }
 
 void DictController::resetDict()
 {
-    QSqlQuery query(m_database);
-    query.prepare("UPDATE dict SET isCheckedQuestion = 0, isCheckedResponse = 0");
-
-    if (!query.exec()) {
-        qWarning() << "Failed to reset all records:" << query.lastError().text();
+    try {
+        m_dict_repo->mark_all_entries_unchecked();
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
 
@@ -291,15 +220,13 @@ void DictController::init()
 
 void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
 {
-    QSqlQuery query(m_database);
-    query.prepare("DELETE FROM dict");
-
-    if (!query.exec()) {
-        qWarning() << "Failed to delete all records:" << query.lastError().text();
+    try {
+        m_dict_repo->delete_all();
+    } catch(std::exception e) {
+        qCritical() << e.what();
         return;
     }
-    query.clear();
-
+    std::list<QuestionResponseEntry> l;
     for(int i = 0; i < dict_rows.size(); i++) {
         const QVariantMap& dict_row = dict_rows[i];
         query.prepare("INSERT INTO dict(question, response, isCheckedQuestion, isCheckedResponse) VALUES (:question, :response, :isCheckedQuestion, :isCheckedResponse)");
@@ -311,7 +238,19 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
         if (!query.exec()) {
             qWarning() << "Failed to insert a row :" << query.lastError().text();
         }
-        emit databaseRowInserted(i + 1, dict_rows.size());
+
+        l.emplace_back(0,
+                       dict_row["question"],
+                       dict_row["response"],
+                       dict_row["isCheckedQuestion"],
+                       dict_row["isCheckedResponse"]);
+
+    }
+
+    try {
+        m_dict_repo->insert_multiple_entries(l);
+    } catch(std::exception e) {
+        qCritical() << e.what();
     }
 
     initInternalMemory();
@@ -322,27 +261,22 @@ std::pair<std::unordered_set<QString>, std::unordered_set<QString> > DictControl
     std::unordered_set<QString> checked_questions;
     std::unordered_set<QString> checked_responses;
 
-    QSqlQuery query(m_database);
-    query.prepare("SELECT question FROM dict WHERE isCheckedQuestion = 1");
-
-    if (query.exec()) {
-        while(query.next()) {
-            QSqlRecord record = query.record();
-            checked_questions.insert(record.value("question").toString());
+    try {
+        std::list<QuestionResponseEntry> entries = m_dict_repo->select_questions(true);
+        for(auto& entry : entries) {
+            checked_questions.insert(entry.getMap()["question"].toString());
         }
-    } else {
-        qWarning() << "Failed to fetch checked questions : " << query.lastError().text();
+    } catch(std::exception e) {
+        qCritical() << e.what();
     }
 
-    query.clear();
-    query.prepare("SELECT response FROM dict WHERE isCheckedResponse = 1");
-    if (query.exec()) {
-        while(query.next()) {
-            QSqlRecord record = query.record();
-            checked_responses.insert(record.value("response").toString());
+    try {
+        std::list<QuestionResponseEntry> entries = m_dict_repo->select_responses(true);
+        for(auto& entry : entries) {
+            checked_responses.insert(entry.getMap()["response"].toString());
         }
-    } else {
-        qWarning() << "Failed to fetch checked responses : " << query.lastError().text();
+    } catch(std::exception e) {
+        qCritical() << e.what();
     }
 
     return {checked_questions, checked_responses};
@@ -354,31 +288,22 @@ void DictController::initInternalMemory()
     m_not_checked_qsts.clear();
     m_not_checked_rsps.clear();
 
-    QSqlQuery query("SELECT * FROM dict", m_database);
-    if(query.exec()) {
-        while(query.next()) {
-            QSqlRecord record = query.record();
+    std::list<QuestionResponseEntry> entries;
 
-            QuestionResponseEntry entry(
-                record.value("id").toInt(),
-                record.value("question").toString(),
-                record.value("response").toString(),
-                record.value("isCheckedQuestion").toBool(),
-                record.value("isCheckedResponse").toBool()
-            );
+    try {
+        entries = m_dict_repo->select_all();
+    } catch(std::exception e) {
+        qCritical() << e.what();
+    }
 
-            if(!record.value("isCheckedQuestion").toBool()) {
-                m_not_checked_qsts.push_back(entry);
-            }
-            if(!record.value("isCheckedResponse").toBool()) {
-                m_not_checked_rsps.push_back(entry);
-            }
-            m_num_rows++;
+    for(auto& entry : entries) {
+        if(!entry.getMap()["isCheckedQuestion"].toBool()) {
+            m_not_checked_qsts.push_back(entry);
         }
-    } else {
-        qCritical() << "Error executing SELECT query:" << query.lastError().text();
-        exit(30003);
-        return;
+        if(!entry.getMap()["isCheckedResponse"].toBool()) {
+            m_not_checked_rsps.push_back(entry);
+        }
+        m_num_rows++;
     }
 
     set_num_not_checked_questions(m_not_checked_qsts.size());

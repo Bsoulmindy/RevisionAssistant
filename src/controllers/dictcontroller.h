@@ -4,9 +4,10 @@
 #include <QObject>
 #include "qqml.h"
 #include "../models/question_response_entry.h"
-#include <QSqlDatabase>
 #include <QString>
 #include <unordered_set>
+#include "../repositories/dict_repo_interface.h"
+#include <memory>
 
 /**
  * @brief The DictController class
@@ -55,10 +56,9 @@ signals:
     void num_rowsChanged();
     void num_not_checked_questionsChanged();
     void num_not_checked_responsesChanged();
-    void databaseRowInserted(int num_completed_rows, int num_total_rows);
 
 private:
-    QSqlDatabase m_database;
+    std::unique<DictRepoInterface> m_dict_repo;
     std::vector<QuestionResponseEntry> m_not_checked_qsts;
     std::vector<QuestionResponseEntry> m_not_checked_rsps;
 

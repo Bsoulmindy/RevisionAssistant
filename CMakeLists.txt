@@ -45,6 +45,8 @@ qt_add_qml_module(appRevisionAssistant
             SOURCES src/exceptions/json_exception.h src/exceptions/json_exception.cpp
             SOURCES src/exceptions/file_invalid_json_exception.h src/exceptions/file_invalid_json_exception.cpp
             SOURCES src/exceptions/object_invalid_json_exception.h src/exceptions/object_invalid_json_exception.cpp
+            SOURCES src/factories/dict_repo_factory.h src/factories/dict_repo_factory.cpp
+            SOURCES src/models/dict_repo_enum.h
 )
 
 add_subdirectory(src/CustomComponents)
