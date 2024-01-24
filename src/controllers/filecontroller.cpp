@@ -15,7 +15,6 @@ FileController::FileController(QObject *parent)
 
 void FileController::init()
 {
-    QObject::connect(m_dict_controller, &DictController::databaseRowInserted, this, &FileController::databaseRowSaved);
     emit initialized();
 }
 

@@ -11,7 +11,7 @@
 DictController::DictController(QObject *parent)
     : QObject{parent}
 {
-    m_dict_repo = DictRepoFactory.create_dict_repo(1, DictRepoEnum::Json);
+    m_dict_repo = DictRepoFactory::create_dict_repo(1, DictRepoEnum::Json);
 
     initInternalMemory();
 }
@@ -24,7 +24,7 @@ QVariantMap DictController::selectRandomQuestion()
     }
 
     int randomIndex = QRandomGenerator::global()->bounded(static_cast<int>(m_not_checked_qsts.size()));
-    QVariantMap m = m_not_checked_qsts[randomIndex];
+    QVariantMap m = m_not_checked_qsts[randomIndex].getMap();
     m["id_memory"] = randomIndex;
     return m;
 }
@@ -37,7 +37,7 @@ QVariantMap DictController::selectRandomResponse()
     }
 
     int randomIndex = QRandomGenerator::global()->bounded(static_cast<int>(m_not_checked_rsps.size()));
-    QVariantMap m = m_not_checked_rsps[randomIndex];
+    QVariantMap m = m_not_checked_rsps[randomIndex].getMap();
     m["id_memory"] = randomIndex;
     return m;
 }
@@ -48,11 +48,12 @@ QVariantList DictController::getAllRecords()
     try {
         std::list<QuestionResponseEntry> entries = m_dict_repo->select_all();
         for(auto it = entries.begin(); it != entries.end(); it++) {
-            record_list.append(it->getMap());
+            records_list.append(it->getMap());
         }
     } catch (std::exception& e) {
         qCritical() << e.what();
     }
+    return records_list;
 }
 
 void DictController::checkQuestion(int id, int hint_index)
@@ -63,13 +64,13 @@ void DictController::checkQuestion(int id, int hint_index)
 
     // Simple Check
     {
-        auto& rowAtHint = m_not_checked_qsts[hint_index];
+        auto rowAtHint = m_not_checked_qsts[hint_index].getMap();
         if(rowAtHint["id"] != id) {
             qWarning() << "The hint is wrong! The given id is " << id << " while I found at hint location : " << rowAtHint["id"];
 
             // Attempt to correct
             hint_index = m_not_checked_qsts.size() - 1;
-            if(m_not_checked_qsts[hint_index]["id"] != id) return;
+            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) return;
         }
     }
 
@@ -96,13 +97,13 @@ void DictController::checkResponse(int id, int hint_index)
 
     // Simple Check
     {
-        auto& rowAtHint = m_not_checked_rsps[hint_index];
+        auto rowAtHint = m_not_checked_rsps[hint_index].getMap();
         if(rowAtHint["id"] != id) {
             qWarning() << "The hint is wrong! The given id is " << id << " while I found at hint location : " << rowAtHint["id"];
 
             // Attempt to correct
             hint_index = m_not_checked_qsts.size() - 1;
-            if(m_not_checked_qsts[hint_index]["id"] != id) return;
+            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) return;
         }
     }
 
@@ -132,7 +133,7 @@ void DictController::uncheckQuestion(int id)
 
     try {
         QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
-        m_not_checked_qsts.push_back(entry.getMap());
+        m_not_checked_qsts.push_back(entry);
     } catch(std::exception e) {
         qCritical() << e.what();
         return;
@@ -152,7 +153,7 @@ void DictController::uncheckResponse(int id)
 
     try {
         QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
-        m_not_checked_rsps.push_back(entry.getMap());
+        m_not_checked_rsps.push_back(entry);
     } catch(std::exception e) {
         qCritical() << e.what();
         return;
@@ -229,22 +230,12 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
     std::list<QuestionResponseEntry> l;
     for(int i = 0; i < dict_rows.size(); i++) {
         const QVariantMap& dict_row = dict_rows[i];
-        query.prepare("INSERT INTO dict(question, response, isCheckedQuestion, isCheckedResponse) VALUES (:question, :response, :isCheckedQuestion, :isCheckedResponse)");
-        query.bindValue(":question", dict_row["question"]);
-        query.bindValue(":response", dict_row["response"]);
-        query.bindValue(":isCheckedQuestion", dict_row["isCheckedQuestion"]);
-        query.bindValue(":isCheckedResponse", dict_row["isCheckedResponse"]);
-
-        if (!query.exec()) {
-            qWarning() << "Failed to insert a row :" << query.lastError().text();
-        }
 
         l.emplace_back(0,
-                       dict_row["question"],
-                       dict_row["response"],
-                       dict_row["isCheckedQuestion"],
-                       dict_row["isCheckedResponse"]);
-
+                       dict_row["question"].toString(),
+                       dict_row["response"].toString(),
+                       dict_row["isCheckedQuestion"].toBool(),
+                       dict_row["isCheckedResponse"].toBool());
     }
 
     try {

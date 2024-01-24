@@ -6,7 +6,7 @@
 class FileInvalidJsonException : public JsonException
 {
 public:
-    FileInvalidJsonException(std::string message);
+    FileInvalidJsonException(QString message);
 };
 
 #endif // FILEINVALIDJSONEXCEPTION_H

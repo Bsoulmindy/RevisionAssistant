@@ -48,6 +48,8 @@ private:
     // Called every time when a change has been made to the document
     void save() const;
 
+    void create_empty_json_file(QString json_path) const;
+
     QString m_json_path;
     QJsonDocument m_json_document;
 };

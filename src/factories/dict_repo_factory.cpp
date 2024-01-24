@@ -2,7 +2,7 @@
 #include <QStandardPaths>
 #include "../repositories/dict_json_repo.h"
 
-std::unique<DictRepoInterface> DictRepoFactory::create_dict_repo(int id, DictRepoEnum type)
+std::unique_ptr<DictRepoInterface> DictRepoFactory::create_dict_repo(int id, DictRepoEnum type)
 {
     QString file_name = "";
     appendTypeToFileName(file_name, type);

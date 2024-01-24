@@ -58,7 +58,7 @@ signals:
     void num_not_checked_responsesChanged();
 
 private:
-    std::unique<DictRepoInterface> m_dict_repo;
+    std::unique_ptr<DictRepoInterface> m_dict_repo;
     std::vector<QuestionResponseEntry> m_not_checked_qsts;
     std::vector<QuestionResponseEntry> m_not_checked_rsps;
 

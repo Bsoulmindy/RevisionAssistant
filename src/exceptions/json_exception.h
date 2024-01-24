@@ -1,12 +1,12 @@
 #ifndef JSONEXCEPTION_H
 #define JSONEXCEPTION_H
 
-#include <string>
+#include <QString>
 
 class JsonException : public std::exception
 {
 public:
-    JsonException(std::string message);
+    JsonException(QString message);
     const char *what() noexcept;
 private:
     std::string m_message;
