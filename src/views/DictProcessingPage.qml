@@ -18,7 +18,7 @@ DictProcessingPageUi {
     FileController {
         id: fileController
         dict_controller: dictController
-        onWarningOutput: {
+        onWarningOutput: (output) => {
             listView.model.append({ "output": output });
         }
         onInitialized: {

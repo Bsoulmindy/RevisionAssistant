@@ -261,6 +261,39 @@ void DictJsonRepo::insert_multiple_entries(const std::list<QuestionResponseEntry
     save();
 }
 
+QuestionResponseEntry DictJsonRepo::select_by_id(int id)
+{
+    if(m_json_document.isNull()) {
+        throw FileInvalidJsonException("The JSON Document is invalid!");
+    }
+    if(!m_json_document.isArray()) {
+        throw FileInvalidJsonException("Invalid syntax of JSON!");
+    }
+    auto entries_array = m_json_document.array();
+
+    if(id >= entries_array.size()) {
+        throw JsonException("Json Object ID " + QString::number(id) + " not found!");
+    }
+
+    auto entry_object = entries_array[id].toObject();
+
+    auto question_value = entry_object["question"];
+    auto response_value = entry_object["response"];
+    auto is_checked_question_value = entry_object["isCheckedQuestion"];
+    auto is_checked_response_value = entry_object["isCheckedResponse"];
+
+    if(!question_value.isString() || !response_value.isString() || !is_checked_question_value.isBool() || !is_checked_response_value.isBool()) {
+        throw ObjectInvalidJsonException("Invalid Object ID " + QString::number(id), {id});
+    }
+
+    auto question = question_value.toString();
+    auto response = response_value.toString();
+    auto is_checked_question = is_checked_question_value.toBool();
+    auto is_checked_response = is_checked_response_value.toBool();
+
+    return QuestionResponseEntry(id, question, response, is_checked_question, is_checked_response);
+}
+
 void DictJsonRepo::save() const
 {
     if(m_json_document.isNull()) {
@@ -287,5 +320,12 @@ void DictJsonRepo::create_empty_json_file(QString json_path) const
 {
     QFile json_file(json_path);
     json_file.open(QIODevice::ReadWrite);
+
+    QJsonDocument empty_doc;
+    empty_doc.setArray(QJsonArray());
+    auto bytes = empty_doc.toJson();
+
+    QTextStream text_stream(&json_file);
+    text_stream << bytes;
 }
 

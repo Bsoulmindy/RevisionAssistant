@@ -43,6 +43,7 @@ public:
     std::list<QuestionResponseEntry> select_responses(bool is_checked) override;
     void insert_entry(const QuestionResponseEntry& entry) override;
     void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) override;
+    QuestionResponseEntry select_by_id(int id) override;
 private:
     // Save the changes to the json file
     // Called every time when a change has been made to the document

@@ -7,13 +7,15 @@ configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Sql Core)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appRevisionAssistant
     src/main.cpp
 )
+
+include_directories(src/controllers)
 
 qt_add_qml_module(appRevisionAssistant
     URI RevisionAssistant
@@ -59,7 +61,7 @@ set_target_properties(appRevisionAssistant PROPERTIES
 )
 
 target_link_libraries(appRevisionAssistant
-    PRIVATE Qt6::Quick Qt6::Sql Qt6::Core custom_componentsplugin
+    PRIVATE Qt6::Quick Qt6::Core custom_componentsplugin
 )
 
 include(GNUInstallDirs)

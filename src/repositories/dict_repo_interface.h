@@ -7,7 +7,7 @@
 class DictRepoInterface
 {
 public:
-    virtual ~DictRepoInterface();
+    virtual ~DictRepoInterface() {}
     virtual std::list<QuestionResponseEntry> select_all() = 0;
     virtual void update_question(int id, bool is_checked) = 0;
     virtual void update_response(int id, bool is_checked) = 0;
