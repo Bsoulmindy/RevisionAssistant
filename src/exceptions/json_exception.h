@@ -7,7 +7,7 @@ class JsonException : public std::exception
 {
 public:
     JsonException(QString message);
-    const char *what() noexcept;
+    const char *what() const noexcept override;
 private:
     std::string m_message;
 };

@@ -37,7 +37,10 @@ void FileController::processFile(QString file_path, QString line_separator)
         return;
 
     setactualState("Fetching checked questions and responses from current database...");
-    auto [checked_questions, checked_responses] = m_dict_controller->getCheckedQuestionsAndResponses();
+
+    auto qst_rsp_entries_set = m_dict_controller->getCheckedQuestionsAndResponses();
+    auto checked_questions = qst_rsp_entries_set.get_questions_set();
+    auto checked_responses = qst_rsp_entries_set.get_responses_set();
 
     QTextStream file_stream(&file);
     int line_number = 1;

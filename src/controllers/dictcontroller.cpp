@@ -83,6 +83,7 @@ void DictController::checkQuestion(int id, int hint_index)
         m_dict_repo->update_question(id, true);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
     // Emit signal of the change
@@ -116,6 +117,7 @@ void DictController::checkResponse(int id, int hint_index)
         m_dict_repo->update_response(id, true);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
     // Emit signal of the change
@@ -128,6 +130,7 @@ void DictController::uncheckQuestion(int id)
         m_dict_repo->update_question(id, false);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 
@@ -136,6 +139,7 @@ void DictController::uncheckQuestion(int id)
         m_not_checked_qsts.push_back(entry);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 
@@ -148,6 +152,7 @@ void DictController::uncheckResponse(int id)
         m_dict_repo->update_response(id, false);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 
@@ -156,6 +161,7 @@ void DictController::uncheckResponse(int id)
         m_not_checked_rsps.push_back(entry);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 
@@ -168,6 +174,7 @@ void DictController::checkQuestionInDatabase(int id)
         m_dict_repo->update_question(id, true);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 }
@@ -178,6 +185,7 @@ void DictController::checkResponseInDatabase(int id)
         m_dict_repo->update_response(id, true);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 }
@@ -188,6 +196,7 @@ void DictController::uncheckQuestionInDatabase(int id)
         m_dict_repo->update_question(id, false);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 }
@@ -198,6 +207,7 @@ void DictController::uncheckResponseInDatabase(int id)
         m_dict_repo->update_response(id, false);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 }
@@ -208,6 +218,7 @@ void DictController::resetDict()
         m_dict_repo->mark_all_entries_unchecked();
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
 
@@ -225,6 +236,7 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
         m_dict_repo->delete_all();
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
         return;
     }
     std::list<QuestionResponseEntry> l;
@@ -242,12 +254,13 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
         m_dict_repo->insert_multiple_entries(l);
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
     initInternalMemory();
 }
 
-std::pair<std::unordered_set<QString>, std::unordered_set<QString> > DictController::getCheckedQuestionsAndResponses()
+QuestionResponseEntriesSet DictController::getCheckedQuestionsAndResponses()
 {
     std::unordered_set<QString> checked_questions;
     std::unordered_set<QString> checked_responses;
@@ -255,22 +268,26 @@ std::pair<std::unordered_set<QString>, std::unordered_set<QString> > DictControl
     try {
         std::list<QuestionResponseEntry> entries = m_dict_repo->select_questions(true);
         for(auto& entry : entries) {
-            checked_questions.insert(entry.getMap()["question"].toString());
+            auto m = entry.getMap();
+            checked_questions.insert(m["question"].toString());
         }
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
     try {
         std::list<QuestionResponseEntry> entries = m_dict_repo->select_responses(true);
         for(auto& entry : entries) {
-            checked_responses.insert(entry.getMap()["response"].toString());
+            auto m = entry.getMap();
+            checked_responses.insert(m["response"].toString());
         }
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
-    return {checked_questions, checked_responses};
+    return QuestionResponseEntriesSet(std::move(checked_questions), std::move(checked_responses));
 }
 
 void DictController::initInternalMemory()
@@ -285,13 +302,15 @@ void DictController::initInternalMemory()
         entries = m_dict_repo->select_all();
     } catch(std::exception e) {
         qCritical() << e.what();
+        emit error(e.what());
     }
 
     for(auto& entry : entries) {
-        if(!entry.getMap()["isCheckedQuestion"].toBool()) {
+        auto m = entry.getMap();
+        if(!m["isCheckedQuestion"].toBool()) {
             m_not_checked_qsts.push_back(entry);
         }
-        if(!entry.getMap()["isCheckedResponse"].toBool()) {
+        if(!m["isCheckedResponse"].toBool()) {
             m_not_checked_rsps.push_back(entry);
         }
         m_num_rows++;

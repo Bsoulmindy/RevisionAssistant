@@ -4,6 +4,7 @@ import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
+import CustomComponents
 
 Window {
     id: root
@@ -15,6 +16,10 @@ Window {
 
     DictController {
         id: dictController
+        onError: (message) => {
+            errorDialog.open();
+            errorDalogText.text = message;
+        }
     }
 
     FontLoader {
@@ -85,6 +90,34 @@ Window {
                 to: 0
                 duration: 200
             }
+        }
+    }
+
+    Dialog {
+        id: errorDialog
+        title: "Error"
+        anchors.centerIn: parent
+        width: 350
+        contentItem: Item {
+            PrimaryText {
+                id: errorDalogText
+                height: contentHeight
+                text: ""
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignLeft
+                anchors.rightMargin: 20
+                anchors.leftMargin: 20
+                anchors.bottomMargin: 20
+                anchors.topMargin: 20
+                font.pixelSize: 13
+            }
+        }
+
+        standardButtons: Dialog.Ok
+
+        Overlay.modal: Rectangle {
+            color: "#000000"
+            opacity: 0.5
         }
     }
 }

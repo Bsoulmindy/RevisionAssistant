@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include "../repositories/dict_repo_interface.h"
 #include <memory>
+#include "../models/question_response_entries_set.h"
 
 /**
  * @brief The DictController class
@@ -40,7 +41,7 @@ public:
     Q_INVOKABLE void init();
     // TODO : add new method
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
-    std::pair<std::unordered_set<QString>, std::unordered_set<QString>> getCheckedQuestionsAndResponses();
+    QuestionResponseEntriesSet getCheckedQuestionsAndResponses();
 
     int num_rows() const;
     void set_num_rows(int newNum_rows);
@@ -56,6 +57,7 @@ signals:
     void num_rowsChanged();
     void num_not_checked_questionsChanged();
     void num_not_checked_responsesChanged();
+    void error(const QString &message);
 
 private:
     std::unique_ptr<DictRepoInterface> m_dict_repo;
