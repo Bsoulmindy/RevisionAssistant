@@ -45,6 +45,7 @@ qt_add_qml_module(appRevisionAssistant
             src/factories/dict_repo_factory.h src/factories/dict_repo_factory.cpp
             src/models/dict_repo_enum.h
             src/models/question_response_entries_set.h src/models/question_response_entries_set.cpp
+	    src/exceptions/repo_exception.h
 )
 
 add_subdirectory(src/CustomComponents)

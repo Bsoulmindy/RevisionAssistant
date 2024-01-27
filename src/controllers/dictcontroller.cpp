@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include "../factories/dict_repo_factory.h"
 #include <memory>
+#include "../exceptions/repo_exception.h"
 
 DictController::DictController(QObject *parent)
     : QObject{parent}
@@ -70,7 +71,10 @@ void DictController::checkQuestion(int id, int hint_index)
 
             // Attempt to correct
             hint_index = m_not_checked_qsts.size() - 1;
-            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) return;
+            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) {
+                emit error("");
+                return;
+            }
         }
     }
 
@@ -81,9 +85,12 @@ void DictController::checkQuestion(int id, int hint_index)
     // Save in repository
     try {
         m_dict_repo->update_question(id, true);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     // Emit signal of the change
@@ -104,7 +111,10 @@ void DictController::checkResponse(int id, int hint_index)
 
             // Attempt to correct
             hint_index = m_not_checked_qsts.size() - 1;
-            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) return;
+            if(m_not_checked_qsts[hint_index].getMap()["id"] != id) {
+                emit error("");
+                return;
+            }
         }
     }
 
@@ -115,9 +125,12 @@ void DictController::checkResponse(int id, int hint_index)
     // Save in repository
     try {
         m_dict_repo->update_response(id, true);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     // Emit signal of the change
@@ -128,18 +141,26 @@ void DictController::uncheckQuestion(int id)
 {    
     try {
         m_dict_repo->update_question(id, false);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 
     try {
         QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
         m_not_checked_qsts.push_back(entry);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 
@@ -150,18 +171,26 @@ void DictController::uncheckResponse(int id)
 {
     try {
         m_dict_repo->update_response(id, false);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 
     try {
         QuestionResponseEntry entry = m_dict_repo->select_by_id(id);
         m_not_checked_rsps.push_back(entry);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 
@@ -172,9 +201,13 @@ void DictController::checkQuestionInDatabase(int id)
 {
     try {
         m_dict_repo->update_question(id, true);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 }
@@ -183,9 +216,13 @@ void DictController::checkResponseInDatabase(int id)
 {
     try {
         m_dict_repo->update_response(id, true);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 }
@@ -194,9 +231,13 @@ void DictController::uncheckQuestionInDatabase(int id)
 {
     try {
         m_dict_repo->update_question(id, false);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 }
@@ -205,9 +246,13 @@ void DictController::uncheckResponseInDatabase(int id)
 {
     try {
         m_dict_repo->update_response(id, false);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 }
@@ -216,9 +261,13 @@ void DictController::resetDict()
 {
     try {
         m_dict_repo->mark_all_entries_unchecked();
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
 
@@ -234,9 +283,13 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
 {
     try {
         m_dict_repo->delete_all();
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
         return;
     }
     std::list<QuestionResponseEntry> l;
@@ -252,9 +305,12 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
 
     try {
         m_dict_repo->insert_multiple_entries(l);
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     initInternalMemory();
@@ -271,9 +327,12 @@ QuestionResponseEntriesSet DictController::getCheckedQuestionsAndResponses()
             auto m = entry.getMap();
             checked_questions.insert(m["question"].toString());
         }
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     try {
@@ -282,9 +341,12 @@ QuestionResponseEntriesSet DictController::getCheckedQuestionsAndResponses()
             auto m = entry.getMap();
             checked_responses.insert(m["response"].toString());
         }
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     return QuestionResponseEntriesSet(std::move(checked_questions), std::move(checked_responses));
@@ -300,9 +362,12 @@ void DictController::initInternalMemory()
 
     try {
         entries = m_dict_repo->select_all();
-    } catch(std::exception e) {
+    } catch (RepoException& e) {
         qCritical() << e.what();
         emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
     }
 
     for(auto& entry : entries) {

@@ -2,8 +2,9 @@
 #define JSONEXCEPTION_H
 
 #include <QString>
+#include "repo_exception.h"
 
-class JsonException : public std::exception
+class JsonException : public RepoException
 {
 public:
     JsonException(QString message);

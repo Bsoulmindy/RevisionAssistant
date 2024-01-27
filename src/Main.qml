@@ -17,8 +17,11 @@ Window {
     DictController {
         id: dictController
         onError: (message) => {
-            errorDialog.open();
+            if(message === "") {
+                message = "Failed to check the response due to some unknown error. Please restart the app!";
+            }
             errorDalogText.text = message;
+            errorDialog.open();
         }
     }
 
