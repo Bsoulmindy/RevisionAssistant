@@ -31,12 +31,10 @@ public:
 
 signals:
     void current_outputChanged();
-
     void outputDismissed(QVariantMap output);
-
     void isQtoRChanged();
-
     void dict_controllerChanged();
+    void finished(QString message);
 
 private:
     QVariantMap m_current_output;

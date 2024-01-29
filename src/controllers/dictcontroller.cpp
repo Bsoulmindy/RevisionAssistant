@@ -8,6 +8,7 @@
 #include "../factories/dict_repo_factory.h"
 #include <memory>
 #include "../exceptions/repo_exception.h"
+#include "../exceptions/run_out_of_entries.h"
 
 DictController::DictController(QObject *parent)
     : QObject{parent}
@@ -20,8 +21,7 @@ DictController::DictController(QObject *parent)
 QVariantMap DictController::selectRandomQuestion()
 {
     if (m_not_checked_qsts.empty()) {
-        // TODO : throw instead of returning an empty value
-        return QVariantMap();
+        throw RunOutOfEntries("All questions are finished!");
     }
 
     int randomIndex = QRandomGenerator::global()->bounded(static_cast<int>(m_not_checked_qsts.size()));
@@ -33,8 +33,7 @@ QVariantMap DictController::selectRandomQuestion()
 QVariantMap DictController::selectRandomResponse()
 {
     if (m_not_checked_rsps.empty()) {
-        // TODO : throw instead of returning an empty value
-        return QVariantMap();
+        throw RunOutOfEntries("All responses are finished!");
     }
 
     int randomIndex = QRandomGenerator::global()->bounded(static_cast<int>(m_not_checked_rsps.size()));

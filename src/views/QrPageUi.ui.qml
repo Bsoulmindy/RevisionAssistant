@@ -145,7 +145,7 @@ Page {
 
                 PrimaryText {
                     id: outputText
-                    text: "question 5"
+                    text: ""
                     anchors.verticalCenter: parent.verticalCenter
 
                     horizontalAlignment: Text.AlignLeft

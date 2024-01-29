@@ -93,6 +93,10 @@ QrPageUi {
         Component.onCompleted: {
             init()
         }
+        onFinished: (message) => {
+            completionDialog.dialogText.text = message;
+            completionDialog.open()
+        }
     }
 
     function calculateColor(value) {
@@ -122,4 +126,11 @@ QrPageUi {
 
     progressRevisionBarImplItem.color: calculateColor(progressRevisionBarItem.value)
 
+    InfoDialog {
+        id: completionDialog
+        standardButtons: Dialog.Ok
+        onAccepted: {
+            stackView.pop();
+        }
+    }
 }

@@ -18,9 +18,9 @@ Window {
         id: dictController
         onError: (message) => {
             if(message === "") {
-                message = "Failed to check the response due to some unknown error. Please restart the app!";
+                message = "Unknown error occured! Please restart the app!";
             }
-            errorDalogText.text = message;
+            errorDialog.dialogText.text = message;
             errorDialog.open();
         }
     }
@@ -96,31 +96,9 @@ Window {
         }
     }
 
-    Dialog {
+    InfoDialog {
         id: errorDialog
         title: "Error"
-        anchors.centerIn: parent
-        width: 350
-        contentItem: Item {
-            PrimaryText {
-                id: errorDalogText
-                height: contentHeight
-                text: ""
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignLeft
-                anchors.rightMargin: 20
-                anchors.leftMargin: 20
-                anchors.bottomMargin: 20
-                anchors.topMargin: 20
-                font.pixelSize: 13
-            }
-        }
-
         standardButtons: Dialog.Ok
-
-        Overlay.modal: Rectangle {
-            color: "#000000"
-            opacity: 0.5
-        }
     }
 }

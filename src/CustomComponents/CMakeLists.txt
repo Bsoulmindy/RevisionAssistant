@@ -8,4 +8,5 @@ qt_add_qml_module(custom_components
         QrPageListViewDelegate.qml
         DictEditListViewDelegate.qml
         FileSelectionStatus.qml
+	InfoDialog.qml
 )

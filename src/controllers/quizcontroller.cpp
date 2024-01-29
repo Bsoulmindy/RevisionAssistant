@@ -1,4 +1,5 @@
 #include "quizcontroller.h"
+#include "../exceptions/run_out_of_entries.h"
 
 QuizController::QuizController(QObject *parent)
     : QObject{parent}
@@ -36,7 +37,13 @@ void QuizController::unmark_output()
 
 void QuizController::init()
 {
-    m_current_output = m_isQtoR ? m_dict_controller->selectRandomQuestion() : m_dict_controller->selectRandomResponse();
+    try {
+        m_current_output = m_isQtoR ? m_dict_controller->selectRandomQuestion() : m_dict_controller->selectRandomResponse();
+    } catch (RunOutOfEntries& e) {
+        emit finished(e.what());
+        return;
+    }
+
     m_current_output["isChecked"] = m_isQtoR ? m_current_output["isCheckedQuestion"] : m_current_output["isCheckedResponse"];
     emit current_outputChanged();
 }

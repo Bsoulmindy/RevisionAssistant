@@ -24,8 +24,8 @@ class DictController : public QObject
     QML_ELEMENT
 public:
     explicit DictController(QObject *parent = nullptr);
-    Q_INVOKABLE QVariantMap selectRandomQuestion();
-    Q_INVOKABLE QVariantMap selectRandomResponse();
+    QVariantMap selectRandomQuestion();
+    QVariantMap selectRandomResponse();
     Q_INVOKABLE QVariantList getAllRecords();
     // hint_index is important for performance
     // hint_index = -1 means that the question/response is located at the last position of the vector
