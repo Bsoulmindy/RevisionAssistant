@@ -24,6 +24,13 @@ DictProcessingPageUi {
         onInitialized: {
             fileController.constructDictFromFile(filePath, fileSeparator)
         }
+        onError: (message) => {
+            if(message === "") {
+                message = "Unknown error occured! Please restart the app!";
+            }
+            errorDialog.dialogText.text = message;
+            errorDialog.open();
+        }
     }
 
     closeButtonItem.onClicked: stackView.pop()
@@ -31,4 +38,10 @@ DictProcessingPageUi {
     backButtonItem.icon.source: "qrc:/icons/back.png"
     progressBarItem.value: fileController.actualState === "Finished" ? 1 : 0
     progressBarItem.indeterminate: fileController.actualState !== "Idle" && fileController.actualState !== "Finished"
+
+    InfoDialog {
+        id: errorDialog
+        title: "Error"
+        standardButtons: Dialog.Ok
+    }
 }

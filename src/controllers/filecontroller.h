@@ -28,8 +28,7 @@ signals:
     void actualStateChanged();
     void initialized();
     void dict_controllerChanged();
-private slots:
-    void databaseRowSaved(int num_completed_rows, int num_total_rows);
+    void error(const QString &message);
 private:
     void init();
     void processFile(QString file_path, QString line_separator);

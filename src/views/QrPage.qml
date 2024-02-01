@@ -83,9 +83,8 @@ QrPageUi {
             qrPage.listViewItem.model.append({ "question": output.question, "response": output.response })
             qrPage.animItem.running = false;
             var pos = qrPage.listViewItem.contentY;
-            var destPos;
             qrPage.listViewItem.positionViewAtEnd();
-            destPos = qrPage.listViewItem.contentY;
+            var destPos = qrPage.listViewItem.contentY;
             qrPage.animItem.from = pos;
             qrPage.animItem.to = destPos;
             qrPage.animItem.running = true;
