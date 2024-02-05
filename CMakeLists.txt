@@ -7,6 +7,7 @@ configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-pie -fpie")
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
 
 qt_standard_project_setup(REQUIRES 6.5)
@@ -68,31 +69,20 @@ target_link_libraries(RevisionAssistantApp
 )
 
 ############################################# INSTALL
-include(GNUInstallDirs)
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX $ENV{HOME}/.local)
-endif()
-
-# Configure icon for Linux
-if(UNIX AND NOT APPLE)
-    set(DESKTOP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/config/org.Bsoulmindy.RevisionAssistant.desktop)
-    set(ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/icons/revision_assistant_icon.png)
-
-    set(DESKTOP_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/applications)
-    set(ICON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/icons)
-
-    # Install the .desktop file
-    install(FILES ${DESKTOP_FILE} DESTINATION ${DESKTOP_INSTALL_DIR})
-
-    # Install the icon file
-    install(FILES ${ICON_FILE} DESTINATION ${ICON_INSTALL_DIR} RENAME "revision-assistant.png")
-endif()
+qt_standard_project_setup()
 
 install(TARGETS RevisionAssistantApp
     BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_qml_app_script(
+    TARGET RevisionAssistantApp
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script})
 
 list(APPEND QML_IMPORT_PATH "${CMAKE_SOURCE_DIR}/src")
 list(REMOVE_DUPLICATES QML_IMPORT_PATH)
