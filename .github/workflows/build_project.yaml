@@ -47,5 +47,5 @@ jobs:
       - name: Upload Build folder
         uses: actions/upload-artifact@v3
         with:
-          name: analyzer
-          path: .
+          name: revision_assistant_linux_x64
+          path: build
