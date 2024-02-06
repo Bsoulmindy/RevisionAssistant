@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
     Q_IMPORT_QML_PLUGIN(CustomComponentsPlugin)
 
+    // Setting up the defaults
     int id = QFontDatabase::addApplicationFont(":/fonts/stratum2demium.ttf");
     if(id == -1) {
         qCritical() << "Couldn't load the font";
