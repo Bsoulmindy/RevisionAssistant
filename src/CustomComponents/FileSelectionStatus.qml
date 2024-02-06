@@ -9,6 +9,7 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts
+import CustomComponents
 
 Item {
     width: 24
@@ -32,7 +33,7 @@ Item {
         radius: 12
         visible: false
 
-        Text {
+        PrimaryText {
             id: iconText
             text: "\u2713"
             anchors.centerIn: parent

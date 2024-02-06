@@ -25,14 +25,12 @@ public:
 
 signals:
     void warningOutput(const QString &output);
-
     void actualStateChanged();
     void initialized();
-
-
     void dict_controllerChanged();
-
+    void error(const QString &message);
 private:
+    void init();
     void processFile(QString file_path, QString line_separator);
     QString m_actualState;
     DictController *m_dict_controller = nullptr;

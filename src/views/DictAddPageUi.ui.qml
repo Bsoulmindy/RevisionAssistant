@@ -6,9 +6,25 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
 import QtQuick.Dialogs
 import QtCore
+import CustomComponents
 
 Page {
     id: dictAddPageForm
+    width: 400
+    height: 800
+    z: 0
+
+    property alias backButtonItem: backButton
+    property alias selectDictButtonItem: selectDictButton
+    property alias selectSeparatorHelpItem: selectSeparatorHelp
+    property alias addDictButtonItem: addDictButton
+    property alias separatorHelpTextItem: separatorHelpText
+    property alias fileDialogItem: fileDialog
+    property alias searchTextFieldItem: searchTextField
+    property alias invalidFileDialogItem: invalidFileDialog
+    property alias separator_example_item: separator_example
+    property alias fileSelectionStatusItem: fileSelectionStatus
+    property alias separatorHelpDialogItem: separatorHelpDialog
 
     ToolBar {
         id: dictEditPageToolBar
@@ -27,10 +43,10 @@ Page {
                 text: qsTr("")
                 icon.source: "qrc:/icons/back.png"
                 display: AbstractButton.IconOnly
-                onClicked: stackView.pop()
+
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: qsTr("Add Dictionnary")
                 font.pixelSize: 20
@@ -49,9 +65,8 @@ Page {
             id: selectFileRow
             Layout.preferredWidth: parent.width
             spacing: 0
-            Text {
+            PrimaryText {
                 id: selectionFileText
-                color: Material.primaryTextColor
                 text: qsTr("Select File")
                 font.pixelSize: 16
                 Layout.preferredWidth: parent.width / 2
@@ -66,7 +81,6 @@ Page {
                     Layout.preferredWidth: 105
                     Layout.preferredHeight: 52
                     Layout.fillWidth: false
-                    onClicked: fileDialog.open()
                 }
 
                 FileSelectionStatus {
@@ -82,9 +96,8 @@ Page {
             Layout.preferredWidth: parent.width
             RowLayout {
                 Layout.preferredWidth: parent.width / 2
-                Text {
+                PrimaryText {
                     id: separatorText
-                    color: Material.primaryTextColor
                     text: qsTr("Select Separator")
                     font.pixelSize: 16
                     Layout.fillWidth: false
@@ -98,7 +111,7 @@ Page {
                     radius: 20
                     Layout.preferredHeight: 29
                     Layout.preferredWidth: 29
-                    onClicked: separatorHelpDialog.open()
+
 
                     background: Rectangle {
                         implicitWidth: Material.buttonHeight
@@ -156,14 +169,6 @@ Page {
             Material.background: Material.primaryColor
             Layout.preferredWidth: 105
             Layout.preferredHeight: 52
-            onClicked: {
-                if (fileDialog.selectedFile === "" || searchTextField.text === "") {
-                    invalidFileDialog.open()
-                } else {
-                    stackView.push("DictProcessingPage.qml", {"filePath": fileDialog.selectedFile, "fileSeparator": searchTextField.text})
-                }
-            }
-
         }
     }
 
@@ -174,7 +179,8 @@ Page {
         width: 350
         height: 250
         contentItem: Item {
-            Text {
+            PrimaryText {
+                id: separatorHelpText
                 height: contentHeight
                 text: "A separator is a character or list of characters to differentiate between the question and the response"
                 anchors.fill: parent
@@ -185,13 +191,7 @@ Page {
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
 
-                color: Material.primaryTextColor
-
-                onLineLaidOut: (line)=> {
-                    if (line.y + topPadding <= separator_example.y + separator_example.height) {
-                        line.width = separator_example.x - anchors.leftMargin - anchors.rightMargin;
-                    }
-                }
+                font.pixelSize: 14
             }
 
             Image {
@@ -208,9 +208,9 @@ Page {
             }
         }
 
-        footer:  DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+
+        standardButtons: Dialog.Ok
+
 
 
         Overlay.modal: Rectangle {
@@ -222,10 +222,6 @@ Page {
     FileDialog {
         id: fileDialog
         title: "Please choose a file"
-        currentFolder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
-        onAccepted: {
-            fileSelectionStatus.state = "completed"
-        }
     }
 
     Dialog {
@@ -235,7 +231,7 @@ Page {
         width: 350
         height: 200
         contentItem: Item {
-            Text {
+            PrimaryText {
                 height: contentHeight
                 text: "You must specify a valid .txt file AND a separator"
                 anchors.fill: parent
@@ -246,13 +242,13 @@ Page {
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
 
-                color: Material.primaryTextColor
+                font.pixelSize: 14
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+
+        standardButtons: Dialog.Ok
+
 
         Overlay.modal: Rectangle {
             color: "#000000"

@@ -4,6 +4,7 @@ import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
+import CustomComponents
 
 Window {
     id: root
@@ -15,6 +16,18 @@ Window {
 
     DictController {
         id: dictController
+        onError: (message) => {
+            if(message === "") {
+                message = "Unknown error occured! Please restart the app!";
+            }
+            errorDialog.dialogText.text = message;
+            errorDialog.open();
+        }
+    }
+
+    FontLoader {
+        id: globalFont
+        source: "qrc:/fonts/stratum2demium.ttf"
     }
 
     StackView {
@@ -81,5 +94,11 @@ Window {
                 duration: 200
             }
         }
+    }
+
+    InfoDialog {
+        id: errorDialog
+        title: "Error"
+        standardButtons: Dialog.Ok
     }
 }

@@ -1,15 +1,28 @@
-
-
 import QtQuick 6.5
 import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
+import CustomComponents
 
 Page {
     id: mainPage
-    width: root.width
-    height: root.height
+    height: 800
+    width: 400
     objectName: "MainPage"
+
+    property alias dictMenuButtonItem: dictMenuButton
+    property alias optionsButtonItem: optionsButton
+    property alias dictMenuItem: dictMenu
+    property alias optionsMenuItem: optionsMenu
+    property alias aboutDialogItem: aboutDialog
+    property alias menuItemOpenItem: menuItemOpen
+    property alias menuItemEditItem: menuItemEdit
+    property alias menuItemResetItem: menuItemReset
+    property alias menuItemInfoItem: menuItemInfo
+    property alias qTorButtonItem: qTorButton
+    property alias rToqButtonItem: rToqButton
+    property alias resetDialogItem: resetDialog
+    property alias githubLinkItem: githubLink
 
     ToolBar {
         id: mainPageToolBar
@@ -34,29 +47,28 @@ Page {
                 icon.source: "qrc:/icons/dict_icon.png"
                 icon.cache: true
                 display: AbstractButton.IconOnly
-                onClicked: dictMenu.open()
 
                 Menu {
                     id: dictMenu
                     y: dictMenuButton.height
 
                     MenuItem {
+                        id: menuItemOpen
                         height: 42
                         text: "Open"
                         icon.source: "qrc:/icons/open_file.png"
-                        onTriggered: stackView.push("DictAddPage.qml")
                     }
                     MenuItem {
+                        id: menuItemEdit
                         height: 42
                         text: "Edit"
                         icon.source: "qrc:/icons/edit.png"
-                        onTriggered: stackView.push("DictEditPage.qml")
                     }
                     MenuItem {
+                        id: menuItemReset
                         text: "Reset"
                         height: 42
                         icon.source: "qrc:/icons/reset.png"
-                        onTriggered: resetDialog.open()
                     }
                 }
             }
@@ -67,18 +79,16 @@ Page {
                 Layout.fillWidth: true
                 icon.source: "qrc:/icons/menu.png"
                 display: AbstractButton.IconOnly
-                onClicked: optionsMenu.open()
 
                 Menu {
                     id: optionsMenu
                     y: dictMenuButton.height
 
                     MenuItem {
+                        id: menuItemInfo
                         text: "About"
                         height: 42
                         icon.source: "qrc:/icons/info.png"
-
-                        onTriggered: aboutDialog.open()
                     }
                 }
             }
@@ -97,7 +107,6 @@ Page {
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor
-            onClicked: stackView.push("QrPage.qml", {"isQtoR": true})
         }
 
         Button {
@@ -108,7 +117,6 @@ Page {
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor
-            onClicked: stackView.push("QrPage.qml", {"isQtoR": false})
         }
     }
 
@@ -119,26 +127,20 @@ Page {
         width: 350
         height: 200
         contentItem: Item {
-            Text {
+            PrimaryText {
                 height: contentHeight
                 text: "This action will reset all your progression, marking every question and response as NOT CHECKED. Do you want to proceed?"
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignLeft
-                wrapMode: Text.Wrap
                 anchors.rightMargin: 20
                 anchors.leftMargin: 20
                 anchors.bottomMargin: 20
                 anchors.topMargin: 20
-
-                color: Material.primaryTextColor
+                font.pixelSize: 13
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
-
-            onAccepted: dictController.resetDict()
-        }
+        standardButtons: Dialog.Ok | Dialog.Cancel
 
         Overlay.modal: Rectangle {
             color: "#000000"
@@ -151,7 +153,7 @@ Page {
         title: "About"
         anchors.centerIn: parent
         width: 350
-        height: 300
+        height: 350
 
         contentItem: Item {
             ColumnLayout {
@@ -171,41 +173,40 @@ Page {
                     Layout.preferredHeight: 100
                 }
 
-                Text {
+                PrimaryText {
+                    height: contentHeight
+                    text: "Revision Assistant"
+                    horizontalAlignment: Text.AlignHCenter
+                    Layout.fillWidth: true
+                    font.pixelSize: 18
+                    font.bold: true
+                }
+
+                PrimaryText {
                     height: contentHeight
                     text: "Version <b>" + appVersion + "</b>. Based on <b>Qt 6.6</b>"
                     horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    Layout.fillHeight: true
                     Layout.fillWidth: true
-
-                    color: Material.primaryTextColor
+                    font.pixelSize: 15
                 }
 
-                Text {
+                PrimaryText {
                     height: contentHeight
                     text: "Created by Bsoulmindy"
                     horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    Layout.fillHeight: true
                     Layout.fillWidth: true
+                    font.pixelSize: 15
 
                     MouseArea {
+                        id: githubLink
                         anchors.fill: parent
-                        onClicked: {
-                            Qt.openUrlExternally("https://github.com/Bsoulmindy")
-                        }
                         cursorShape: Qt.PointingHandCursor
                     }
-
-                    color: Material.primaryTextColor
                 }
             }
         }
 
-        footer: DialogButtonBox {
-            standardButtons: DialogButtonBox.Ok
-        }
+        standardButtons: Dialog.Ok
 
         Overlay.modal: Rectangle {
             color: "#000000"

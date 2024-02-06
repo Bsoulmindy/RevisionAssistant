@@ -4,23 +4,17 @@ import QtQuick.Controls 2.15
 import RevisionAssistant
 import QtQuick.Layouts
 import QtQuick.Controls.Material.impl
+import CustomComponents
 
 Page {
-    id: dictProcessingPage
+    width: 400
+    height: 800
+    z: 0
 
-    required property string filePath
-    required property string fileSeparator
-
-    FileController {
-        id: fileController
-        dict_controller: dictController
-        onWarningOutput: {
-            listView.model.append({ "output": output });
-        }
-        onInitialized: {
-            fileController.constructDictFromFile(filePath, fileSeparator)
-        }
-    }
+    property alias closeButtonItem: closeButton
+    property alias statusTextItem: statusText
+    property alias backButtonItem: backButton
+    property alias progressBarItem: progressBar
 
     ToolBar {
         id: dictProcessingPageToolBar
@@ -42,16 +36,15 @@ Page {
                 opacity: 0
                 visible: true
                 text: qsTr("")
-                icon.source: "qrc:/icons/back.png"
+                icon.source: "../../icons/back.png"
                 display: AbstractButton.IconOnly
             }
 
-            Text {
+            PrimaryText {
                 id: titlePage
                 text: qsTr("Processing the File")
                 font.pixelSize: 20
                 verticalAlignment: Text.AlignVCenter
-                color: Material.primaryTextColor
             }
         }
     }
@@ -71,7 +64,6 @@ Page {
         Layout.preferredHeight: 52
         Layout.fillWidth: false
         enabled: fileController.actualState === "Finished"
-        onClicked: stackView.pop()
     }
 
     ColumnLayout {
@@ -82,21 +74,19 @@ Page {
         anchors.topMargin: 30
         anchors.rightMargin: 30
         anchors.leftMargin: 30
-        Text {
+        PrimaryText {
             id: statusText
-            color: Material.primaryTextColor
-            text: fileController.actualState
+            text: "Saving to Database (3/15)"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
-            wrapMode: Text.Wrap
         }
 
         ProgressBar {
             id: progressBar
             Layout.fillWidth: true
-            value: fileController.actualState === "Finished" ? 1 : 0
-            indeterminate: fileController.actualState !== "Idle" && fileController.actualState !== "Finished"
+            value: 0
+            indeterminate: true
         }
     }
 
@@ -119,9 +109,8 @@ Page {
                 icon.color: Material.primaryTextColor
             }
 
-            Text {
+            PrimaryText {
                 id: consoleLegend
-                color: Material.primaryTextColor
                 text: qsTr("Warnings")
                 font.pixelSize: 30
             }
@@ -157,18 +146,12 @@ Page {
                         id: rowConsole
                         height: qText.contentHeight + 20
                         color: "#00ffffff"
-                        Text {
+                        PrimaryText {
                             id: qText
-                            color: Material.primaryTextColor
                             text: model.output
                             anchors.fill: parent
-                            font.pixelSize: Math.max(
-                                                14, Math.min(
-                                                    20,
-                                                    8 + dictProcessingPage.width / 100))
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
-                            wrapMode: Text.Wrap
                             anchors.topMargin: 8
                             anchors.rightMargin: 8
                             anchors.leftMargin: 8
