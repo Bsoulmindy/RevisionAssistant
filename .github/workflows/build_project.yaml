@@ -2,7 +2,7 @@ name: Build the Executable in Linux
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["develop_workflow"]
   pull_request:
     branches: ["main"]
 
@@ -48,10 +48,10 @@ jobs:
         run: chmod +x build/install/bin/RevisionAssistantApp
 
       - name: Zip the installation
-        run: zip install.zip build/install -r -y 
+        run: cd build/install && zip app.zip . -r -y 
 
       - name: Upload ZIP
         uses: actions/upload-artifact@v4
         with:
           name: revision_assistant_linux_x64
-          path: install.zip
+          path: build/install/app.zip
