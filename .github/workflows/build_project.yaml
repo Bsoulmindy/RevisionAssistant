@@ -47,8 +47,11 @@ jobs:
       - name: Add Execution Permission
         run: chmod +x build/install/bin/RevisionAssistantApp
 
+      - name: Change the name of the installation folder
+        run: mv build/install build/revision_assistant_app
+      
       - name: Zip the installation
-        run: cd build/install && zip app.zip . -r -y 
+        run: cd build && zip revision_assistant_app.zip revision_assistant_app -r -y 
 
       - name: Upload ZIP
         uses: actions/upload-artifact@v4
