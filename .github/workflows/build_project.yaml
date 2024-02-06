@@ -14,7 +14,7 @@ jobs:
       QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/gcc_64
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set reusable strings
         id: strings
@@ -44,8 +44,14 @@ jobs:
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
 
-      - name: Upload Build folder
-        uses: actions/upload-artifact@v3
+      - name: Add Execution Permission
+        run: chmod +x build/install/bin/RevisionAssistantApp
+
+      - name: Zip the installation
+        run: zip install.zip build/install -r -y 
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
         with:
           name: revision_assistant_linux_x64
-          path: build
+          path: install.zip
