@@ -15,10 +15,16 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
 qt_standard_project_setup(REQUIRES 6.5)
 
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/config/resource.rc")
-qt_add_executable(RevisionAssistantApp
-    src/main.cpp
-    ${app_icon_resource_windows}
-)
+if(WIN32)
+    qt_add_executable(RevisionAssistantApp
+	src/main.cpp
+	${app_icon_resource_windows}
+    )
+else()
+    qt_add_executable(RevisionAssistantApp
+	src/main.cpp
+    )
+endif()
 
 include_directories(src/controllers)
 

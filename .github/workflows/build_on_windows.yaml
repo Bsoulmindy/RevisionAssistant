@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      QT_ROOT_DIR: ${{ github.workspace }}\qtdir\qt\6.6.1\win64_msvc2019_64
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/win64_msvc2019_64
 
     steps:
       - uses: actions/checkout@v4
@@ -20,13 +20,13 @@ jobs:
         id: strings
         shell: bash
         run: |
-          echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.6.1
-          dir: ${{ github.workspace }}\qtdir\
+          dir: ${{ github.workspace }}/qtdir/
           arch: win64_msvc2019_64
 
       - name: Configure CMake
@@ -35,7 +35,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=cl
           -DCMAKE_C_COMPILER=cl
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_INSTALL_PREFIX=build\install
+          -DCMAKE_INSTALL_PREFIX=build/install
           -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
           -S ${{ github.workspace }}
 
@@ -46,7 +46,7 @@ jobs:
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
 
       - name: Change the name of the installation folder
-        run: mv build\install build\revision_assistant_app
+        run: mv build/install build/revision_assistant_app
 
       - name: Zip the installation
         run: tar -cvf revision_assistant_app.tar revision_assistant_app
@@ -56,4 +56,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: revision_assistant_windows_x64
-          path: build\revision_assistant_app.tar
+          path: build/revision_assistant_app.tar
