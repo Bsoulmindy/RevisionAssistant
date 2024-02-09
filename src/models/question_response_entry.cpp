@@ -26,3 +26,13 @@ QVariantMap QuestionResponseEntry::getMap() const noexcept
     return map;
 }
 
+QString QuestionResponseEntry::getQuestion() const noexcept
+{
+    return m_question;
+}
+
+QString QuestionResponseEntry::getResponse() const noexcept
+{
+    return m_response;
+}
+

@@ -62,8 +62,6 @@ Page {
         ListView {
             id: listView
 
-            property string searchText: ""
-
             anchors.fill: parent
             anchors.rightMargin: 20
             anchors.leftMargin: 20
@@ -92,9 +90,7 @@ Page {
                 }
             }
             delegate: DictEditListViewDelegate {
-                isVisible: (listView.searchText === ""
-                            || modelData.question.includes(listView.searchText)
-                            || modelData.response.includes(listView.searchText))
+                isVisible: true
                 question: modelData.question
                 response: modelData.response
                 isCheckedQuestion: modelData.isCheckedQuestion

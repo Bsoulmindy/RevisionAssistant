@@ -42,13 +42,14 @@ QVariantMap DictController::selectRandomResponse()
     return m;
 }
 
-QVariantList DictController::getAllRecords()
+QVariantList DictController::getAllRecords(QString search_term)
 {
     QVariantList records_list;
     try {
         std::list<QuestionResponseEntry> entries = m_dict_repo->select_all();
         for(auto it = entries.begin(); it != entries.end(); it++) {
-            records_list.append(it->getMap());
+            if(search_term == "" || it->getQuestion().contains(search_term) || it->getResponse().contains(search_term))
+                records_list.append(it->getMap());
         }
     } catch (std::exception& e) {
         qCritical() << e.what();

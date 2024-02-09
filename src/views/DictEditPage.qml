@@ -11,12 +11,12 @@ DictEditPageUi {
     height: root.height
 
     backButtonItem.onClicked: stackView.pop()
-    listViewItem.model: dictController.getAllRecords()
+    listViewItem.model: dictController.getAllRecords("")
     searchTextFieldItem.onAccepted: {
-        listViewItem.searchText = searchTextFieldItem.text
+        listViewItem.model = dictController.getAllRecords(searchTextFieldItem.text)
     }
     searchButtonItem.onClicked: {
-        listViewItem.searchText = searchTextFieldItem.text
+        listViewItem.model = dictController.getAllRecords(searchTextFieldItem.text)
     }
     StackView.onRemoved: {
         dictController.init()
