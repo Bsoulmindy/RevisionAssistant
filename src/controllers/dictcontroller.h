@@ -26,7 +26,7 @@ public:
     explicit DictController(QObject *parent = nullptr);
     QVariantMap selectRandomQuestion();
     QVariantMap selectRandomResponse();
-    Q_INVOKABLE QVariantList getAllRecords();
+    Q_INVOKABLE QVariantList getAllRecords(QString search_term);
     // hint_index is important for performance
     // hint_index = -1 means that the question/response is located at the last position of the vector
     Q_INVOKABLE void checkQuestion(int id, int hint_index);

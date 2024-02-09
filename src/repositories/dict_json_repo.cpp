@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QDir>
 
 DictJsonRepo::DictJsonRepo(QString json_path)
 {
@@ -319,7 +320,19 @@ void DictJsonRepo::save() const
 void DictJsonRepo::create_empty_json_file(QString json_path) const
 {
     QFile json_file(json_path);
-    json_file.open(QIODevice::ReadWrite);
+    auto dirs = json_path.split("/");
+    QString dir = "";
+    for(int i = 0; i < dirs.size() - 1; i++) {
+        dir += dirs[i] + "/";
+    }
+    QDir qDir;
+    if(!qDir.mkdir(dir)) {
+        qCritical() << "Failed to create the directory : " + dir;
+    }
+
+    if(!json_file.open(QIODevice::ReadWrite)) {
+        qCritical() << "Failed to open the file : " + json_file.errorString();
+    }
 
     QJsonDocument empty_doc;
     empty_doc.setArray(QJsonArray());

@@ -4,6 +4,8 @@
 QuizController::QuizController(QObject *parent)
     : QObject{parent}
 {
+    QuestionResponseEntry entry(0, "", "", false, false);
+    m_current_output = entry.getMap();
 }
 
 void QuizController::next_output()
