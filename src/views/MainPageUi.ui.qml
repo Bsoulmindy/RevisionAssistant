@@ -54,20 +54,20 @@ Page {
 
                     MenuItem {
                         id: menuItemOpen
-                        height: 42
+                        height: 52
                         text: "Open"
                         icon.source: "qrc:/icons/open_file.png"
                     }
                     MenuItem {
                         id: menuItemEdit
-                        height: 42
+                        height: 52
                         text: "Edit"
                         icon.source: "qrc:/icons/edit.png"
                     }
                     MenuItem {
                         id: menuItemReset
                         text: "Reset"
-                        height: 42
+                        height: 52
                         icon.source: "qrc:/icons/reset.png"
                     }
                 }
@@ -87,7 +87,7 @@ Page {
                     MenuItem {
                         id: menuItemInfo
                         text: "About"
-                        height: 42
+                        height: 52
                         icon.source: "qrc:/icons/info.png"
                     }
                 }
@@ -104,6 +104,7 @@ Page {
             text: qsTr("Question To Response")
             Layout.fillWidth: true
             font.pointSize: 12
+            font.family: globalFont.font.family
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor
@@ -114,6 +115,7 @@ Page {
             text: qsTr("Response To Question")
             Layout.fillWidth: true
             font.pointSize: 12
+            font.family: globalFont.font.family
             Layout.preferredWidth: 205
             Layout.preferredHeight: 52
             Material.background: Material.primaryColor

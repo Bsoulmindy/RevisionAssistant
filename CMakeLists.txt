@@ -58,6 +58,7 @@ qt_add_qml_module(RevisionAssistantApp
             src/models/question_response_entries_set.h src/models/question_response_entries_set.cpp
 	    src/exceptions/repo_exception.h
 	    src/exceptions/run_out_of_entries.h src/exceptions/run_out_of_entries.cpp
+
 )
 
 add_subdirectory(src/CustomComponents)
@@ -72,6 +73,7 @@ set_target_properties(RevisionAssistantApp PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+    QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
 )
 
 target_link_libraries(RevisionAssistantApp

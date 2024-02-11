@@ -2,7 +2,7 @@ name: Build the Executable in Linux
 
 on:
   push:
-    branches: ["develop_workflow"]
+    branches: ["develop_workflow_linux"]
   pull_request:
     branches: ["main"]
 
