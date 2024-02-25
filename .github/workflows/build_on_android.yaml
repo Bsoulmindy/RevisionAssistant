@@ -53,7 +53,7 @@ jobs:
           -DCMAKE_C_COMPILER=gcc
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_INSTALL_PREFIX=build/install
-          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -DCMAKE_PREFIX_PATH=${{ env.QT_COMPILER_DIR }}
           -S ${{ github.workspace }}
 
       - name: Build
