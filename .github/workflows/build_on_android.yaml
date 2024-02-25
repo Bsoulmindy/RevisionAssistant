@@ -27,6 +27,8 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.6.1
+          target: android
+          arch: android_armv7
           dir: ${{ github.workspace }}/qtdir/
       
       - name: Set up JDK
@@ -43,7 +45,6 @@ jobs:
         id: setup-ndk
         with:
           ndk-version: r21e
-          add-to-path: false
 
       - name: Configure CMake
         run: >
