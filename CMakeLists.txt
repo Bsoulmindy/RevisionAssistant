@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 # recognize the app as executable if compiled with GCC Linux
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
-find_package(Qt6 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 6.6.1 REQUIRED COMPONENTS Quick Core)
 
 qt_standard_project_setup()
 
