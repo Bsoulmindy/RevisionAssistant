@@ -55,7 +55,7 @@ jobs:
           -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF
           -DANDROID_ABI:STRING=armeabi-v7a
           -DANDROID_STL:STRING=c++_shared
-          -DCMAKE_FIND_ROOT_PATH:PATH=${{ env.QT_ROOT_DIR }}
+          -DCMAKE_FIND_ROOT_PATH:PATH=${{ env.QT_ROOT_DIR }}/lib/cmake
           -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON
           -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
           -DANDROID_SDK_ROOT:PATH=$ANDROID_SDK_ROOT
@@ -63,7 +63,7 @@ jobs:
           -DCMAKE_C_COMPILER=gcc
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_INSTALL_PREFIX=build/install
-          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}/lib/cmake
           -S ${{ github.workspace }}
 
       - name: Build
