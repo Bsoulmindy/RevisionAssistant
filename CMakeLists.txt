@@ -10,9 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 # recognize the app as executable if compiled with GCC Linux
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 REQUIRED COMPONENTS Quick Core)
 
-qt_standard_project_setup(REQUIRES 6.5)
+qt_standard_project_setup()
 
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/config/resource.rc")
 if(WIN32)
