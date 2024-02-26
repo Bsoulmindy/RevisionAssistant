@@ -22,12 +22,6 @@ jobs:
         shell: bash
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-      - name: Install Qt GCC
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: 6.6.1
-          dir: ${{ github.workspace }}/qtdir/
       
       - name: Install Qt Android
         uses: jurplel/install-qt-action@v3
