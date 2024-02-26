@@ -48,7 +48,6 @@ jobs:
       
       - name: Android Deploy QT
         run: ${{ env.QT_ROOT_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Configure CMake
         run: >
