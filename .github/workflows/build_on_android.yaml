@@ -69,10 +69,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bin
-          path: ${{ env.QT_COMPILER_DIR }}/bin
+          path: ${{ env.QT_ROOT_DIR }}/bin
 
       - name: Android Deploy QT
-        run: ${{ env.QT_COMPILER_DIR }}/bin/androiddeployqt6 --input android-RevisionAssistantApp-deployment-settings.json --output android-build
+        run: ${{ env.QT_ROOT_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Upload APK
