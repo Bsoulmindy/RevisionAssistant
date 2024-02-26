@@ -45,6 +45,10 @@ jobs:
         id: setup-ndk
         with:
           ndk-version: r21e
+      
+      - name: Android Deploy QT
+        run: ${{ env.QT_ROOT_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Configure CMake
         run: >
@@ -58,16 +62,6 @@ jobs:
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
-
-      - name: Upload all
-        uses: actions/upload-artifact@v4
-        with:
-          name: all
-          path: ${{ github.workspace }}/qtdir/qt/6.6.1/
-
-      - name: Android Deploy QT
-        run: ${{ env.QT_ROOT_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
