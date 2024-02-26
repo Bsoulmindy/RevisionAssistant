@@ -64,12 +64,12 @@ jobs:
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
-      
-      - name: Upload BIN
+
+      - name: Upload android_armv7
         uses: actions/upload-artifact@v4
         with:
-          name: bin
-          path: ${{ env.QT_ROOT_DIR }}/bin
+          name: android_armv7
+          path: ${{ env.QT_ROOT_DIR }}
 
       - name: Android Deploy QT
         run: ${{ env.QT_ROOT_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
