@@ -23,7 +23,13 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-      - name: Install Qt
+      - name: Install Qt GCC
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+      
+      - name: Install Qt Android
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.6.1
@@ -53,7 +59,7 @@ jobs:
           -DCMAKE_C_COMPILER=gcc
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_INSTALL_PREFIX=build/install
-          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -DCMAKE_PREFIX_PATH=${{ env.QT_COMPILER_DIR }}
           -S ${{ github.workspace }}
 
       - name: Build
