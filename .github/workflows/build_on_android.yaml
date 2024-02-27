@@ -137,7 +137,7 @@ jobs:
           -DANDROID_NDK:PATH=${{ steps.setup-ndk.outputs.ndk-path }}
           -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake
           -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF
-          -DANDROID_ABI:STRING=armeabi-v7a
+          -DANDROID_ABI:STRING=arm64-v8a
           -DANDROID_STL:STRING=c++_shared
           -DCMAKE_FIND_ROOT_PATH:PATH=${{ env.QT_ROOT_DIR }}
           -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON
