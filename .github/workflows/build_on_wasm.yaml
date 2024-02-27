@@ -1,0 +1,52 @@
+name: Build the Executable in WebAssembly
+
+on:
+  push:
+    branches: ["develop_workflow_wasm"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/wasm_multithread
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          arch: wasm_multithread
+          dir: ${{ github.workspace }}/qtdir/
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Install
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Upload Install folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision_assistant_wasm
+          path: build/install
