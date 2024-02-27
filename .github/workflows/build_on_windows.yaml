@@ -2,7 +2,7 @@ name: Build the Executable in Windows
 
 on:
   push:
-    branches: ["develop_workflow"]
+    branches: ["develop_workflow_windows"]
   pull_request:
     branches: ["main"]
 
