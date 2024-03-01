@@ -28,6 +28,11 @@ jobs:
         with:
           version: 6.6.1
           dir: ${{ github.workspace }}/qtdir/
+      
+      - name: Set up Emscripten SDK
+        uses: lovasoa/setup-emscripten@master
+        with:
+          emscripten-version: '1.38.47'
 
       - name: Install Qt WASM
         uses: jurplel/install-qt-action@v3
