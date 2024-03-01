@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/wasm_multithread
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/wasm_multithread
       QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/gcc_64
 
     steps:
