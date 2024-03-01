@@ -30,9 +30,9 @@ jobs:
           dir: ${{ github.workspace }}/qtdir/
       
       - name: Set up Emscripten SDK
-        uses: lovasoa/setup-emscripten@master
+        uses: mymindstorm/setup-emsdk@v14
         with:
-          emscripten-version: '1.38.47'
+          version: 3.1.37
 
       - name: Install Qt WASM
         uses: jurplel/install-qt-action@v3
