@@ -47,6 +47,7 @@ jobs:
           -DQT_QMAKE_EXECUTABLE:FILEPATH=${{ env.QT_ROOT_DIR }}/bin/qmake 
           -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake
           -DCMAKE_CXX_FLAGS_INIT:STRING=-DQT_QML_DEBUG
+          -DQT_HOST_PATH:PATH=${{ github.workspace }}/qtdir/Qt/6.6.1/gcc_64
           -B ${{ steps.strings.outputs.build-output-dir }}
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_CXX_COMPILER=em++
