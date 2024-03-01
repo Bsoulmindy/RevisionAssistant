@@ -12,6 +12,7 @@ jobs:
 
     env:
       QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/wasm_multithread
+      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/gcc_64
 
     steps:
       - uses: actions/checkout@v4
@@ -21,8 +22,14 @@ jobs:
         shell: bash
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      
+      - name: Install Qt GCC
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
 
-      - name: Install Qt
+      - name: Install Qt WASM
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.6.1
@@ -31,9 +38,12 @@ jobs:
 
       - name: Configure CMake
         run: >
-          cmake -B ${{ steps.strings.outputs.build-output-dir }}
-          -DCMAKE_CXX_COMPILER=g++
-          -DCMAKE_C_COMPILER=gcc
+          cmake 
+          -DCMAKE_GENERATOR:STRING=Ninja
+          -DQT_QMAKE_EXECUTABLE:FILEPATH=${{ env.QT_ROOT_DIR }}/bin/qmake 
+          -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake
+          -DCMAKE_CXX_FLAGS_INIT:STRING=-DQT_QML_DEBUG
+          -B ${{ steps.strings.outputs.build-output-dir }}
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_INSTALL_PREFIX=build/install
           -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
