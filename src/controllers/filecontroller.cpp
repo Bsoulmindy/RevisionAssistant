@@ -30,6 +30,17 @@ void FileController::constructDictFromFile(QString file_path, QString line_separ
     thread->start();
 }
 
+void FileController::constructDictFromBytes(QByteArray bytes, QString line_separator)
+{
+    setactualState("Preparing...");
+    QThread *thread = QThread::create([&](QByteArray bytes, QString lineSeparator) {
+        processBytes(bytes, lineSeparator);
+    }, bytes, line_separator);
+
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    thread->start();
+}
+
 void FileController::processFile(QString file_path, QString line_separator)
 {
     try {
@@ -38,13 +49,26 @@ void FileController::processFile(QString file_path, QString line_separator)
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             return;
 
+        processBytes(file.readAll(), line_separator);
+    } catch (RepoException& e) {
+        emit error(e.what());
+        qCritical() << e.what();
+    } catch (std::exception& e) {
+        emit error("");
+        qCritical() << e.what();
+    }
+}
+
+void FileController::processBytes(QByteArray bytes, QString line_separator)
+{
+    try {
         setactualState("Fetching checked questions and responses from current database...");
 
         auto qst_rsp_entries_set = m_dict_controller->getCheckedQuestionsAndResponses();
         auto checked_questions = qst_rsp_entries_set.get_questions_set();
         auto checked_responses = qst_rsp_entries_set.get_responses_set();
 
-        QTextStream file_stream(&file);
+        QTextStream file_stream(bytes);
         int line_number = 1;
         std::vector<QVariantMap> dict_rows_to_be_inserted;
         setactualState("Processing the file...");
@@ -68,7 +92,6 @@ void FileController::processFile(QString file_path, QString line_separator)
             row["isCheckedResponse"] = checked_responses.contains(response);
             dict_rows_to_be_inserted.push_back(row);
 
-            setactualState("Processing the file... " + QString::number(line_number) + " lines processed");
             line_number++;
         }
         setactualState("Saving to the database");

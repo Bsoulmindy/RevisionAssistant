@@ -9,7 +9,6 @@ std::unique_ptr<DictRepoInterface> DictRepoFactory::create_dict_repo(int id, Dic
     appendIdToFileName(file_name, id);
     appendExtensionToFileName(file_name, type);
     QString file_dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
-
     switch(type) {
     case DictRepoEnum::Json:
         return std::make_unique<DictJsonRepo>(file_dir + file_name);

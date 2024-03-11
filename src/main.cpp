@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QtQml/QQmlExtensionPlugin>
@@ -6,17 +6,20 @@
 #include <QFontDatabase>
 #include <QIcon>
 
+QApplication* app = nullptr;
+QQmlApplicationEngine* engine = nullptr;
+
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    app = new QApplication(argc, argv);
 
     Q_INIT_RESOURCE(resources);
 
-    QQmlApplicationEngine engine;
+    engine = new QQmlApplicationEngine();
     QObject::connect(
-        &engine,
+        engine,
         &QQmlApplicationEngine::objectCreationFailed,
-        &app,
+        app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
     Q_IMPORT_QML_PLUGIN(CustomComponentsPlugin)
@@ -28,12 +31,17 @@ int main(int argc, char *argv[])
     } else {
         QString family_font = QFontDatabase::applicationFontFamilies(id).at(0);
         QFont stratum_font(family_font);
-        app.setFont(stratum_font);
+        app->setFont(stratum_font);
     }
-    app.setWindowIcon(QIcon(":/icons/revision_assistant_icon.png"));
+    app->setWindowIcon(QIcon(":/icons/revision_assistant_icon.png"));
 
-    engine.rootContext()->setContextProperty("appVersion", PROJECT_VERSION);
-    engine.loadFromModule("RevisionAssistant", "Main");
+    engine->rootContext()->setContextProperty("appVersion", PROJECT_VERSION);
+    engine->loadFromModule("RevisionAssistant", "Main");
 
-    return app.exec();
+#if defined(Q_OS_WASM)
+    return 0;
+#else
+    return app->exec();
+#endif
+
 }
