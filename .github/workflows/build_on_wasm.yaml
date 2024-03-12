@@ -60,19 +60,12 @@ jobs:
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
-      
-      - name: Create archive
-        run: |
-          tar -czvf github-pages.tar.gz RevisionAssistantApp.html qtloader.js RevisionAssistantApp.js RevisionAssistantApp.wasm
-          mkdir install
-          mv github-pages.tar.gz install/github-pages.tar.gz
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
-          path: ${{ steps.strings.outputs.build-output-dir }}/install
+          path: ${{ steps.strings.outputs.build-output-dir }}
 
   deploy:
     needs: build
