@@ -63,12 +63,13 @@ jobs:
       
       - name: Create archive
         run: tar -czvf github-pages.tar.gz RevisionAssistantApp.html qtloader.js RevisionAssistantApp.js RevisionAssistantApp.wasm
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
-          path: build/github-pages.tar.gz
+          path: ${{ steps.strings.outputs.build-output-dir }}/github-pages.tar.gz
 
   deploy:
     needs: build
