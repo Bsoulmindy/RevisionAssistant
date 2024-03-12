@@ -38,8 +38,8 @@ jobs:
       - name: Install Qt WASM
         run: |
           wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt/${{ env.QT_WASM_ZIP_NAME }} -O ${{ env.QT_WASM_ZIP_NAME }}
-          && mkdir -p ${{ github.workspace }}/qtdir/
-          && tar -xf ${{ env.QT_WASM_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
+          mkdir -p ${{ github.workspace }}/qtdir/
+          tar -xf ${{ env.QT_WASM_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
 
       - name: Configure CMake
         run: >
