@@ -85,6 +85,11 @@ set_target_properties(RevisionAssistantApp PROPERTIES
 target_link_libraries(RevisionAssistantApp
     PRIVATE Qt6::Quick Qt6::Core Qt6::Widgets custom_componentsplugin
 )
+if(EMSCRIPTEN)
+    target_link_libraries(RevisionAssistantApp PRIVATE idbfs.js)
+    # target_link_options(RevisionAssistantApp PRIVATE --pre-js presettings.js)
+    target_link_options(RevisionAssistantApp PRIVATE "SHELL:-s FORCE_FILESYSTEM=1 ")
+endif()
 
 ############################################# INSTALL
 qt_standard_project_setup()

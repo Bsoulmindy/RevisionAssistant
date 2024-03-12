@@ -10,13 +10,13 @@
 #include <QDir>
 #include <QSettings>
 
+#if defined(Q_OS_WASM)
+#include <emscripten.h>
+#endif
+
 DictJsonRepo::DictJsonRepo(QString json_path)
 {
     QByteArray bytes;
-#if defined(Q_OS_WASM)
-    QSettings saved_repo("Bsoulmindy", "Revision Assistant");
-    bytes = saved_repo.value("json_repo", "[]").toByteArray();
-#else
     m_json_path = json_path;
     QFile json_file(json_path);
     if(!json_file.open(QIODevice::ReadOnly)) {
@@ -27,7 +27,6 @@ DictJsonRepo::DictJsonRepo(QString json_path)
             throw FileInvalidJsonException("Cannot open the file " + json_path);
     }
     bytes = json_file.readAll();
-#endif
 
     QJsonParseError json_error;
     m_json_document = QJsonDocument::fromJson(bytes, &json_error);
@@ -310,10 +309,6 @@ void DictJsonRepo::save() const
     if(!m_json_document.isArray()) {
         throw FileInvalidJsonException("Invalid syntax of JSON!");
     }
-#if defined(Q_OS_WASM)
-    QSettings saved_repo("Bsoulmindy", "Revision Assistant");
-    saved_repo.setValue("json_repo", m_json_document.toJson());
-#else
     QFile json_file(m_json_path);
     if(!json_file.open(QIODevice::WriteOnly)) {
         // Attempt auto fix
@@ -325,6 +320,14 @@ void DictJsonRepo::save() const
 
     QTextStream file_stream(&json_file);
     file_stream << m_json_document.toJson();
+
+#if defined(Q_OS_WASM)
+    EM_ASM(
+        FS.syncfs(false, function (err) {
+            if(err)
+                console.error(err);
+        });
+    );
 #endif
 }
 
