@@ -4,6 +4,7 @@ project(RevisionAssistant VERSION 0.1.0 LANGUAGES CXX)
 
 # configuration file
 configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
+configure_file(${CMAKE_SOURCE_DIR}/config/vercel.json ${CMAKE_BINARY_DIR}/vercel.json COPYONLY)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

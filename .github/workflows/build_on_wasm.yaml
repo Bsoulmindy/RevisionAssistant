@@ -61,6 +61,11 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
+      - name: Rename the main entrypoint to index.html
+        run: mv RevisionAssistantApp.html index.html
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+
+
       - name: Deploy to Vercel Action
         uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
