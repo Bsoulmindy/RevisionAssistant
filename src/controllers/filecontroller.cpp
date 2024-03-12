@@ -1,6 +1,5 @@
 #include "filecontroller.h"
 #include "dictcontroller.h"
-#include <QThread>
 #include <QFile>
 #include <QString>
 #include <QTimer>
@@ -13,7 +12,6 @@ FileController::FileController(QObject *parent)
     QTimer::singleShot(0, this, &FileController::init);
 }
 
-
 void FileController::init()
 {
     emit initialized();
@@ -22,23 +20,13 @@ void FileController::init()
 void FileController::constructDictFromFile(QString file_path, QString line_separator)
 {
     setactualState("Preparing...");
-    QThread *thread = QThread::create([&](QString filePath, QString lineSeparator) {
-        processFile(filePath, lineSeparator);
-    }, file_path, line_separator);
-
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-    thread->start();
+    processFile(file_path, line_separator);
 }
 
 void FileController::constructDictFromBytes(QByteArray bytes, QString line_separator)
 {
     setactualState("Preparing...");
-    QThread *thread = QThread::create([&](QByteArray bytes, QString lineSeparator) {
-        processBytes(bytes, lineSeparator);
-    }, bytes, line_separator);
-
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-    thread->start();
+    processBytes(bytes, line_separator);
 }
 
 void FileController::processFile(QString file_path, QString line_separator)
