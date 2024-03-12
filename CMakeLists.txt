@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-message(DEBUG "QT_HOST_PATH is : " ${QT_HOST_PATH})
-
 project(RevisionAssistant VERSION 0.1.0 LANGUAGES CXX)
 
 # configuration file
@@ -11,7 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 # recognize the app as executable if compiled with GCC Linux
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
 if(EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwasm-exceptions")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fwasm-exceptions")
