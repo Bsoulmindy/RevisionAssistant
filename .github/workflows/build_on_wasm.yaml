@@ -56,7 +56,7 @@ jobs:
           -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
           -S ${{ github.workspace }}
           -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
-          -DQT_FORCE_FIND_TOOLS=ON
+          -DQT_HOST_PATH_CMAKE_DIR=${{ env.QT_COMPILER_DIR }}/lib/cmake
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
