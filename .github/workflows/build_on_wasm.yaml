@@ -12,7 +12,7 @@ jobs:
 
     env:
       QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt-install-wasm
-      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.2/gcc_64
+      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/qt-install-host
       QT_WASM_ZIP_NAME: qt-6.6.2-wasm-thread-exceptions.tar.xz
       QT_HOST_ZIP_NAME: qt-6.6.2-host.tar.xz
 
@@ -26,10 +26,10 @@ jobs:
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
       
       - name: Install Qt GCC
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: 6.6.2
-          dir: ${{ github.workspace }}/qtdir/
+        run: |
+          wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt/${{ env.QT_HOST_ZIP_NAME }} -O ${{ env.QT_HOST_ZIP_NAME }}
+          mkdir -p ${{ github.workspace }}/qtdir/
+          tar -xf ${{ env.QT_HOST_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
       
       - name: Set up Emscripten SDK
         uses: mymindstorm/setup-emsdk@v14
