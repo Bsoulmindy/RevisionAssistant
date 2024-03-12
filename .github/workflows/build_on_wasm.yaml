@@ -27,7 +27,7 @@ jobs:
       
       - name: Install Qt GCC
         run: |
-          wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt/${{ env.QT_HOST_ZIP_NAME }} -O ${{ env.QT_HOST_ZIP_NAME }}
+          wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt-host/${{ env.QT_HOST_ZIP_NAME }} -O ${{ env.QT_HOST_ZIP_NAME }}
           mkdir -p ${{ github.workspace }}/qtdir/
           tar -xf ${{ env.QT_HOST_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
       
