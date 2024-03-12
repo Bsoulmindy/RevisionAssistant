@@ -48,7 +48,6 @@ jobs:
           -DQT_QMAKE_EXECUTABLE:FILEPATH=${{ env.QT_ROOT_DIR }}/bin/qmake 
           -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake
           -DCMAKE_CXX_FLAGS_INIT:STRING=-DQT_QML_DEBUG
-          -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
           -B ${{ steps.strings.outputs.build-output-dir }}
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_CXX_COMPILER=em++
@@ -56,6 +55,7 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=build/install
           -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
           -S ${{ github.workspace }}
+          -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
