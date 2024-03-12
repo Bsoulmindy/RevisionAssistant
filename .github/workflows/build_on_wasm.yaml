@@ -54,18 +54,35 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_CXX_COMPILER=em++
           -DCMAKE_C_COMPILER=emcc
-          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_INSTALL_PREFIX=build
           -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
           -S ${{ github.workspace }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+      
+      - name: Create archive
+        run: tar -czvf github-pages.tar.gz RevisionAssistantApp.html qtloader.js RevisionAssistantApp.js RevisionAssistantApp.wasm
 
-      - name: Install
-        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
-
-      - name: Upload Install folder
-        uses: actions/upload-artifact@v4
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: revision_assistant_wasm
-          path: build/install
+          name: github-pages
+          path: build/github-pages.tar.gz
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
