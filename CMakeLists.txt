@@ -4,13 +4,19 @@ project(RevisionAssistant VERSION 0.1.0 LANGUAGES CXX)
 
 # configuration file
 configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
+configure_file(${CMAKE_SOURCE_DIR}/config/vercel.json ${CMAKE_BINARY_DIR}/vercel.json COPYONLY)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 # recognize the app as executable if compiled with GCC Linux
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
+if(EMSCRIPTEN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwasm-exceptions")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fwasm-exceptions")
+endif()
+
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core Widgets)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -58,6 +64,7 @@ qt_add_qml_module(RevisionAssistantApp
             src/models/question_response_entries_set.h src/models/question_response_entries_set.cpp
 	    src/exceptions/repo_exception.h
 	    src/exceptions/run_out_of_entries.h src/exceptions/run_out_of_entries.cpp
+	    SOURCES src/controllers/fileselectorcontroller.h src/controllers/fileselectorcontroller.cpp
 
 )
 
@@ -77,8 +84,12 @@ set_target_properties(RevisionAssistantApp PROPERTIES
 )
 
 target_link_libraries(RevisionAssistantApp
-    PRIVATE Qt6::Quick Qt6::Core custom_componentsplugin
+    PRIVATE Qt6::Quick Qt6::Core Qt6::Widgets custom_componentsplugin
 )
+if(EMSCRIPTEN)
+    target_link_libraries(RevisionAssistantApp PRIVATE idbfs.js)
+    target_link_options(RevisionAssistantApp PRIVATE "SHELL:-s FORCE_FILESYSTEM=1 ")
+endif()
 
 ############################################# INSTALL
 qt_standard_project_setup()

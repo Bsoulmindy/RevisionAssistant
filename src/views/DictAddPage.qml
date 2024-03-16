@@ -12,23 +12,27 @@ DictAddPageUi {
     width: root.width
     height: root.height
 
+    FileSelectorController {
+        id: fileSelectorController
+
+        onFile_nameChanged: (fileName) => {
+            fileSelectionStatusItem.state = fileName !== "" ? "completed" : ""
+        }
+    }
+
     backButtonItem.onClicked: stackView.pop()
-    selectDictButtonItem.onClicked: fileDialogItem.open()
+    selectDictButtonItem.onClicked: fileSelectorController.openFile("Text (*.txt)")
     selectSeparatorHelpItem.onClicked: separatorHelpDialogItem.open()
     addDictButtonItem.onClicked: {
-        if (fileDialogItem.selectedFile === "" || searchTextFieldItem.text === "") {
+        if (fileSelectorController.file_name === "" || searchTextFieldItem.text === "") {
             invalidFileDialogItem.open()
         } else {
-            stackView.push("DictProcessingPage.qml", {"filePath": fileDialogItem.selectedFile, "fileSeparator": searchTextFieldItem.text})
+            stackView.push("DictProcessingPage.qml", {"fileBytes": fileSelectorController.getFileBytes(), "fileSeparator": searchTextFieldItem.text})
         }
     }
     separatorHelpTextItem.onLineLaidOut: (line)=> {
         if (line.y + separatorHelpTextItem.topPadding <= separator_example_item.y + separator_example_item.height) {
             line.width = separator_example_item.x - separatorHelpTextItem.anchors.leftMargin - separatorHelpTextItem.anchors.rightMargin;
         }
-    }
-    fileDialogItem.currentFolder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
-    fileDialogItem.onAccepted: {
-        fileSelectionStatusItem.state = "completed"
     }
 }

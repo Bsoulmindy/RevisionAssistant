@@ -15,6 +15,7 @@ Page {
     property alias statusTextItem: statusText
     property alias backButtonItem: backButton
     property alias progressBarItem: progressBar
+    property alias listViewItem: listView
 
     ToolBar {
         id: dictProcessingPageToolBar
