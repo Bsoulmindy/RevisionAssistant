@@ -61,9 +61,6 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
-      - name: Cleaning build files
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --target clean
-
       - name: Add additional files
         run: |
           mv icons/revision_assistant_icon.png ${{ steps.strings.outputs.build-output-dir }}/revision_assistant_icon.png
