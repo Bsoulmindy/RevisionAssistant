@@ -19,7 +19,6 @@ Page {
     property alias selectSeparatorHelpItem: selectSeparatorHelp
     property alias addDictButtonItem: addDictButton
     property alias separatorHelpTextItem: separatorHelpText
-    property alias fileDialogItem: fileDialog
     property alias searchTextFieldItem: searchTextField
     property alias invalidFileDialogItem: invalidFileDialog
     property alias separator_example_item: separator_example
@@ -217,11 +216,6 @@ Page {
             color: "#000000"
             opacity: 0.5
         }
-    }
-
-    FileDialog {
-        id: fileDialog
-        title: "Please choose a file"
     }
 
     Dialog {

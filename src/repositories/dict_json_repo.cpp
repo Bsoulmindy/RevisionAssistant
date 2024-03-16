@@ -7,9 +7,16 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QDir>
+#include <QSettings>
+
+#if defined(Q_OS_WASM)
+#include <emscripten.h>
+#endif
 
 DictJsonRepo::DictJsonRepo(QString json_path)
 {
+    QByteArray bytes;
     m_json_path = json_path;
     QFile json_file(json_path);
     if(!json_file.open(QIODevice::ReadOnly)) {
@@ -19,8 +26,8 @@ DictJsonRepo::DictJsonRepo(QString json_path)
         if(!json_file.open(QIODevice::ReadOnly))
             throw FileInvalidJsonException("Cannot open the file " + json_path);
     }
+    bytes = json_file.readAll();
 
-    auto bytes = json_file.readAll();
     QJsonParseError json_error;
     m_json_document = QJsonDocument::fromJson(bytes, &json_error);
     if(json_error.error != QJsonParseError::NoError) {
@@ -302,7 +309,6 @@ void DictJsonRepo::save() const
     if(!m_json_document.isArray()) {
         throw FileInvalidJsonException("Invalid syntax of JSON!");
     }
-
     QFile json_file(m_json_path);
     if(!json_file.open(QIODevice::WriteOnly)) {
         // Attempt auto fix
@@ -314,12 +320,33 @@ void DictJsonRepo::save() const
 
     QTextStream file_stream(&json_file);
     file_stream << m_json_document.toJson();
+
+#if defined(Q_OS_WASM)
+    EM_ASM(
+        FS.syncfs(false, function (err) {
+            if(err)
+                console.error(err);
+        });
+    );
+#endif
 }
 
 void DictJsonRepo::create_empty_json_file(QString json_path) const
 {
     QFile json_file(json_path);
-    json_file.open(QIODevice::ReadWrite);
+    auto dirs = json_path.split("/");
+    QString dir = "";
+    for(int i = 0; i < dirs.size() - 1; i++) {
+        dir += dirs[i] + "/";
+    }
+    QDir qDir;
+    if(!qDir.mkpath(dir)) {
+        qCritical() << "Failed to create the directory " + dir;
+    }
+
+    if(!json_file.open(QIODevice::ReadWrite)) {
+        qCritical() << "Failed to open the file : " + json_file.errorString();
+    }
 
     QJsonDocument empty_doc;
     empty_doc.setArray(QJsonArray());

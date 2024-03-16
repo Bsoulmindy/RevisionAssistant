@@ -29,7 +29,7 @@ QrPageUi {
     progressTextDescItem.text: qsTr("Your progress : ") + "("
                                + (dictController.num_rows - qrPage.not_checked_records)
                                + " / " + dictController.num_rows + ")"
-    progressTextPercentItem.text: ((dictController.num_rows - qrPage.not_checked_records)
+    progressTextPercentItem.text: dictController.num_rows === 0 ? "0 %" : ((dictController.num_rows - qrPage.not_checked_records)
                                / dictController.num_rows * 100).toFixed(0) + " %"
     listViewItem.model: ListModel {}
     outputTextItem.text: isQtoR ? quizController.current_output["question"] : quizController.current_output["response"]

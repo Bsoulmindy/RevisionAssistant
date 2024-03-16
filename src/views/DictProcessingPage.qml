@@ -12,17 +12,17 @@ DictProcessingPageUi {
     width: root.width
     height: root.height
 
-    required property string filePath
+    required property var fileBytes
     required property string fileSeparator
 
     FileController {
         id: fileController
         dict_controller: dictController
         onWarningOutput: (output) => {
-            listView.model.append({ "output": output });
+            listViewItem.model.append({ "output": output });
         }
         onInitialized: {
-            fileController.constructDictFromFile(filePath, fileSeparator)
+            fileController.constructDictFromBytes(fileBytes, fileSeparator)
         }
         onError: (message) => {
             if(message === "") {
@@ -31,7 +31,7 @@ DictProcessingPageUi {
             errorDialog.dialogText.text = message;
             errorDialog.open();
         }
-    }
+    }  
 
     closeButtonItem.onClicked: stackView.pop()
     statusTextItem.text: fileController.actualState
