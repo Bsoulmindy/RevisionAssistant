@@ -61,9 +61,14 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
-      - name: Rename the main entrypoint to index.html
-        run: mv RevisionAssistantApp.html index.html
-        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      - name: Cleaning build files
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --target clean
+
+      - name: Add additional files
+        run: |
+          mv icons/revision_assistant_icon.png ${{ steps.strings.outputs.build-output-dir }}/revision_assistant_icon.png
+          mv html/index.html ${{ steps.strings.outputs.build-output-dir }}/index.html
+          mv html/Loading_icon.gif ${{ steps.strings.outputs.build-output-dir }}/Loading_icon.gif
 
 
       - name: Deploy to Vercel Action
@@ -73,5 +78,5 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          PRODUCTION: false
+          PRODUCTION: ${{ github.ref == 'refs/heads/main' }}
           WORKING_DIRECTORY: ${{ steps.strings.outputs.build-output-dir }}
