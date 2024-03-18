@@ -127,10 +127,20 @@ Page {
             id: revertButton
             state: "revert"
             enabled: false
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Undo"
+            }
         }
 
         CompleteButton {
             id: completeButton
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Mark as complete"
+            }
         }
 
         Rectangle {
@@ -184,6 +194,11 @@ Page {
             implicitWidth: 50
             height: 50
             width: 50
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Skip"
+            }
         }
     }
 
