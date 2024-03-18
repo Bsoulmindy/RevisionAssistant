@@ -123,26 +123,6 @@ Page {
         anchors.leftMargin: 30
         anchors.bottomMargin: 30
 
-        CompleteButton {
-            id: revertButton
-            state: "revert"
-            enabled: false
-
-            ToolTip {
-                visible: parent.hovered
-                text: "Undo"
-            }
-        }
-
-        CompleteButton {
-            id: completeButton
-
-            ToolTip {
-                visible: parent.hovered
-                text: "Mark as complete"
-            }
-        }
-
         Rectangle {
             id: outputBox
             color: "#333333"
@@ -160,6 +140,7 @@ Page {
                 anchors.leftMargin: 20
                 height: parent.height
                 clip: true
+                contentWidth: outputText.contentWidth
 
                 PrimaryText {
                     id: outputText
@@ -175,6 +156,26 @@ Page {
                         id: textTranslate
                     }
                 }
+            }
+        }
+
+        CompleteButton {
+            id: revertButton
+            state: "revert"
+            enabled: false
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Undo"
+            }
+        }
+
+        CompleteButton {
+            id: completeButton
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Mark as complete"
             }
         }
 
