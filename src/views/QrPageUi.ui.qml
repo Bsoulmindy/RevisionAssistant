@@ -22,6 +22,7 @@ Page {
     property alias progressTextPercentItem: progressTextPercent
     property alias animItem: anim
     property alias progressRevisionBarImplItem: progressRevisionBarImpl
+    property alias revertButtonItem: revertButton
 
     ToolBar {
         id: qrPageToolBar
@@ -121,6 +122,13 @@ Page {
         anchors.rightMargin: 30
         anchors.leftMargin: 30
         anchors.bottomMargin: 30
+
+        CompleteButton {
+            id: revertButton
+            state: "revert"
+            enabled: false
+        }
+
         CompleteButton {
             id: completeButton
         }

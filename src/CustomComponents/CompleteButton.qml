@@ -8,11 +8,11 @@ RoundButton {
     text: "\u2713"
     states: [
         State {
-            name: "completed"
+            name: "revert"
             PropertyChanges {
                 target: completeButton
                 text: "X"
-                icon.source: "qrc:/icons/cancel.png"
+                icon.source: "qrc:/icons/revert.png"
                 Material.background: "#D80000"
             }
         }

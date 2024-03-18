@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/search.png</file>
-        <file>icons/cancel.png</file>
         <file>icons/done.png</file>
         <file>icons/dict_icon.png</file>
         <file>icons/back.png</file>
@@ -16,5 +15,6 @@
         <file>icons/attention_mark.png</file>
         <file>icons/revision_assistant_icon.png</file>
         <file>fonts/stratum2demium.ttf</file>
+        <file>icons/revert.png</file>
     </qresource>
 </RCC>
