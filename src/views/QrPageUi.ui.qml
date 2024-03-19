@@ -22,6 +22,7 @@ Page {
     property alias progressTextPercentItem: progressTextPercent
     property alias animItem: anim
     property alias progressRevisionBarImplItem: progressRevisionBarImpl
+    property alias revertButtonItem: revertButton
 
     ToolBar {
         id: qrPageToolBar
@@ -121,9 +122,6 @@ Page {
         anchors.rightMargin: 30
         anchors.leftMargin: 30
         anchors.bottomMargin: 30
-        CompleteButton {
-            id: completeButton
-        }
 
         Rectangle {
             id: outputBox
@@ -142,6 +140,7 @@ Page {
                 anchors.leftMargin: 20
                 height: parent.height
                 clip: true
+                contentWidth: outputText.contentWidth
 
                 PrimaryText {
                     id: outputText
@@ -157,6 +156,26 @@ Page {
                         id: textTranslate
                     }
                 }
+            }
+        }
+
+        CompleteButton {
+            id: revertButton
+            state: "revert"
+            enabled: false
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Undo"
+            }
+        }
+
+        CompleteButton {
+            id: completeButton
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Mark as complete"
             }
         }
 
@@ -176,6 +195,11 @@ Page {
             implicitWidth: 50
             height: 50
             width: 50
+
+            ToolTip {
+                visible: parent.hovered
+                text: "Skip"
+            }
         }
     }
 

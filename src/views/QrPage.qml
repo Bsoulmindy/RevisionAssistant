@@ -34,6 +34,11 @@ QrPageUi {
     listViewItem.model: ListModel {}
     outputTextItem.text: isQtoR ? quizController.current_output["question"] : quizController.current_output["response"]
 
+    revertButtonItem.enabled : quizController.isLastOutputMarked
+    revertButtonItem.onClicked: {
+        quizController.unmark_last_output()
+    }
+
     Behavior on outputTextItem.text {
         SequentialAnimation {
             PropertyAction { target: qrPage.textTranslateItem; property: "y"; value: 0 }

@@ -11,6 +11,8 @@ QuizController::QuizController(QObject *parent)
 void QuizController::next_output()
 {
     emit outputDismissed(m_current_output);
+    setisLastOutputMarked(m_current_output["isChecked"].toBool());
+    m_lastOutputId = m_current_output["id"].toInt();
     init();
 }
 
@@ -35,6 +37,17 @@ void QuizController::unmark_output()
 
     m_current_output["isChecked"] = false;
     emit current_outputChanged();
+}
+
+void QuizController::unmark_last_output()
+{
+    if(m_isQtoR) {
+        m_dict_controller->uncheckQuestion(m_lastOutputId);
+    } else {
+        m_dict_controller->uncheckResponse(m_lastOutputId);
+    }
+
+    setisLastOutputMarked(false);
 }
 
 void QuizController::init()
@@ -87,4 +100,17 @@ void QuizController::setDict_controller(DictController *newDict_controller)
         return;
     m_dict_controller = newDict_controller;
     emit dict_controllerChanged();
+}
+
+bool QuizController::isLastOutputMarked() const
+{
+    return m_isLastOutputMarked;
+}
+
+void QuizController::setisLastOutputMarked(bool newIsLastOutputMarked)
+{
+    if (m_isLastOutputMarked == newIsLastOutputMarked)
+        return;
+    m_isLastOutputMarked = newIsLastOutputMarked;
+    emit isLastOutputMarkedChanged();
 }
