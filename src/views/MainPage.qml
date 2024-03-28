@@ -7,6 +7,7 @@ import RevisionAssistant
 
 Page {
     MainPageUi {
+        id: mainPageUi
         width: root.width
         height: root.height
 
@@ -20,6 +21,8 @@ Page {
         rToqButtonItem.onClicked: stackView.push(qrPageComponent, {"isQtoR": false})
         resetDialogItem.onAccepted: dictController.resetDict()
         githubLinkItem.onClicked: Qt.openUrlExternally("https://github.com/Bsoulmindy")
+        dictFileButtonItem.text: dictController.get_file_name_without_extension(dictController.dict_file_name)
+        dictFileButtonItem.onClicked: stackView.push(dictPagessComponent)
     }
 
     Component {
@@ -33,5 +36,9 @@ Page {
     Component {
         id: qrPageComponent
         QrPage {}
+    }
+    Component {
+        id: dictPagessComponent
+        DictsPage {}
     }
 }

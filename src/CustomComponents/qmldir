@@ -5,3 +5,4 @@ QrPageListViewDelegate QrPageListViewDelegate.qml
 DictEditListViewDelegate DictEditListViewDelegate.qml
 FileSelectionStatus FileSelectionStatus.qml
 InfoDialog InfoDialog.qml
+FileOptionListDelegate FileOptionListDelegate.qml

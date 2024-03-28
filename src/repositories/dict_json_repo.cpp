@@ -301,6 +301,11 @@ QuestionResponseEntry DictJsonRepo::select_by_id(int id)
     return QuestionResponseEntry(id, question, response, is_checked_question, is_checked_response);
 }
 
+QString DictJsonRepo::get_file_name()
+{
+    return m_json_path;
+}
+
 void DictJsonRepo::save() const
 {
     if(m_json_document.isNull()) {

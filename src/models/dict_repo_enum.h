@@ -2,7 +2,7 @@
 #define DICT_REPO_ENUM_H
 
 enum DictRepoEnum {
-    Json
+    Json = 0
 };
 
 #endif // DICT_REPO_ENUM_H

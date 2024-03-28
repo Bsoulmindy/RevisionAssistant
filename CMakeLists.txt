@@ -49,6 +49,8 @@ qt_add_qml_module(RevisionAssistantApp
         src/views/DictAddPageUi.ui.qml
         src/views/DictProcessingPage.qml
         src/views/DictProcessingPageUi.ui.qml
+	src/views/DictsPage.qml
+	src/views/DictsPageUi.ui.qml
     RESOURCES resources.qrc
     SOURCES src/controllers/dictcontroller.h src/controllers/dictcontroller.cpp
             src/controllers/quizcontroller.h src/controllers/quizcontroller.cpp
@@ -65,6 +67,7 @@ qt_add_qml_module(RevisionAssistantApp
 	    src/exceptions/repo_exception.h
 	    src/exceptions/run_out_of_entries.h src/exceptions/run_out_of_entries.cpp
 	    SOURCES src/controllers/fileselectorcontroller.h src/controllers/fileselectorcontroller.cpp
+	    SOURCES src/controllers/dictfilescontroller.h src/controllers/dictfilescontroller.cpp
 
 )
 
