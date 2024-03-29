@@ -9,12 +9,16 @@
 #include <memory>
 #include "../exceptions/repo_exception.h"
 #include "../exceptions/run_out_of_entries.h"
+#include <QSettings>
+#include "dictfilescontroller.h"
 
 DictController::DictController(QObject *parent)
     : QObject{parent}
 {
-    m_dict_repo = DictRepoFactory::create_dict_repo("default", DictRepoEnum::Json);
-    m_dict_file_name = "default.json";
+    QSettings settings;
+    QString default_file_name = settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString();
+    m_dict_repo = DictRepoFactory::create_dict_repo(get_file_name_without_extension(default_file_name), DictRepoEnum::Json);
+    m_dict_file_name = default_file_name;
     initInternalMemory();
 }
 

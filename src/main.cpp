@@ -45,6 +45,9 @@ int init(int argc, char *argv[])
     }
     app->setWindowIcon(QIcon(":/icons/revision_assistant_icon.png"));
 
+    QCoreApplication::setOrganizationName("Bsoulmindy");
+    QCoreApplication::setApplicationName("Revision Assistant");
+
     engine->rootContext()->setContextProperty("appVersion", PROJECT_VERSION);
     engine->loadFromModule("RevisionAssistant", "Main");
 

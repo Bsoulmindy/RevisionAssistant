@@ -12,6 +12,9 @@ DictsPageUi {
     useButtonItem.onClicked: dictFilesController.use_database_file(dictFilesController.selected_file)
     removeButtonItem.onClicked: removeDialog.open()
     newButtonItem.onClicked: newDictDialog.open()
+    defaultButtonItem.enabled: dictFilesController.default_file !== dictFilesController.selected_file
+    defaultButtonItem.onClicked: dictFilesController.mark_default_database_file(dictFilesController.selected_file)
+
 
     DictFilesController {
         id: dictFilesController

@@ -7,11 +7,11 @@ Item {
     property var modelDb
 
     Rectangle {
-        color: modelDb["isSelected"] ? Material.accentColor : "transparent"
+        color: modelDb["isCurrent"] ? Material.primaryColor : modelDb["isSelected"] ? Material.accentColor : "transparent"
         anchors.fill: parent
         PrimaryText {
             id: optionText
-            text: modelDb["name"]
+            text: modelDb["name"] + (dictFilesController.default_file === modelDb["real_name"] ? " (Default)" : "")
             anchors.centerIn: parent
         }
 

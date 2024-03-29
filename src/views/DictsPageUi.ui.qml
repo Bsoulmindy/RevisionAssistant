@@ -19,6 +19,7 @@ Page {
     property alias useButtonItem: useButton
     property alias newButtonItem: newButton
     property alias removeButtonItem: removeButton
+    property alias defaultButtonItem: defaultButton
 
     ToolBar {
         id: dictsPageToolBar
@@ -122,6 +123,14 @@ Page {
             Layout.preferredHeight: 52
             Layout.fillWidth: true
             Layout.fillHeight: false
+        }
+
+        Button {
+            id: defaultButton
+            text: qsTr("Default")
+            Layout.preferredWidth: 117
+            Layout.preferredHeight: 52
+            Layout.fillWidth: true
         }
 
         Button {

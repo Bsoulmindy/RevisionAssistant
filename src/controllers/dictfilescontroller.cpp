@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QDir>
 #include <QStandardPaths>
+#include <QSettings>
 
 QString get_directory_path() noexcept {
 #if defined(Q_OS_WASM)
@@ -12,8 +13,6 @@ QString get_directory_path() noexcept {
 #endif
 }
 
-const char CURRENT_SUFFIX[] = " (Current)";
-
 DictFilesController::DictFilesController(QObject *parent)
     : QObject{parent}
 {}
@@ -21,6 +20,9 @@ DictFilesController::DictFilesController(QObject *parent)
 void DictFilesController::init()
 {
     if(m_dict_controller == nullptr) return;
+
+    QSettings settings;
+    setdefault_file(settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString());
 
     setcurrent_file(m_dict_controller->get_file_name());
     detect_present_files();
@@ -67,7 +69,7 @@ void DictFilesController::use_database_file(QString file_name)
     for(int i = 0; i < m_files.size(); i++) {
         QVariantMap map = m_files[i].toMap();
         if(map["real_name"].toString() == m_current_file) {
-            map["name"] = get_file_name_without_extension(map["real_name"].toString());
+            map["isCurrent"] = false;
             m_files[i].setValue(map);
             break;
         }
@@ -77,7 +79,7 @@ void DictFilesController::use_database_file(QString file_name)
     for(int i = 0; i < m_files.size(); i++) {
         QVariantMap map = m_files[i].toMap();
         if(map["real_name"].toString() == m_current_file) {
-            map["name"] = get_file_name_without_extension(map["real_name"].toString()) + QString(CURRENT_SUFFIX);
+            map["isCurrent"] = true;
             m_files[i].setValue(map);
             break;
         }
@@ -91,11 +93,22 @@ void DictFilesController::remove_database_file(QString file_name)
         emit error("Cannot remove the dictionnary that is currently beign used! Please change to another dictionnary before removing.");
         return;
     }
+    if(file_name == m_default_file) {
+        emit error("Cannot remove the default dictionnary! Please mark another dictionnary to default before removing it.");
+        return;
+    }
     QString file_dir = get_directory_path();
     QFile json_file(file_dir + file_name);
     json_file.remove();
 
     detect_present_files();
+}
+
+void DictFilesController::mark_default_database_file(QString file_name)
+{
+    QSettings settings;
+    settings.setValue(DEFAULT_DICT_FILE_NAME, file_name);
+    setdefault_file(file_name);
 }
 
 DictController *DictFilesController::dict_controller() const
@@ -134,8 +147,9 @@ void DictFilesController::detect_present_files()
 
         QVariantMap map;
         map["real_name"] = file;
-        map["name"] = get_file_name_without_extension(file) + (m_current_file == file ? QString(CURRENT_SUFFIX) : "");
+        map["name"] = get_file_name_without_extension(file);
         map["isSelected"] = m_selected_file == file;
+        map["isCurrent"] = m_current_file == file;
         m_files.push_back(map);
     }
     emit filesChanged();
@@ -189,4 +203,17 @@ void DictFilesController::setselected_file(const QString &newSelected_file)
         return;
     m_selected_file = newSelected_file;
     emit selected_fileChanged();
+}
+
+QString DictFilesController::default_file() const
+{
+    return m_default_file;
+}
+
+void DictFilesController::setdefault_file(const QString &newDefault_file)
+{
+    if (m_default_file == newDefault_file)
+        return;
+    m_default_file = newDefault_file;
+    emit default_fileChanged();
 }
