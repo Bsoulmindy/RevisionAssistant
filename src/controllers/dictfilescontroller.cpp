@@ -6,6 +6,10 @@
 #include <QSettings>
 #include <QFileDialog>
 
+#if defined(Q_OS_WASM)
+#include <emscripten.h>
+#endif
+
 QString get_directory_path() noexcept {
 #if defined(Q_OS_WASM)
     return "/src/";
@@ -99,9 +103,18 @@ void DictFilesController::remove_database_file(QString file_name)
         return;
     }
     QString file_dir = get_directory_path();
-    QFile json_file(file_dir + file_name);
-    json_file.remove();
+    QFile file(file_dir + file_name);
+    file.remove();
 
+#if defined(Q_OS_WASM)
+    EM_ASM(
+        FS.syncfs(false, function (err) {
+                if(err)
+                    console.error(err);
+            });
+        );
+#endif
+    setselected_file(m_current_file);
     detect_present_files();
 }
 
@@ -114,11 +127,13 @@ void DictFilesController::mark_default_database_file(QString file_name)
 
 void DictFilesController::export_database_file()
 {
-    // Load to the selected file if it is not the current loaded
-    if(m_selected_file != m_current_file) {
-        use_database_file(m_selected_file);
+    QString file_dir = get_directory_path();
+    QFile file(file_dir + m_selected_file);
+    if(!file.open(QIODevice::ReadOnly)) {
+        emit error("Cannot export file : " + m_selected_file);
+        return;
     }
-    QFileDialog::saveFileContent(m_dict_controller->get_dict_content_binary(), m_current_file);
+    QFileDialog::saveFileContent(file.readAll(), m_selected_file);
 }
 
 void DictFilesController::import_database_file()
