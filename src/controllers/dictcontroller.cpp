@@ -467,3 +467,8 @@ void DictController::setdict_file_name(const QString &newDict_file_name)
     m_dict_file_name = newDict_file_name;
     emit dict_file_nameChanged();
 }
+
+QByteArray DictController::get_dict_content_binary() const
+{
+    return m_dict_repo->get_byte_array();
+}

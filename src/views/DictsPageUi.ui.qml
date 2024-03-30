@@ -20,6 +20,8 @@ Page {
     property alias newButtonItem: newButton
     property alias removeButtonItem: removeButton
     property alias defaultButtonItem: defaultButton
+    property alias importButtonItem: importButton
+    property alias exportButtonItem: exportButton
 
     ToolBar {
         id: dictsPageToolBar
@@ -136,6 +138,22 @@ Page {
         Button {
             id: removeButton
             text: qsTr("Remove")
+            Layout.preferredWidth: 117
+            Layout.preferredHeight: 52
+            Layout.fillWidth: true
+        }
+
+        Button {
+            id: importButton
+            text: qsTr("Import")
+            Layout.preferredWidth: 117
+            Layout.preferredHeight: 52
+            Layout.fillWidth: true
+        }
+
+        Button {
+            id: exportButton
+            text: qsTr("Export")
             Layout.preferredWidth: 117
             Layout.preferredHeight: 52
             Layout.fillWidth: true

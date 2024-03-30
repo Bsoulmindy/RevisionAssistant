@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QSettings>
+#include <QFileDialog>
 
 QString get_directory_path() noexcept {
 #if defined(Q_OS_WASM)
@@ -90,7 +91,7 @@ void DictFilesController::use_database_file(QString file_name)
 void DictFilesController::remove_database_file(QString file_name)
 {
     if(m_current_file == file_name) {
-        emit error("Cannot remove the dictionnary that is currently beign used! Please change to another dictionnary before removing.");
+        emit error("Cannot remove the dictionnary that is currently being used! Please change to another dictionnary before removing.");
         return;
     }
     if(file_name == m_default_file) {
@@ -109,6 +110,34 @@ void DictFilesController::mark_default_database_file(QString file_name)
     QSettings settings;
     settings.setValue(DEFAULT_DICT_FILE_NAME, file_name);
     setdefault_file(file_name);
+}
+
+void DictFilesController::export_database_file()
+{
+    // Load to the selected file if it is not the current loaded
+    if(m_selected_file != m_current_file) {
+        use_database_file(m_selected_file);
+    }
+    QFileDialog::saveFileContent(m_dict_controller->get_dict_content_binary(), m_current_file);
+}
+
+void DictFilesController::import_database_file()
+{
+    auto fileContentReady = [&](const QString &filePath, const QByteArray &fileContent) {
+        if (filePath.isEmpty()) {
+            return;
+        }
+
+        try {
+            QString fileName = get_file_name_wthout_path(filePath);
+            DictRepoFactory::create_dict_repo_from_binary(fileContent, fileName);
+        } catch(std::exception& e) {
+            emit error(e.what());
+        }
+
+        detect_present_files();
+    };
+    QFileDialog::getOpenFileContent("*",  fileContentReady);
 }
 
 DictController *DictFilesController::dict_controller() const
@@ -177,6 +206,15 @@ DictRepoEnum DictFilesController::get_dict_type(QString full_path) const
     QString extension = list[s-1];
     if(extension == "json") return DictRepoEnum::Json;
     return DictRepoEnum::Json;
+}
+
+QString DictFilesController::get_file_name_wthout_path(QString file_path) const
+{
+    auto list = file_path.split("/");
+    int s = list.size();
+    if(s == 1) return file_path;
+
+    return list[s-1];
 }
 
 QVariantList DictFilesController::files() const

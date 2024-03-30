@@ -68,6 +68,7 @@ qt_add_qml_module(RevisionAssistantApp
 	    src/exceptions/run_out_of_entries.h src/exceptions/run_out_of_entries.cpp
 	    SOURCES src/controllers/fileselectorcontroller.h src/controllers/fileselectorcontroller.cpp
 	    SOURCES src/controllers/dictfilescontroller.h src/controllers/dictfilescontroller.cpp
+	    SOURCES src/exceptions/fileexception.h src/exceptions/fileexception.cpp
 
 )
 

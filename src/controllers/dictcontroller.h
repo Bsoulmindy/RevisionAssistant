@@ -60,6 +60,7 @@ public:
     QString get_file_name() const;
     void setdict_file_name(const QString &newDict_file_name);
 
+    QByteArray get_dict_content_binary() const;
 signals:
     void fileProcessingLineWarning(const QString &output);
     void num_rowsChanged();

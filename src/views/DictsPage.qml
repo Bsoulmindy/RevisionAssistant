@@ -14,6 +14,8 @@ DictsPageUi {
     newButtonItem.onClicked: newDictDialog.open()
     defaultButtonItem.enabled: dictFilesController.default_file !== dictFilesController.selected_file
     defaultButtonItem.onClicked: dictFilesController.mark_default_database_file(dictFilesController.selected_file)
+    importButtonItem.onClicked: dictFilesController.import_database_file()
+    exportButtonItem.onClicked: dictFilesController.export_database_file()
 
 
     DictFilesController {

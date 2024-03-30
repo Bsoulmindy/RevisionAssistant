@@ -22,6 +22,7 @@ public:
     // more performant because it will save only once
     virtual void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) = 0;
     virtual QString get_file_name() = 0;
+    virtual QByteArray get_byte_array() = 0;
 };
 
 #endif // DICTREPOINTERFACE_H
