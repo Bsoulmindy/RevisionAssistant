@@ -364,5 +364,14 @@ void DictJsonRepo::create_empty_json_file(QString json_path) const
 
     QTextStream text_stream(&json_file);
     text_stream << bytes;
+
+#if defined(Q_OS_WASM)
+    EM_ASM(
+        FS.syncfs(false, function (err) {
+                if(err)
+                    console.error(err);
+            });
+        );
+#endif
 }
 
