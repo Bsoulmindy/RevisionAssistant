@@ -9,13 +9,24 @@
 #include <memory>
 #include "../exceptions/repo_exception.h"
 #include "../exceptions/run_out_of_entries.h"
+#include <QSettings>
+#include "dictfilescontroller.h"
 
 DictController::DictController(QObject *parent)
     : QObject{parent}
 {
-    m_dict_repo = DictRepoFactory::create_dict_repo(1, DictRepoEnum::Json);
-
+    QSettings settings;
+    QString default_file_name = settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString();
+    m_dict_repo = DictRepoFactory::create_dict_repo(get_file_name_without_extension(default_file_name), DictRepoEnum::Json);
+    m_dict_file_name = default_file_name;
     initInternalMemory();
+}
+
+QString get_dict_type_string(DictRepoEnum dict_type) {
+    switch(dict_type) {
+    case DictRepoEnum::Json:
+        return "json";
+    }
 }
 
 QVariantMap DictController::selectRandomQuestion()
@@ -352,6 +363,13 @@ QuestionResponseEntriesSet DictController::getCheckedQuestionsAndResponses()
     return QuestionResponseEntriesSet(std::move(checked_questions), std::move(checked_responses));
 }
 
+void DictController::change_dict(QString dict_name, DictRepoEnum dict_type)
+{
+    m_dict_repo = DictRepoFactory::create_dict_repo(dict_name, dict_type);
+    setdict_file_name(dict_name + "." + get_dict_type_string(dict_type));
+    initInternalMemory();
+}
+
 void DictController::initInternalMemory()
 {
     m_num_rows = 0;
@@ -422,4 +440,35 @@ void DictController::set_num_not_checked_responses(int newNum_not_checked_respon
         return;
     m_num_not_checked_responses = newNum_not_checked_responses;
     emit num_not_checked_responsesChanged();
+}
+
+QString DictController::get_file_name_without_extension(QString file_name) const
+{
+    auto list = file_name.split(".");
+    int s = list.size();
+    if(s == 1) return file_name;
+    QString name;
+    for(int i = 0; i < s - 1; i++) {
+        name += list[i];
+        if(i < s - 2) name += ".";
+    }
+    return name;
+}
+
+QString DictController::get_file_name() const
+{
+    return m_dict_file_name;
+}
+
+void DictController::setdict_file_name(const QString &newDict_file_name)
+{
+    if (m_dict_file_name == newDict_file_name)
+        return;
+    m_dict_file_name = newDict_file_name;
+    emit dict_file_nameChanged();
+}
+
+QByteArray DictController::get_dict_content_binary() const
+{
+    return m_dict_repo->get_byte_array();
 }

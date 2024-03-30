@@ -7,11 +7,12 @@
 class DictRepoFactory
 {
 public:
-    static std::unique_ptr<DictRepoInterface> create_dict_repo(int id, DictRepoEnum type);
+    static std::unique_ptr<DictRepoInterface> create_dict_repo(QString file_name, DictRepoEnum type);
+    static void create_dict_repo_from_binary(const QByteArray& binary, QString file_name);
+    static void rename_dict_repo(const QString& old_file_name, const QString& new_file_name);
 private:
-    static void appendTypeToFileName(QString& file_name, DictRepoEnum type);
-    static void appendIdToFileName(QString& file_name, int id);
     static void appendExtensionToFileName(QString& file_name, DictRepoEnum type);
+    static QString get_repos_dir() noexcept;
 };
 
 #endif // DICTREPOFACTORY_H

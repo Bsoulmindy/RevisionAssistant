@@ -9,4 +9,5 @@ qt_add_qml_module(custom_components
         DictEditListViewDelegate.qml
         FileSelectionStatus.qml
 	InfoDialog.qml
+	QML_FILES FileOptionListDelegate.qml
 )

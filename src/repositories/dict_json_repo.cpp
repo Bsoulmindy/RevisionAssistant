@@ -301,6 +301,16 @@ QuestionResponseEntry DictJsonRepo::select_by_id(int id)
     return QuestionResponseEntry(id, question, response, is_checked_question, is_checked_response);
 }
 
+QString DictJsonRepo::get_file_name()
+{
+    return m_json_path;
+}
+
+QByteArray DictJsonRepo::get_byte_array()
+{
+    return m_json_document.toJson(QJsonDocument::Compact);
+}
+
 void DictJsonRepo::save() const
 {
     if(m_json_document.isNull()) {
@@ -319,7 +329,7 @@ void DictJsonRepo::save() const
     }
 
     QTextStream file_stream(&json_file);
-    file_stream << m_json_document.toJson();
+    file_stream << m_json_document.toJson(QJsonDocument::Compact);
 
 #if defined(Q_OS_WASM)
     EM_ASM(
@@ -350,7 +360,7 @@ void DictJsonRepo::create_empty_json_file(QString json_path) const
 
     QJsonDocument empty_doc;
     empty_doc.setArray(QJsonArray());
-    auto bytes = empty_doc.toJson();
+    auto bytes = empty_doc.toJson(QJsonDocument::Compact);
 
     QTextStream text_stream(&json_file);
     text_stream << bytes;

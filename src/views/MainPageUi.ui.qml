@@ -3,6 +3,7 @@ import QtQuick.Controls.Material 6.5
 import QtQuick.Layouts
 import RevisionAssistant
 import CustomComponents
+import QtQuick.Controls 6.5
 
 Page {
     id: mainPage
@@ -23,6 +24,7 @@ Page {
     property alias rToqButtonItem: rToqButton
     property alias resetDialogItem: resetDialog
     property alias githubLinkItem: githubLink
+    property alias dictFileButtonItem: dictFileButton
 
     ToolBar {
         id: mainPageToolBar
@@ -39,6 +41,12 @@ Page {
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 16
+
+            Button {
+                id: dictFileButton
+                text: qsTr("Default")
+                Material.background: "transparent"
+            }
 
             ToolButton {
                 id: dictMenuButton
@@ -72,6 +80,7 @@ Page {
                     }
                 }
             }
+
             ToolButton {
                 id: optionsButton
                 width: 48

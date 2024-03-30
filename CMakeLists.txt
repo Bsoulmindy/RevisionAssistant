@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(RevisionAssistant VERSION 0.2.0 LANGUAGES CXX)
+project(RevisionAssistant VERSION 0.3.0 LANGUAGES CXX)
 
 # configuration file
 configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
@@ -49,6 +49,8 @@ qt_add_qml_module(RevisionAssistantApp
         src/views/DictAddPageUi.ui.qml
         src/views/DictProcessingPage.qml
         src/views/DictProcessingPageUi.ui.qml
+	src/views/DictsPage.qml
+	src/views/DictsPageUi.ui.qml
     RESOURCES resources.qrc
     SOURCES src/controllers/dictcontroller.h src/controllers/dictcontroller.cpp
             src/controllers/quizcontroller.h src/controllers/quizcontroller.cpp
@@ -65,6 +67,8 @@ qt_add_qml_module(RevisionAssistantApp
 	    src/exceptions/repo_exception.h
 	    src/exceptions/run_out_of_entries.h src/exceptions/run_out_of_entries.cpp
 	    SOURCES src/controllers/fileselectorcontroller.h src/controllers/fileselectorcontroller.cpp
+	    SOURCES src/controllers/dictfilescontroller.h src/controllers/dictfilescontroller.cpp
+	    SOURCES src/exceptions/fileexception.h src/exceptions/fileexception.cpp
 
 )
 

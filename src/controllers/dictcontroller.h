@@ -9,6 +9,7 @@
 #include "../repositories/dict_repo_interface.h"
 #include <memory>
 #include "../models/question_response_entries_set.h"
+#include "../models/dict_repo_enum.h"
 
 /**
  * @brief The DictController class
@@ -21,6 +22,7 @@ class DictController : public QObject
     Q_PROPERTY(int num_rows READ num_rows WRITE set_num_rows NOTIFY num_rowsChanged FINAL)
     Q_PROPERTY(int num_not_checked_questions READ num_not_checked_questions WRITE set_num_not_checked_questions NOTIFY num_not_checked_questionsChanged FINAL)
     Q_PROPERTY(int num_not_checked_responses READ num_not_checked_responses WRITE set_num_not_checked_responses NOTIFY num_not_checked_responsesChanged FINAL)
+    Q_PROPERTY(QString dict_file_name READ get_file_name WRITE setdict_file_name NOTIFY dict_file_nameChanged FINAL)
     QML_ELEMENT
 public:
     explicit DictController(QObject *parent = nullptr);
@@ -39,9 +41,12 @@ public:
     Q_INVOKABLE void uncheckResponseInDatabase(int id);
     Q_INVOKABLE void resetDict();
     Q_INVOKABLE void init();
+    Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;
     // TODO : add new method
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
     QuestionResponseEntriesSet getCheckedQuestionsAndResponses();
+
+    void change_dict(QString dict_name, DictRepoEnum dict_type);
 
     int num_rows() const;
     void set_num_rows(int newNum_rows);
@@ -52,12 +57,18 @@ public:
     int num_not_checked_responses() const;
     void set_num_not_checked_responses(int newNum_not_checked_responses);
 
+    QString get_file_name() const;
+    void setdict_file_name(const QString &newDict_file_name);
+
+    QByteArray get_dict_content_binary() const;
 signals:
     void fileProcessingLineWarning(const QString &output);
     void num_rowsChanged();
     void num_not_checked_questionsChanged();
     void num_not_checked_responsesChanged();
     void error(const QString &message);
+
+    void dict_file_nameChanged();
 
 private:
     std::unique_ptr<DictRepoInterface> m_dict_repo;
@@ -68,6 +79,7 @@ private:
     int m_num_rows;
     int m_num_not_checked_questions;
     int m_num_not_checked_responses;
+    QString m_dict_file_name;
 };
 
 #endif // DICTCONTROLLER_H
