@@ -30,6 +30,7 @@ public:
     Q_INVOKABLE void mark_default_database_file(QString file_name);
     Q_INVOKABLE void export_database_file();
     Q_INVOKABLE void import_database_file();
+    Q_INVOKABLE void rename_database_file(QString new_file_name);
     Q_INVOKABLE void init();
 
     DictController *dict_controller() const;
@@ -62,6 +63,7 @@ private:
     void detect_present_files();
     DictRepoEnum get_dict_type(QString full_path) const;
     QString get_file_name_wthout_path(QString file_path) const;
+    QString get_extension(QString file_name) const;
 
     DictController *m_dict_controller = nullptr;
     QString m_current_file;

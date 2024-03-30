@@ -16,6 +16,7 @@ DictsPageUi {
     defaultButtonItem.onClicked: dictFilesController.mark_default_database_file(dictFilesController.selected_file)
     importButtonItem.onClicked: dictFilesController.import_database_file()
     exportButtonItem.onClicked: dictFilesController.export_database_file()
+    renameButtonItem.onClicked: renameDictDialog.open()
 
 
     DictFilesController {
@@ -61,6 +62,35 @@ DictsPageUi {
 
         onAccepted: {
             dictFilesController.add_new_empty_file(newDictFileName.text, 0)
+        }
+    }
+
+    Dialog {
+        id: renameDictDialog
+        title: "New Dict Name"
+        anchors.centerIn: parent
+        width: 350
+        height: 200
+        contentItem: Item {
+            TextField {
+                id: renameDictFileName
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                placeholderText: "Dict Name"
+            }
+        }
+
+        standardButtons: Dialog.Ok | Dialog.Cancel
+
+        Overlay.modal: Rectangle {
+            color: "#000000"
+            opacity: 0.5
+        }
+
+        onAccepted: {
+            dictFilesController.rename_database_file(renameDictFileName.text)
         }
     }
 

@@ -28,6 +28,14 @@ void DictRepoFactory::create_dict_repo_from_binary(const QByteArray &binary, QSt
     file_stream << binary;
 }
 
+void DictRepoFactory::rename_dict_repo(const QString &old_file_name, const QString &new_file_name)
+{
+    QString file_dir = get_repos_dir();
+    if(!QFile::rename(file_dir + old_file_name, file_dir + new_file_name)) {
+        throw FileException("Cannot rename to : " + new_file_name);
+    }
+}
+
 void DictRepoFactory::appendExtensionToFileName(QString &file_name, DictRepoEnum type)
 {
     switch(type) {

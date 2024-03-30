@@ -22,6 +22,7 @@ Page {
     property alias defaultButtonItem: defaultButton
     property alias importButtonItem: importButton
     property alias exportButtonItem: exportButton
+    property alias renameButtonItem: renameButton
 
     ToolBar {
         id: dictsPageToolBar
@@ -54,7 +55,7 @@ Page {
 
     Rectangle {
         id: optionsListRect
-        height: 300
+        height: buttonsColumn.height
         color: "#333333"
         radius: 30
         anchors.verticalCenter: parent.verticalCenter
@@ -113,6 +114,14 @@ Page {
         Button {
             id: newButton
             text: qsTr("New")
+            Layout.preferredWidth: 117
+            Layout.preferredHeight: 52
+            Layout.fillWidth: true
+        }
+
+        Button {
+            id: renameButton
+            text: qsTr("Rename")
             Layout.preferredWidth: 117
             Layout.preferredHeight: 52
             Layout.fillWidth: true
