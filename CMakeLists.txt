@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(RevisionAssistant VERSION 0.2.0 LANGUAGES CXX)
+project(RevisionAssistant VERSION 0.3.0 LANGUAGES CXX)
 
 # configuration file
 configure_file(config/config.h.in ${CMAKE_SOURCE_DIR}/config/config.h)
