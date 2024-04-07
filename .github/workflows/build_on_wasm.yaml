@@ -76,3 +76,6 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           PRODUCTION: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' }}
           WORKING_DIRECTORY: ${{ steps.strings.outputs.build-output-dir }}
+          ALIAS_DOMAINS: |
+            revision-assistant.vercel.app
+          PR_PREVIEW_DOMAIN: "revision-assistant.vercel.app"
