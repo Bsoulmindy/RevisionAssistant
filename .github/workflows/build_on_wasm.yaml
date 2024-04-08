@@ -76,3 +76,6 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           PRODUCTION: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' }}
           WORKING_DIRECTORY: ${{ steps.strings.outputs.build-output-dir }}
+          ALIAS_DOMAINS: |
+            ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && 'revision-assistant.vercel.app' || 'revision-assistant-bsoulmindy-bsoulmindys-projects.vercel.app' }}
+          PR_PREVIEW_DOMAIN: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && 'revision-assistant.vercel.app' || 'revision-assistant-bsoulmindy-bsoulmindys-projects.vercel.app' }}
