@@ -67,6 +67,7 @@ Page {
             id: optionsList
             anchors.fill: parent
             clip: true
+            boundsBehavior: Flickable.StopAtBounds
             model: ListModel {
                 ListElement {
                     name: "Default (Current)"
