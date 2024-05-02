@@ -60,7 +60,7 @@ RowLayout {
             id: qText
             text: question
             anchors.left: qCheckBox.right
-            anchors.right: parent.right
+            anchors.right: qOptionsButton.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignLeft
@@ -70,6 +70,43 @@ RowLayout {
             anchors.topMargin: 0
             anchors.leftMargin: 5
             anchors.rightMargin: 5
+        }
+
+        ToolButton {
+            id: qOptionsButton
+            width: 32
+            text: qsTr("")
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.topMargin: 0
+            anchors.rightMargin: 5
+            icon.source: "qrc:/icons/menu.png"
+            display: AbstractButton.IconOnly
+
+            onClicked: {
+                qOptionsMenu.open()
+            }
+
+            Menu {
+                id: qOptionsMenu
+                y: qOptionsButton.height
+
+                MenuItem {
+                    id: qMenuItemEdit
+                    text: "Edit"
+                    height: 36
+                    icon.source: "qrc:/icons/edit.png"
+                }
+
+                MenuItem {
+                    id: qMenuItemRemove
+                    text: "Remove"
+                    height: 36
+                    icon.source: "qrc:/icons/remove.png"
+                }
+            }
         }
     }
 
@@ -106,7 +143,7 @@ RowLayout {
             id: rText
             text: response
             anchors.left: rCheckBox.right
-            anchors.right: parent.right
+            anchors.right: rOptionsButton.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignLeft
@@ -115,6 +152,43 @@ RowLayout {
             anchors.topMargin: 0
             anchors.leftMargin: 5
             anchors.rightMargin: 5
+        }
+
+        ToolButton {
+            id: rOptionsButton
+            width: 32
+            text: qsTr("")
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.topMargin: 0
+            anchors.rightMargin: 5
+            icon.source: "qrc:/icons/menu.png"
+            display: AbstractButton.IconOnly
+
+            onClicked: {
+                rOptionsMenu.open()
+            }
+
+            Menu {
+                id: rOptionsMenu
+                y: rOptionsButton.height
+
+                MenuItem {
+                    id: rMenuItemEdit
+                    text: "Edit"
+                    height: 36
+                    icon.source: "qrc:/icons/edit.png"
+                }
+
+                MenuItem {
+                    id: rMenuItemRemove
+                    text: "Remove"
+                    height: 36
+                    icon.source: "qrc:/icons/remove.png"
+                }
+            }
         }
     }
 }
