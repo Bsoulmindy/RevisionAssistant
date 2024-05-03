@@ -60,7 +60,7 @@ RowLayout {
             id: qText
             text: question
             anchors.left: qCheckBox.right
-            anchors.right: qOptionsButton.left
+            anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignLeft
@@ -69,42 +69,45 @@ RowLayout {
             anchors.bottomMargin: 0
             anchors.topMargin: 0
             anchors.leftMargin: 5
-            anchors.rightMargin: 5
+            anchors.rightMargin: 0
+        }
+    }
+
+    ToolButton {
+        id: optionsButton
+        width: 32
+        text: qsTr("")
+        icon.source: "qrc:/icons/menu.png"
+        Layout.fillHeight: true
+        display: AbstractButton.IconOnly
+
+        onClicked: {
+            optionsMenu.open()
         }
 
-        ToolButton {
-            id: qOptionsButton
-            width: 32
-            text: qsTr("")
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            anchors.topMargin: 0
-            anchors.rightMargin: 5
-            icon.source: "qrc:/icons/menu.png"
-            display: AbstractButton.IconOnly
+        Menu {
+            id: optionsMenu
+            y: optionsButton.height
 
-            onClicked: {
-                qOptionsMenu.open()
+            MenuItem {
+                id: menuItemEdit
+                text: "Edit"
+                height: 36
+                icon.source: "qrc:/icons/edit.png"
+
+                onClicked: {
+                    editDialog.open()
+                }
             }
 
-            Menu {
-                id: qOptionsMenu
-                y: qOptionsButton.height
+            MenuItem {
+                id: menuItemRemove
+                text: "Remove"
+                height: 36
+                icon.source: "qrc:/icons/remove.png"
 
-                MenuItem {
-                    id: qMenuItemEdit
-                    text: "Edit"
-                    height: 36
-                    icon.source: "qrc:/icons/edit.png"
-                }
-
-                MenuItem {
-                    id: qMenuItemRemove
-                    text: "Remove"
-                    height: 36
-                    icon.source: "qrc:/icons/remove.png"
+                onClicked: {
+                    removeDialog.open()
                 }
             }
         }
@@ -143,7 +146,7 @@ RowLayout {
             id: rText
             text: response
             anchors.left: rCheckBox.right
-            anchors.right: rOptionsButton.left
+            anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignLeft
@@ -151,44 +154,83 @@ RowLayout {
             anchors.bottomMargin: 0
             anchors.topMargin: 0
             anchors.leftMargin: 5
-            anchors.rightMargin: 5
+            anchors.rightMargin: 0
+        }
+    }
+
+    Dialog {
+        id: editDialog
+        title: "Add"
+        anchors.centerIn: parent
+        width: 350
+        height: 300
+        contentItem: Item {
+            TextField {
+                id: qEditDialog
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 10
+                placeholderText: "Question"
+                text: question
+            }
+
+            TextField {
+                id: rEditDialog
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: qEditDialog.bottom
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 20
+                placeholderText: "Response"
+                text: response
+            }
         }
 
-        ToolButton {
-            id: rOptionsButton
-            width: 32
-            text: qsTr("")
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            anchors.topMargin: 0
-            anchors.rightMargin: 5
-            icon.source: "qrc:/icons/menu.png"
-            display: AbstractButton.IconOnly
+        standardButtons: Dialog.Ok | Dialog.Cancel
 
-            onClicked: {
-                rOptionsMenu.open()
+        Overlay.modal: Rectangle {
+            color: "#000000"
+            opacity: 0.5
+        }
+
+        onAccepted: {
+
+        }
+    }
+
+    Dialog {
+        id: removeDialog
+        title: "Warning"
+        anchors.centerIn: parent
+        width: 350
+        height: 200
+        contentItem: Item {
+            PrimaryText {
+                height: contentHeight
+                text: "This action will delete BOTH the question and the response, are you sure you want to proceed?"
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignLeft
+                anchors.rightMargin: 20
+                anchors.leftMargin: 20
+                anchors.bottomMargin: 20
+                anchors.topMargin: 20
+                font.pixelSize: 13
             }
+        }
 
-            Menu {
-                id: rOptionsMenu
-                y: rOptionsButton.height
+        standardButtons: Dialog.Ok | Dialog.Cancel
 
-                MenuItem {
-                    id: rMenuItemEdit
-                    text: "Edit"
-                    height: 36
-                    icon.source: "qrc:/icons/edit.png"
-                }
+        Overlay.modal: Rectangle {
+            color: "#000000"
+            opacity: 0.5
+        }
 
-                MenuItem {
-                    id: rMenuItemRemove
-                    text: "Remove"
-                    height: 36
-                    icon.source: "qrc:/icons/remove.png"
-                }
-            }
+        onAccepted: {
+
         }
     }
 }

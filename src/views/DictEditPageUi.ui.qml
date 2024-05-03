@@ -15,6 +15,7 @@ Page {
     property alias listViewItem: listView
     property alias searchTextFieldItem: searchTextField
     property alias searchButtonItem: searchButton
+    property alias addButtonItem: addButton
 
     ToolBar {
         id: dictEditPageToolBar
