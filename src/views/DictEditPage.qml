@@ -21,4 +21,52 @@ DictEditPageUi {
     StackView.onRemoved: {
         dictController.init()
     }
+    addButtonItem.onClicked: {
+        addDialog.open()
+    }
+
+    Dialog {
+        id: addDialog
+        title: "Add"
+        anchors.centerIn: parent
+        width: 350
+        height: 300
+        contentItem: Item {
+            TextField {
+                id: qAddDialog
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 10
+                placeholderText: "Question"
+            }
+
+            TextField {
+                id: rAddDialog
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: qAddDialog.bottom
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 20
+                placeholderText: "Response"
+            }
+        }
+
+        standardButtons: Dialog.Ok | Dialog.Cancel
+
+        Overlay.modal: Rectangle {
+            color: "#000000"
+            opacity: 0.5
+        }
+
+        onAccepted: {
+            if(dictController.insertNewEntry(qAddDialog.text, rAddDialog.text)) {
+                listViewItem.model = dictController.getAllRecords(searchTextFieldItem.text)
+                listViewItem.positionViewAtEnd()
+            }
+        }
+    }
 }

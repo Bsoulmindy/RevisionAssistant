@@ -16,5 +16,6 @@
         <file>icons/revision_assistant_icon.png</file>
         <file>fonts/stratum2demium.ttf</file>
         <file>icons/revert.png</file>
+        <file>icons/remove.png</file>
     </qresource>
 </RCC>

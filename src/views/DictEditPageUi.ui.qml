@@ -15,6 +15,7 @@ Page {
     property alias listViewItem: listView
     property alias searchTextFieldItem: searchTextField
     property alias searchButtonItem: searchButton
+    property alias addButtonItem: addButton
 
     ToolBar {
         id: dictEditPageToolBar
@@ -53,7 +54,7 @@ Page {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: searchBox.bottom
-        anchors.bottom: parent.bottom
+        anchors.bottom: addButton.top
         anchors.topMargin: 30
         anchors.rightMargin: 30
         anchors.leftMargin: 30
@@ -144,5 +145,19 @@ Page {
                 Material.background: "#00000000"
             }
         }
+    }
+
+    Button {
+        id: addButton
+        y: 776
+        height: 52
+        text: qsTr("Add")
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: 30
+        anchors.rightMargin: 30
+        anchors.bottomMargin: 30
+        Material.background: Material.primaryColor
     }
 }
