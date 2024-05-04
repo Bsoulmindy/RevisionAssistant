@@ -61,10 +61,6 @@ In my example, I chose `|` as the separator. Each line must have exactly 1 separ
 
 After creating the text file, you can import it in the application by specifying both the location of the text file and the separator chosen.
 
-# Upcoming Features
-
--   `CRUD Dict data directly from the application.` Currently, users can only modify progression, but not the data directly in the application.
-
 # Credits
 
 -   [Qt Framework](https://www.qt.io/) for providing an easy way to code GUI applications on multiple platforms
