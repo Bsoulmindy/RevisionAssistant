@@ -290,6 +290,38 @@ void DictController::init()
     initInternalMemory();
 }
 
+bool DictController::editQuestionResponse(int id, const QString new_question, const QString new_response)
+{
+    try {
+        m_dict_repo->edit_entry(id, new_question, new_response);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+    return true;
+}
+
+bool DictController::removeEntry(int id)
+{
+    try {
+        m_dict_repo->delete_by_id(id);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+    return true;
+}
+
 void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
 {
     try {
@@ -453,6 +485,24 @@ QString DictController::get_file_name_without_extension(QString file_name) const
         if(i < s - 2) name += ".";
     }
     return name;
+}
+
+bool DictController::insertNewEntry(const QString question, const QString response, bool isQuestionChecked, bool isResponseChecked)
+{
+    QuestionResponseEntry entry(-1, question, response, isQuestionChecked, isResponseChecked);
+    try {
+        m_dict_repo->insert_entry(entry);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+
+    return true;
 }
 
 QString DictController::get_file_name() const

@@ -46,6 +46,8 @@ public:
     QuestionResponseEntry select_by_id(int id) override;
     QString get_file_name() override;
     QByteArray get_byte_array() override;
+    void delete_by_id(int id) override;
+    void edit_entry(int id, const QString& question, const QString& response) override;
 private:
     // Save the changes to the json file
     // Called every time when a change has been made to the document

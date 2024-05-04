@@ -198,7 +198,10 @@ RowLayout {
         }
 
         onAccepted: {
-
+            if(dictController.editQuestionResponse(modelDataId, qEditDialog.text, rEditDialog.text)) {
+                question = qEditDialog.text;
+                response = rEditDialog.text;
+            }
         }
     }
 
@@ -230,7 +233,9 @@ RowLayout {
         }
 
         onAccepted: {
-
+            if(dictController.removeEntry(modelDataId)) {
+                isVisible = false;
+            }
         }
     }
 }

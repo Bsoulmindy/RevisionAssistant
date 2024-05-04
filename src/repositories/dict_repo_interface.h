@@ -18,11 +18,19 @@ public:
     virtual QuestionResponseEntry select_by_id(int id) = 0;
     // If you want to insert multiple entries, please use the method <code>insert_multiple_entries</code>
     // Not doing so will result in multiple saves for each insertion
+    // Field 'Id' will be ignored
     virtual void insert_entry(const QuestionResponseEntry& entry) = 0;
     // more performant because it will save only once
     virtual void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) = 0;
     virtual QString get_file_name() = 0;
     virtual QByteArray get_byte_array() = 0;
+    /**
+     * @brief
+     * Given an index i that satisfy the requirement : i > id
+     * Then after executing this method: i -> i - 1
+     */
+    virtual void delete_by_id(int id) = 0;
+    virtual void edit_entry(int id, const QString& question, const QString& response) = 0;
 };
 
 #endif // DICTREPOINTERFACE_H

@@ -63,7 +63,10 @@ DictEditPageUi {
         }
 
         onAccepted: {
-
+            if(dictController.insertNewEntry(qAddDialog.text, rAddDialog.text)) {
+                listViewItem.model = dictController.getAllRecords(searchTextFieldItem.text)
+                listViewItem.positionViewAtEnd()
+            }
         }
     }
 }

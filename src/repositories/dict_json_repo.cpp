@@ -311,6 +311,48 @@ QByteArray DictJsonRepo::get_byte_array()
     return m_json_document.toJson(QJsonDocument::Compact);
 }
 
+void DictJsonRepo::delete_by_id(int id)
+{
+    if(m_json_document.isNull()) {
+        throw FileInvalidJsonException("The JSON Document is invalid!");
+    }
+    if(!m_json_document.isArray()) {
+        throw FileInvalidJsonException("Invalid syntax of JSON!");
+    }
+    auto entries_array = m_json_document.array();
+    if(id >= entries_array.size() || id < 0) {
+        throw JsonException("ID " + QString::number(id) + " doesn't exist in JSON");
+    }
+    entries_array.removeAt(id);
+    m_json_document.setArray(entries_array);
+
+    save();
+}
+
+void DictJsonRepo::edit_entry(int id, const QString& question, const QString& response)
+{
+    if(m_json_document.isNull()) {
+        throw FileInvalidJsonException("The JSON Document is invalid!");
+    }
+    if(!m_json_document.isArray()) {
+        throw FileInvalidJsonException("Invalid syntax of JSON!");
+    }
+    auto entries_array = m_json_document.array();
+    if(id >= entries_array.size()) {
+        throw JsonException("ID " + QString::number(id) + " doesn't exist in JSON");
+    }
+    auto entry_object = entries_array[id].toObject();
+    if(!entry_object["question"].isString() || !entry_object["response"].isString()) {
+        throw ObjectInvalidJsonException("Invalid JSON Object ID " + QString::number(id), {id});
+    }
+    entry_object["question"] = question;
+    entry_object["response"] = response;
+    entries_array[id] = entry_object;
+    m_json_document.setArray(entries_array);
+
+    save();
+}
+
 void DictJsonRepo::save() const
 {
     if(m_json_document.isNull()) {
