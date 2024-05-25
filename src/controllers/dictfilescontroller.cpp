@@ -5,18 +5,7 @@
 #include <QStandardPaths>
 #include <QSettings>
 #include <QFileDialog>
-
-#if defined(Q_OS_WASM)
-#include <emscripten.h>
-#endif
-
-QString get_directory_path() noexcept {
-#if defined(Q_OS_WASM)
-    return "/src/";
-#else
-    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
-#endif
-}
+#include "../utils/filesystemutils.h"
 
 DictFilesController::DictFilesController(QObject *parent)
     : QObject{parent}
@@ -102,18 +91,7 @@ void DictFilesController::remove_database_file(QString file_name)
         emit error("Cannot remove the default dictionnary! Please mark another dictionnary to default before removing it.");
         return;
     }
-    QString file_dir = get_directory_path();
-    QFile file(file_dir + file_name);
-    file.remove();
-
-#if defined(Q_OS_WASM)
-    EM_ASM(
-        FS.syncfs(false, function (err) {
-                if(err)
-                    console.error(err);
-            });
-        );
-#endif
+    FileSystemUtils::remove_file(file_name);
     setselected_file(m_current_file);
     detect_present_files();
 }
@@ -127,7 +105,7 @@ void DictFilesController::mark_default_database_file(QString file_name)
 
 void DictFilesController::export_database_file()
 {
-    QString file_dir = get_directory_path();
+    QString file_dir = FileSystemUtils::get_storage_dir();
     QFile file(file_dir + m_selected_file);
     if(!file.open(QIODevice::ReadOnly)) {
         emit error("Cannot export file : " + m_selected_file);
@@ -205,7 +183,7 @@ void DictFilesController::setcurrent_file(const QString &newCurrent_file)
 void DictFilesController::detect_present_files()
 {
     m_files.clear();
-    QString dir_path = get_directory_path();
+    QString dir_path = FileSystemUtils::get_storage_dir();
     QStringList file_list = QDir(dir_path).entryList();
     for(const QString& file : file_list) {
         if(file == "." || file == "..") continue;

@@ -23,6 +23,9 @@ Window {
             errorDialog.dialogText.text = message;
             errorDialog.open();
         }
+        Component.onCompleted: {
+            init()
+        }
     }
 
     FontLoader {

@@ -9,10 +9,7 @@
 #include <QJsonValue>
 #include <QDir>
 #include <QSettings>
-
-#if defined(Q_OS_WASM)
-#include <emscripten.h>
-#endif
+#include "../utils/filesystemutils.h"
 
 DictJsonRepo::DictJsonRepo(QString json_path)
 {
@@ -373,14 +370,7 @@ void DictJsonRepo::save() const
     QTextStream file_stream(&json_file);
     file_stream << m_json_document.toJson(QJsonDocument::Compact);
 
-#if defined(Q_OS_WASM)
-    EM_ASM(
-        FS.syncfs(false, function (err) {
-            if(err)
-                console.error(err);
-        });
-    );
-#endif
+    FileSystemUtils::save_changes_to_storage();
 }
 
 void DictJsonRepo::create_empty_json_file(QString json_path) const
@@ -407,13 +397,6 @@ void DictJsonRepo::create_empty_json_file(QString json_path) const
     QTextStream text_stream(&json_file);
     text_stream << bytes;
 
-#if defined(Q_OS_WASM)
-    EM_ASM(
-        FS.syncfs(false, function (err) {
-                if(err)
-                    console.error(err);
-            });
-        );
-#endif
+    FileSystemUtils::save_changes_to_storage();
 }
 

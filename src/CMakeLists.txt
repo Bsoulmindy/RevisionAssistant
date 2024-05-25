@@ -35,6 +35,7 @@ qt_add_qml_module(app
 	    SOURCES controllers/fileselectorcontroller.h controllers/fileselectorcontroller.cpp
 	    SOURCES controllers/dictfilescontroller.h controllers/dictfilescontroller.cpp
 	    SOURCES exceptions/fileexception.h exceptions/fileexception.cpp
+	    SOURCES utils/filesystemutils.h utils/filesystemutils.cpp
 )
 target_link_libraries(app
     PUBLIC Qt6::Quick Qt6::Core Qt6::Widgets custom_componentsplugin
