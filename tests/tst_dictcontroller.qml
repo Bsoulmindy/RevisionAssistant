@@ -36,7 +36,7 @@ TestCase {
 
     function test_search_term_when_numbers_low() {
         var list = dictController_basic.getAllRecords("question")
-        compare(list.length, 3, "Should have 3 questions numbered from 1 to 3");
+        compare(list.length, 10, "Should have 10 questions numbered from 1 to 10");
     }
 
     function test_search_term_when_numbers_high() {

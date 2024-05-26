@@ -25,7 +25,7 @@ public slots:
         auto basic_dict_repo = DictRepoFactory::create_dict_repo("test_basic_dict", DictRepoEnum::Json);
         basic_dict_repo->delete_all();
         std::list<QuestionResponseEntry> basic_list;
-        for(int i = 1; i <= 3; i++) {
+        for(int i = 1; i <= 10; i++) {
             basic_list.emplace_back(i, "question #" + QString::number(i), "response #" + QString::number(i), false, false);
         }
         basic_dict_repo->insert_multiple_entries(basic_list);
