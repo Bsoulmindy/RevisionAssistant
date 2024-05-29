@@ -105,16 +105,29 @@ void DictFilesController::mark_default_database_file(QString file_name)
 
 void DictFilesController::export_database_file()
 {
+    export_database_file(false);
+}
+
+void DictFilesController::export_database_file(bool useMock)
+{
     QString file_dir = FileSystemUtils::get_storage_dir();
     QFile file(file_dir + m_selected_file);
     if(!file.open(QIODevice::ReadOnly)) {
         emit error("Cannot export file : " + m_selected_file);
         return;
     }
-    QFileDialog::saveFileContent(file.readAll(), m_selected_file);
+    if(useMock)
+        FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + m_selected_file + ".export", file.readAll());
+    else
+        QFileDialog::saveFileContent(file.readAll(), m_selected_file);
 }
 
 void DictFilesController::import_database_file()
+{
+    import_database_file(false);
+}
+
+void DictFilesController::import_database_file(bool useMock)
 {
     auto fileContentReady = [&](const QString &filePath, const QByteArray &fileContent) {
         if (filePath.isEmpty()) {
@@ -130,7 +143,14 @@ void DictFilesController::import_database_file()
 
         detect_present_files();
     };
-    QFileDialog::getOpenFileContent("*",  fileContentReady);
+
+    if(useMock)
+        FileSystemUtils::read_file_with_function(
+            FileSystemUtils::get_storage_dir() + m_selected_file + ".export",
+            FileSystemUtils::get_storage_dir() + "mock.json",
+            fileContentReady);
+    else
+        QFileDialog::getOpenFileContent("*",  fileContentReady);
 }
 
 void DictFilesController::rename_database_file(QString new_file_name)
@@ -150,6 +170,7 @@ void DictFilesController::rename_database_file(QString new_file_name)
     if(was_default) {
         mark_default_database_file(new_file_name);
     }
+    select_file(new_file_name);
 
     detect_present_files();
 }
@@ -200,9 +221,12 @@ void DictFilesController::detect_present_files()
 
 QString DictFilesController::get_file_name_without_extension(QString full_path) const
 {
-    auto list = full_path.split(".");
+    // Filtering folders
+    QStringList folders = full_path.split(QDir::separator());
+    // Filtering extension "."
+    QStringList list = folders.back().split(".");
     int s = list.size();
-    if(s == 1) return full_path;
+    if(s == 1) return list.back();
     QString name;
     for(int i = 0; i < s - 1; i++) {
         name += list[i];

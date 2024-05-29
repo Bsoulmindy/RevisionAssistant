@@ -41,3 +41,4 @@ target_link_libraries(app
     PUBLIC Qt6::Quick Qt6::Core Qt6::Widgets custom_componentsplugin
 )
 include_directories(controllers)
+include_directories(utils)

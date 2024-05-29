@@ -47,9 +47,7 @@ public slots:
 
     void cleanupTestCase()
     {
-        FileSystemUtils::remove_file("test_empty_dict.json");
-        FileSystemUtils::remove_file("test_basic_dict.json");
-        FileSystemUtils::remove_file("test_large_dict.json");
+        FileSystemUtils::remove_all_files();
     }
 };
 

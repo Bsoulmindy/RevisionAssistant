@@ -32,6 +32,7 @@ qt_add_qml_module(RevisionAssistantApp_Tests
     VERSION 1.0
     QML_FILES tests/tst_dictcontroller.qml
     QML_FILES tests/tst_quizcontroller.qml
+    tests/tst_dictfilescontroller.qml
 )
 
 set_target_properties(RevisionAssistantApp_Tests PROPERTIES
