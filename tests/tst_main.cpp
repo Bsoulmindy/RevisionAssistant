@@ -39,6 +39,51 @@ public slots:
         }
         large_dict_repo->insert_multiple_entries(large_list);
         ////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+        /// Preparing a mapper file (question <-> response)
+        // "test_mapper_basic.txt" whihc is valid file with 10 lines
+        {
+            QString content;
+            QTextStream stream(&content);
+            for (int i = 1; i <= 10; ++i) {
+                stream << "question " << i << "|response " << i << "\n";
+            }
+            QByteArray bytes = content.toUtf8();
+            FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_basic.txt", bytes);
+        }
+
+        // "test_mapper_3parts.txt" whihc is invalid file with 2 separators (3 parts) each line
+        {
+            QString content;
+            QTextStream stream(&content);
+            for (int i = 1; i <= 10; ++i) {
+                stream << "question " << i << "|res|ponse " << i << "\n";
+            }
+            QByteArray bytes = content.toUtf8();
+            FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_3parts.txt", bytes);
+        }
+
+        // "test_mapper_1part.txt" whihc is invalid file with 0 separator (1 part) each line
+        {
+            QString content;
+            QTextStream stream(&content);
+            for (int i = 1; i <= 10; ++i) {
+                stream << "question " << i << " response " << i << "\n";
+            }
+            QByteArray bytes = content.toUtf8();
+            FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_1part.txt", bytes);
+        }
+
+        // "test_mapper_empty.txt" whihc is invalid file with empty lines
+        {
+            QString content;
+            QTextStream stream(&content);
+            for (int i = 1; i <= 10; ++i) {
+                stream << "\n";
+            }
+            QByteArray bytes = content.toUtf8();
+            FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_empty.txt", bytes);
+        }
     }
 
     void qmlEngineAvailable(QQmlEngine *engine)

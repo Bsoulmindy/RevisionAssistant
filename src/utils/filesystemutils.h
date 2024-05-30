@@ -16,6 +16,7 @@ public:
     static void write_file(QString file_path, QByteArray bytes);
     static void read_file_with_function(QString file_path, QString new_file_path, std::function<void(const QString&, const QByteArray&)> callback);
     Q_INVOKABLE bool is_file_exist_from_standard(const QString file_path);
+    Q_INVOKABLE QString get_dir();
     static void remove_all_files();
 };
 

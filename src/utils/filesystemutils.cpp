@@ -93,6 +93,11 @@ bool FileSystemUtils::is_file_exist_from_standard(const QString file_path) {
     return fileInfo.exists() && fileInfo.isFile();
 }
 
+QString FileSystemUtils::get_dir()
+{
+    return FileSystemUtils::get_storage_dir();
+}
+
 void FileSystemUtils::remove_all_files()
 {
     QString file_dir = FileSystemUtils::get_storage_dir();
