@@ -18,16 +18,24 @@ if(EMSCRIPTEN)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fwasm-exceptions")
 endif()
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core Widgets QuickTest)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core Widgets QuickTest Test)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
 
 qt_add_executable(RevisionAssistantApp_Tests
     tests/tst_main.cpp
+    tests/testgroup/tst_group_interface.h
+    tests/testgroup/tst_dict_repo_factory.cpp
+    tests/tst_setup.h tests/tst_setup.cpp
+    tests/testgroup/tst_dict_repo_factory.h
+)
+qt_add_executable(RevisionAssistantApp_QMLTests
+    tests/tst_qml_main.cpp
+    tests/tst_setup.h tests/tst_setup.cpp
 )
 
-qt_add_qml_module(RevisionAssistantApp_Tests
+qt_add_qml_module(RevisionAssistantApp_QMLTests
     URI RevisionAssistantAppTests
     VERSION 1.0
     QML_FILES tests/tst_dictcontroller.qml
@@ -37,17 +45,23 @@ qt_add_qml_module(RevisionAssistantApp_Tests
     QML_FILES tests/tst_fileselectorcontroller.qml
 )
 
-set_target_properties(RevisionAssistantApp_Tests PROPERTIES
+set_target_properties(RevisionAssistantApp_QMLTests PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
 
 target_link_libraries(RevisionAssistantApp_Tests PRIVATE
+    Qt6::Core
+    Qt6::Quick
+    Qt6::Test
+    Qt6::Widgets appplugin custom_componentsplugin
+)
+target_link_libraries(RevisionAssistantApp_QMLTests PRIVATE
     Qt6::QuickTest
     Qt6::Quick Qt6::Core Qt6::Widgets appplugin custom_componentsplugin
 )
 
-install(TARGETS RevisionAssistantApp_Tests
+install(TARGETS RevisionAssistantApp_QMLTests RevisionAssistantApp_Tests
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -55,10 +69,16 @@ install(TARGETS RevisionAssistantApp_Tests
 
 qt_generate_deploy_app_script(
     TARGET RevisionAssistantApp_Tests
-    OUTPUT_SCRIPT deploy_script
+    OUTPUT_SCRIPT deploy_script_tests
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
-install(SCRIPT ${deploy_script})
+install(SCRIPT ${deploy_script_tests})
+qt_generate_deploy_app_script(
+    TARGET RevisionAssistantApp_QMLTests
+    OUTPUT_SCRIPT deploy_script_qmltests
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script_qmltests})
 
 add_subdirectory(src/CustomComponents)
 add_subdirectory(src)
