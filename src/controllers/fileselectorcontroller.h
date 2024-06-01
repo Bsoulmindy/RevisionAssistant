@@ -15,6 +15,8 @@ public:
     Q_INVOKABLE void openFile(QString filter);
     Q_INVOKABLE QByteArray getFileBytes();
 
+    Q_INVOKABLE void openFile(QString filter, bool useMock);
+
     QString file_name() const;
     void setFile_name(const QString &newFile_name);
 signals:

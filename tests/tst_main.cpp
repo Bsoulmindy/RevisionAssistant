@@ -41,7 +41,7 @@ public slots:
         ////////////////////////////////////////////////////////////////////////////////////////////
         ///
         /// Preparing a mapper file (question <-> response)
-        // "test_mapper_basic.txt" whihc is valid file with 10 lines
+        // "test_mapper_basic.txt" which is valid file with 10 lines
         {
             QString content;
             QTextStream stream(&content);
@@ -52,7 +52,7 @@ public slots:
             FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_basic.txt", bytes);
         }
 
-        // "test_mapper_3parts.txt" whihc is invalid file with 2 separators (3 parts) each line
+        // "test_mapper_3parts.txt" which is invalid file with 2 separators (3 parts) each line
         {
             QString content;
             QTextStream stream(&content);
@@ -63,7 +63,7 @@ public slots:
             FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_3parts.txt", bytes);
         }
 
-        // "test_mapper_1part.txt" whihc is invalid file with 0 separator (1 part) each line
+        // "test_mapper_1part.txt" which is invalid file with 0 separator (1 part) each line
         {
             QString content;
             QTextStream stream(&content);
@@ -74,7 +74,7 @@ public slots:
             FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_1part.txt", bytes);
         }
 
-        // "test_mapper_empty.txt" whihc is invalid file with empty lines
+        // "test_mapper_empty.txt" which is invalid file with empty lines
         {
             QString content;
             QTextStream stream(&content);
