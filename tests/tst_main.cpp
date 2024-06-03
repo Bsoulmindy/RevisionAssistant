@@ -2,6 +2,7 @@
 #include <QTest>
 #include "tst_setup.h"
 #include "testgroup/tst_dict_repo_factory.h"
+#include "testgroup/tst_dict_json_repo.h"
 
 class TestSuiteMain: public QObject
 {
@@ -10,6 +11,7 @@ class TestSuiteMain: public QObject
 public:
     TestSuiteMain() {
         m_test_groups.push_back(std::make_unique<DictRepoFactoryTest>());
+        m_test_groups.push_back(std::make_unique<DictJSONRepoTest>());
     }
 
 private:
@@ -22,14 +24,22 @@ private slots:
         m_setup.global_preparation();
     }
 
-    void dictRepoInterfaceTest()
+    void dictRepoFactoryTest()
     {
         try {
             m_test_groups.at(0)->run_tests();
         } catch (std::exception& e) {
             QFAIL(e.what());
         }
+    }
 
+    void dictJsonRepoTest()
+    {
+        try {
+            m_test_groups.at(1)->run_tests();
+        } catch (std::exception& e) {
+            QFAIL(e.what());
+        }
     }
 
     void cleanup()

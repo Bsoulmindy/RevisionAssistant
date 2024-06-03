@@ -29,6 +29,7 @@ qt_add_executable(RevisionAssistantApp_Tests
     tests/testgroup/tst_dict_repo_factory.cpp
     tests/tst_setup.h tests/tst_setup.cpp
     tests/testgroup/tst_dict_repo_factory.h
+    tests/testgroup/tst_dict_json_repo.h tests/testgroup/tst_dict_json_repo.cpp
 )
 qt_add_executable(RevisionAssistantApp_QMLTests
     tests/tst_qml_main.cpp
