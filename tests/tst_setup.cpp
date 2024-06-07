@@ -40,7 +40,7 @@ void Setup::global_preparation()
             stream << "question " << i << "|response " << i << "\n";
         }
         QByteArray bytes = content.toUtf8();
-        FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_basic.txt", bytes);
+        FileSystemUtils::write_file("test_mapper_basic.txt", bytes);
     }
 
     // "test_mapper_3parts.txt" which is invalid file with 2 separators (3 parts) each line
@@ -51,7 +51,7 @@ void Setup::global_preparation()
             stream << "question " << i << "|res|ponse " << i << "\n";
         }
         QByteArray bytes = content.toUtf8();
-        FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_3parts.txt", bytes);
+        FileSystemUtils::write_file("test_mapper_3parts.txt", bytes);
     }
 
     // "test_mapper_1part.txt" which is invalid file with 0 separator (1 part) each line
@@ -62,7 +62,7 @@ void Setup::global_preparation()
             stream << "question " << i << " response " << i << "\n";
         }
         QByteArray bytes = content.toUtf8();
-        FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_1part.txt", bytes);
+        FileSystemUtils::write_file("test_mapper_1part.txt", bytes);
     }
 
     // "test_mapper_empty.txt" which is invalid file with empty lines
@@ -73,7 +73,7 @@ void Setup::global_preparation()
             stream << "\n";
         }
         QByteArray bytes = content.toUtf8();
-        FileSystemUtils::write_file(FileSystemUtils::get_storage_dir() + "test_mapper_empty.txt", bytes);
+        FileSystemUtils::write_file("test_mapper_empty.txt", bytes);
     }
 }
 

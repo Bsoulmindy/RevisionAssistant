@@ -66,7 +66,7 @@ bool FileSystemUtils::remove_file(const QString file_name)
 }
 
 void FileSystemUtils::write_file(QString file_path, QByteArray bytes) {
-    QFile file(file_path);
+    QFile file(FileSystemUtils::get_storage_dir() + file_path);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(bytes);
         file.close();
@@ -77,14 +77,15 @@ void FileSystemUtils::write_file(QString file_path, QByteArray bytes) {
     }
 }
 
-void FileSystemUtils::read_file_with_function(QString file_path, QString new_file_path, std::function<void (const QString &, const QByteArray &)> callback) {
-    QFile file(file_path);
+void FileSystemUtils::read_file_with_function(QString file_path_bytes, QString file_path_callback, std::function<void (const QString &, const QByteArray &)> callback) {
+    file_path_bytes = FileSystemUtils::get_storage_dir() + file_path_bytes;
+    QFile file(file_path_bytes);
     if (file.open(QIODevice::ReadOnly)) {
         QByteArray bytes = file.readAll();
         file.close();
-        callback(new_file_path, bytes);
+        callback(FileSystemUtils::get_storage_dir() + file_path_callback, bytes);
     } else {
-        qCritical() << "Could not open file for reading:" << file_path << "-" << file.errorString();
+        qCritical() << "Could not open file for reading:" << file_path_bytes << "-" << file.errorString();
     }
 }
 

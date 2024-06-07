@@ -24,8 +24,8 @@ void FileSelectorController::openFile(QString filter, bool useMock)
     };
     if(useMock)
         FileSystemUtils::read_file_with_function(
-            FileSystemUtils::get_storage_dir() + "test_mapper_basic.txt",
-            FileSystemUtils::get_storage_dir() + "test_mapper_basic.txt",
+            "test_mapper_basic.txt",
+            "test_mapper_basic.txt",
             fileContentReady);
     else
         QFileDialog::getOpenFileContent(filter, fileContentReady);

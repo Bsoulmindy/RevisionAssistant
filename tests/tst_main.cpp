@@ -3,6 +3,7 @@
 #include "tst_setup.h"
 #include "testgroup/tst_dict_repo_factory.h"
 #include "testgroup/tst_dict_json_repo.h"
+#include "testgroup/tst_filesystemutils.h"
 
 class TestSuiteMain: public QObject
 {
@@ -12,6 +13,7 @@ public:
     TestSuiteMain() {
         m_test_groups.push_back(std::make_unique<DictRepoFactoryTest>());
         m_test_groups.push_back(std::make_unique<DictJSONRepoTest>());
+        m_test_groups.push_back(std::make_unique<FileSystemUtilsTest>());
     }
 
 private:
@@ -37,6 +39,15 @@ private slots:
     {
         try {
             m_test_groups.at(1)->run_tests();
+        } catch (std::exception& e) {
+            QFAIL(e.what());
+        }
+    }
+
+    void fileSystemUtilsTest()
+    {
+        try {
+            m_test_groups.at(2)->run_tests();
         } catch (std::exception& e) {
             QFAIL(e.what());
         }
