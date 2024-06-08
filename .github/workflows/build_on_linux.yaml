@@ -42,7 +42,7 @@ jobs:
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
       - name: Test
-        run: sudo apt-get install -y libxcb-cursor-dev & ctest --verbose --output-on-failure
+        run: sudo apt-get install -y libxcb-cursor0 & ctest --verbose --output-on-failure
         working-directory: build
 
       - name: Install
