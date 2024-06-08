@@ -45,11 +45,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libxcb-cursor0 xvfb
-          sudo Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1024x768x24
+          sleep 3
           export DISPLAY=:99
+          echo "Display is set to $DISPLAY"
+
+      - name: Verify Xvfb
+        run: |
+            ps -ef | grep Xvfb
+            echo "DISPLAY is $DISPLAY"
 
       - name: Test
-        run: export DISPLAY=:99 & ctest --verbose --output-on-failure
+        run: ctest --verbose --output-on-failure
         working-directory: build
 
       - name: Install
