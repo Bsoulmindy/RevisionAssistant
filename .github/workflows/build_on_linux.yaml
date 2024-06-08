@@ -2,7 +2,7 @@ name: Build the Executable in Linux
 
 on:
   push:
-    branches: ["develop_workflow_linux"]
+    branches: ["develop_workflow_linux", "unit_tests"]
   pull_request:
     branches: ["main"]
 
@@ -40,6 +40,10 @@ jobs:
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Test
+        run: ctest
+        working-directory: build
 
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release

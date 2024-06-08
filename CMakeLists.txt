@@ -138,3 +138,8 @@ list(APPEND QML_IMPORT_PATH "${CMAKE_SOURCE_DIR}/src")
 list(REMOVE_DUPLICATES QML_IMPORT_PATH)
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH} CACHE PATH
     "Path to the custom QML components defined by the project" FORCE)
+
+############################################# TEST
+enable_testing(true)
+add_test(NAME RevisionAssistantApp_Tests COMMAND RevisionAssistantApp_Tests)
+add_test(NAME RevisionAssistantApp_QMLTests COMMAND RevisionAssistantApp_QMLTests)
