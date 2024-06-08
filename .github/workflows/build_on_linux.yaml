@@ -45,7 +45,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libxcb-cursor0 xvfb
-          Xvfb :99 -screen 0 1024x768x24
+          Xvfb :99 -screen 0 1024x768x24 &
           sleep 3
           export DISPLAY=:99
           echo "Display is set to $DISPLAY"
