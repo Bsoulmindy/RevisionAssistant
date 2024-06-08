@@ -54,10 +54,14 @@ jobs:
         run: |
             ps -ef | grep Xvfb
             echo "DISPLAY is $DISPLAY"
+        env:
+          DISPLAY: :99
 
       - name: Test
         run: ctest --verbose --output-on-failure
         working-directory: build
+        env:
+          DISPLAY: :99
 
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
