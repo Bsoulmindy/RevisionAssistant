@@ -41,8 +41,8 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
-      - name: Install Test required dependencies
-        run: sudo apt-get install -y libxcb-cursor0
+      - name: Prepare Test
+        run: sudo apt-get install -y libxcb-cursor-dev & export QT_QPA_PLATFORM=offscreen
 
       - name: Test
         run: ctest --verbose --output-on-failure
