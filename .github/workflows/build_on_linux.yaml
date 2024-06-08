@@ -42,7 +42,7 @@ jobs:
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
       - name: Test
-        run: ctest
+        run: ctest --verbose --output-on-failure
         working-directory: build
 
       - name: Install
