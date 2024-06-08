@@ -42,10 +42,14 @@ jobs:
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
       - name: Prepare Test
-        run: sudo apt-get install -y libxcb-cursor-dev & export QT_QPA_PLATFORM=offscreen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev libxcb-cursor0 xvfb
+          sudo Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
 
       - name: Test
-        run: ctest --verbose --output-on-failure
+        run: export DISPLAY=:99 & ctest --verbose --output-on-failure
         working-directory: build
 
       - name: Install
