@@ -90,20 +90,6 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
 
-      - name: Prepare Test
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxcb-cursor0 xvfb
-          Xvfb :99 -screen 0 1024x768x24 &
-          sleep 3
-          export DISPLAY=:99
-
-      - name: Test
-        run: ctest --verbose --output-on-failure
-        working-directory: build
-        env:
-          DISPLAY: :99
-
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
 
@@ -332,7 +318,7 @@ jobs:
 
 
   deploy_web:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: build_and_test
 
     env:

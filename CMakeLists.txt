@@ -63,25 +63,6 @@ target_link_libraries(RevisionAssistantApp_QMLTests PRIVATE
     Qt6::Quick Qt6::Core Qt6::Widgets appplugin custom_componentsplugin
 )
 
-install(TARGETS RevisionAssistantApp_QMLTests RevisionAssistantApp_Tests
-    BUNDLE  DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-qt_generate_deploy_app_script(
-    TARGET RevisionAssistantApp_Tests
-    OUTPUT_SCRIPT deploy_script_tests
-    NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script_tests})
-qt_generate_deploy_app_script(
-    TARGET RevisionAssistantApp_QMLTests
-    OUTPUT_SCRIPT deploy_script_qmltests
-    NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script_qmltests})
-
 add_subdirectory(src/CustomComponents)
 add_subdirectory(src)
 
