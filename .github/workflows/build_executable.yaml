@@ -318,7 +318,7 @@ jobs:
 
 
   deploy_web:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: build_and_test
 
     env:
@@ -342,7 +342,7 @@ jobs:
           mkdir -p ${{ github.workspace }}/qtdir/
           tar -xf ${{ env.QT_HOST_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
           sudo apt-get install libstdc++6 -y
-          sudo apt-get install libicu-dev -y
+          sudo apt-get install libicu66 -y
       
       - name: Set up Emscripten SDK
         uses: mymindstorm/setup-emsdk@v14
