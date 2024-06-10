@@ -1,0 +1,13 @@
+Module RevisionAssistantQML
+DictAddPage DictAddPage.qml
+DictAddPageUi DictAddPageUi.ui.qml
+DictEditPage DictEditPage.qml
+DictEditPageUi DictEditPageUi.ui.qml
+DictProcessingPage DictProcessingPage.qml
+DictProcessingPageUi DictProcessingPageUi.ui.qml
+DictsPage DictsPage.qml
+DictsPageUi DictsPageUi.ui.qml
+MainPage MainPage.qml
+MainPageUi MainPageUi.ui.qml
+QrPage QrPage.qml
+QrPageUi QrPageUi.ui.qml

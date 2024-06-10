@@ -5,6 +5,9 @@
 #include <QQmlEngine>
 #include "dictcontroller.h"
 
+/**
+ * @brief Reads the mapping between questions <-> responses
+ */
 class FileController : public QObject
 {
     Q_OBJECT
