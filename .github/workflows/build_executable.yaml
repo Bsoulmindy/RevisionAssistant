@@ -341,8 +341,9 @@ jobs:
           wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt-host/${{ env.QT_HOST_ZIP_NAME }} -O ${{ env.QT_HOST_ZIP_NAME }}
           mkdir -p ${{ github.workspace }}/qtdir/
           tar -xf ${{ env.QT_HOST_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
           sudo apt-get install libstdc++6 -y
-          sudo apt-get install libicu66 -y
       
       - name: Set up Emscripten SDK
         uses: mymindstorm/setup-emsdk@v14
