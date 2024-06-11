@@ -44,6 +44,14 @@ TestCase {
         compare(list.length, 10000, "Should have 10000 questions numbered from 1 to 10000");
     }
 
+    function test_check_question_when_empty() {
+        dictController_empty.checkQuestion(0, -1);
+    }
+
+    function test_check_response_when_empty() {
+        dictController_empty.checkResponse(0, -1);
+    }
+
     function test_check_question_in_database() {
         dictController_large.checkQuestionInDatabase(1);
         verify(dictController_large.getAllRecords("question #2")[0]["isCheckedQuestion"], "Should be checked!");

@@ -69,6 +69,9 @@ void DictController::checkQuestion(int id, int hint_index)
     if(hint_index == -1 || hint_index < 0 || hint_index >= m_not_checked_qsts.size()) {
         hint_index = m_not_checked_qsts.size() - 1;
     }
+    if(hint_index == -1) {
+        return;
+    }
 
     // Simple Check
     {
@@ -108,6 +111,9 @@ void DictController::checkResponse(int id, int hint_index)
 {
     if(hint_index == -1 || hint_index < 0 || hint_index >= m_not_checked_rsps.size()) {
         hint_index = m_not_checked_rsps.size() - 1;
+    }
+    if(hint_index == -1) {
+        return;
     }
 
     // Simple Check
