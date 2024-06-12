@@ -292,7 +292,7 @@ void DictController::init()
     QSettings settings;
     QString default_file_name = m_dict_file_name.isEmpty() ? settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString() : m_dict_file_name;
     m_dict_repo = DictRepoFactory::create_dict_repo(get_file_name_without_extension(default_file_name), DictRepoEnum::Json);
-    m_dict_file_name = default_file_name;
+    setdict_file_name(default_file_name);
     initInternalMemory();
 }
 

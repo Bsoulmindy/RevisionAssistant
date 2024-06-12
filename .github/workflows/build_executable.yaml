@@ -2,7 +2,7 @@ name: Build the Executable in all supported plateforms
 
 on:
   push:
-    branches: ["develop_workflow_linux", "unit_tests"]
+    branches: ["develop"]
   pull_request:
     branches: ["main"]
 
