@@ -2,9 +2,9 @@ name: Build the Executable in all supported plateforms
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["develop_workflow"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "develop"]
 
 jobs:
   build_and_test:
