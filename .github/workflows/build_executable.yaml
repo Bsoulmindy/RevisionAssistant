@@ -1,0 +1,394 @@
+name: Build the Executable in all supported plateforms
+
+on:
+  push:
+    branches: ["develop_workflow"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-20.04
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/gcc_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Prepare Test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb-cursor0 xvfb
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 3
+          export DISPLAY=:99
+
+      - name: Test
+        run: ctest --verbose --output-on-failure
+        working-directory: build
+        env:
+          DISPLAY: :99
+
+  build_linux:
+    runs-on: ubuntu-20.04
+    needs: build_and_test
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/gcc_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Install
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Change the name of the installation folder
+        run: mv build/install build/revision_assistant_app
+      
+      - name: Zip the installation
+        run: tar -cvf revision_assistant_app.tar revision_assistant_app
+        working-directory: build 
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision_assistant_linux_x64
+          path: build/revision_assistant_app.tar
+  
+  build_windows:
+    runs-on: windows-latest
+    needs: build_and_test
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt/6.6.1/win64_msvc2019_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+          arch: win64_msvc2019_64
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=cl
+          -DCMAKE_C_COMPILER=cl
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Install
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Change the name of the installation folder
+        run: mv build/install build/revision_assistant_app
+
+      - name: Zip the installation
+        run: tar -cvf revision_assistant_app.tar revision_assistant_app
+        working-directory: build
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision_assistant_windows_x64
+          path: build/revision_assistant_app.tar
+
+  build_android_armv7:
+    runs-on: ubuntu-20.04
+    needs: build_and_test
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/android_armv7
+      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/gcc_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      
+      - name: Install Qt GCC
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+
+      - name: Install Qt Android
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          target: android
+          arch: android_armv7
+          dir: ${{ github.workspace }}/qtdir/
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+    
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+  
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DANDROID_PLATFORM:STRING=android-23
+          -DANDROID_NDK:PATH=${{ steps.setup-ndk.outputs.ndk-path }}
+          -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake
+          -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF
+          -DANDROID_ABI:STRING=armeabi-v7a
+          -DANDROID_STL:STRING=c++_shared
+          -DCMAKE_FIND_ROOT_PATH:PATH=${{ env.QT_ROOT_DIR }}
+          -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON
+          -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
+          -DANDROID_SDK_ROOT:PATH=$ANDROID_SDK_ROOT
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Android Deploy QT
+        run: ${{ env.QT_COMPILER_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision_assistant_android_armv7
+          path: ${{ steps.strings.outputs.build-output-dir }}/android-build/build/outputs/apk/debug/android-build-debug.apk
+    
+  build_android_arm64_v8a:
+    runs-on: ubuntu-20.04
+    needs: build_and_test
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/android_arm64_v8a
+      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/Qt/6.6.1/gcc_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      
+      - name: Install Qt GCC
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          dir: ${{ github.workspace }}/qtdir/
+
+      - name: Install Qt Android
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.6.1
+          target: android
+          arch: android_arm64_v8a
+          dir: ${{ github.workspace }}/qtdir/
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+    
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+  
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DANDROID_PLATFORM:STRING=android-23
+          -DANDROID_NDK:PATH=${{ steps.setup-ndk.outputs.ndk-path }}
+          -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ steps.setup-ndk.outputs.ndk-path }}/build/cmake/android.toolchain.cmake
+          -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF
+          -DANDROID_ABI:STRING=arm64-v8a
+          -DANDROID_STL:STRING=c++_shared
+          -DCMAKE_FIND_ROOT_PATH:PATH=${{ env.QT_ROOT_DIR }}
+          -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON
+          -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
+          -DANDROID_SDK_ROOT:PATH=$ANDROID_SDK_ROOT
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_INSTALL_PREFIX=build/install
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Android Deploy QT
+        run: ${{ env.QT_COMPILER_DIR }}/bin/androiddeployqt --input android-RevisionAssistantApp-deployment-settings.json --output android-build
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision_assistant_android_arm64_v8a
+          path: ${{ steps.strings.outputs.build-output-dir }}/android-build/build/outputs/apk/debug/android-build-debug.apk
+
+
+  deploy_web:
+    runs-on: ubuntu-20.04
+    needs: build_and_test
+
+    env:
+      QT_ROOT_DIR: ${{ github.workspace }}/qtdir/qt-install-wasm
+      QT_COMPILER_DIR: ${{ github.workspace }}/qtdir/qt-install-host
+      QT_WASM_ZIP_NAME: qt-6.6.2-wasm-thread-exceptions.tar.xz
+      QT_HOST_ZIP_NAME: qt-6.6.2-host.tar.xz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      
+      - name: Install Qt GCC
+        run: |
+          wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt-host/${{ env.QT_HOST_ZIP_NAME }} -O ${{ env.QT_HOST_ZIP_NAME }}
+          mkdir -p ${{ github.workspace }}/qtdir/
+          tar -xf ${{ env.QT_HOST_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install libstdc++6 -y
+      
+      - name: Set up Emscripten SDK
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.37
+
+      - name: Install Qt WASM
+        run: |
+          wget https://github.com/Bsoulmindy/HostedBinaries/releases/download/qt/${{ env.QT_WASM_ZIP_NAME }} -O ${{ env.QT_WASM_ZIP_NAME }}
+          mkdir -p ${{ github.workspace }}/qtdir/
+          tar -xf ${{ env.QT_WASM_ZIP_NAME }} -C ${{ github.workspace }}/qtdir/
+
+      - name: Configure CMake
+        run: >
+          cmake 
+          -DQT_QMAKE_EXECUTABLE:FILEPATH=${{ env.QT_ROOT_DIR }}/bin/qmake 
+          -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.QT_ROOT_DIR }}/lib/cmake/Qt6/qt.toolchain.cmake
+          -DQT_HOST_PATH:PATH=${{ env.QT_COMPILER_DIR }}
+          -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_CXX_COMPILER=em++
+          -DCMAKE_C_COMPILER=emcc
+          -DCMAKE_INSTALL_PREFIX=build
+          -DCMAKE_PREFIX_PATH=${{ env.QT_ROOT_DIR }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+
+      - name: Add additional files
+        run: |
+          mv icons/revision_assistant_icon.png ${{ steps.strings.outputs.build-output-dir }}/revision_assistant_icon.png
+          mv html/index.html ${{ steps.strings.outputs.build-output-dir }}/index.html
+          mv html/Loading_icon.gif ${{ steps.strings.outputs.build-output-dir }}/Loading_icon.gif
+
+
+      - name: Deploy to Vercel Action
+        uses: BetaHuhn/deploy-to-vercel-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          PRODUCTION: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' }}
+          WORKING_DIRECTORY: ${{ steps.strings.outputs.build-output-dir }}
+          ALIAS_DOMAINS: |
+            ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && 'revision-assistant.vercel.app' || 'revision-assistant-bsoulmindy-bsoulmindys-projects.vercel.app' }}
+          PR_PREVIEW_DOMAIN: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && 'revision-assistant.vercel.app' || 'revision-assistant-bsoulmindy-bsoulmindys-projects.vercel.app' }}

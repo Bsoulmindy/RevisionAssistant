@@ -15,11 +15,7 @@
 DictController::DictController(QObject *parent)
     : QObject{parent}
 {
-    QSettings settings;
-    QString default_file_name = settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString();
-    m_dict_repo = DictRepoFactory::create_dict_repo(get_file_name_without_extension(default_file_name), DictRepoEnum::Json);
-    m_dict_file_name = default_file_name;
-    initInternalMemory();
+    // invoke init() instead after component initialization
 }
 
 QString get_dict_type_string(DictRepoEnum dict_type) {
@@ -73,6 +69,9 @@ void DictController::checkQuestion(int id, int hint_index)
     if(hint_index == -1 || hint_index < 0 || hint_index >= m_not_checked_qsts.size()) {
         hint_index = m_not_checked_qsts.size() - 1;
     }
+    if(hint_index == -1) {
+        return;
+    }
 
     // Simple Check
     {
@@ -112,6 +111,9 @@ void DictController::checkResponse(int id, int hint_index)
 {
     if(hint_index == -1 || hint_index < 0 || hint_index >= m_not_checked_rsps.size()) {
         hint_index = m_not_checked_rsps.size() - 1;
+    }
+    if(hint_index == -1) {
+        return;
     }
 
     // Simple Check
@@ -287,6 +289,10 @@ void DictController::resetDict()
 
 void DictController::init()
 {
+    QSettings settings;
+    QString default_file_name = m_dict_file_name.isEmpty() ? settings.value(DEFAULT_DICT_FILE_NAME, "default.json").toString() : m_dict_file_name;
+    m_dict_repo = DictRepoFactory::create_dict_repo(get_file_name_without_extension(default_file_name), DictRepoEnum::Json);
+    setdict_file_name(default_file_name);
     initInternalMemory();
 }
 

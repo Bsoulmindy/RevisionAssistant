@@ -5,18 +5,7 @@
 #include <QStandardPaths>
 #include <QSettings>
 #include <QFileDialog>
-
-#if defined(Q_OS_WASM)
-#include <emscripten.h>
-#endif
-
-QString get_directory_path() noexcept {
-#if defined(Q_OS_WASM)
-    return "/src/";
-#else
-    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
-#endif
-}
+#include "../utils/filesystemutils.h"
 
 DictFilesController::DictFilesController(QObject *parent)
     : QObject{parent}
@@ -102,18 +91,7 @@ void DictFilesController::remove_database_file(QString file_name)
         emit error("Cannot remove the default dictionnary! Please mark another dictionnary to default before removing it.");
         return;
     }
-    QString file_dir = get_directory_path();
-    QFile file(file_dir + file_name);
-    file.remove();
-
-#if defined(Q_OS_WASM)
-    EM_ASM(
-        FS.syncfs(false, function (err) {
-                if(err)
-                    console.error(err);
-            });
-        );
-#endif
+    FileSystemUtils::remove_file(file_name);
     setselected_file(m_current_file);
     detect_present_files();
 }
@@ -127,16 +105,29 @@ void DictFilesController::mark_default_database_file(QString file_name)
 
 void DictFilesController::export_database_file()
 {
-    QString file_dir = get_directory_path();
+    export_database_file(false);
+}
+
+void DictFilesController::export_database_file(bool useMock)
+{
+    QString file_dir = FileSystemUtils::get_storage_dir();
     QFile file(file_dir + m_selected_file);
     if(!file.open(QIODevice::ReadOnly)) {
         emit error("Cannot export file : " + m_selected_file);
         return;
     }
-    QFileDialog::saveFileContent(file.readAll(), m_selected_file);
+    if(useMock)
+        FileSystemUtils::write_file(m_selected_file + ".export", file.readAll());
+    else
+        QFileDialog::saveFileContent(file.readAll(), m_selected_file);
 }
 
 void DictFilesController::import_database_file()
+{
+    import_database_file(false);
+}
+
+void DictFilesController::import_database_file(bool useMock)
 {
     auto fileContentReady = [&](const QString &filePath, const QByteArray &fileContent) {
         if (filePath.isEmpty()) {
@@ -152,7 +143,13 @@ void DictFilesController::import_database_file()
 
         detect_present_files();
     };
-    QFileDialog::getOpenFileContent("*",  fileContentReady);
+
+    if(useMock)
+        FileSystemUtils::read_file_with_function(m_selected_file + ".export",
+            "mock.json",
+            fileContentReady);
+    else
+        QFileDialog::getOpenFileContent("*",  fileContentReady);
 }
 
 void DictFilesController::rename_database_file(QString new_file_name)
@@ -172,6 +169,7 @@ void DictFilesController::rename_database_file(QString new_file_name)
     if(was_default) {
         mark_default_database_file(new_file_name);
     }
+    select_file(new_file_name);
 
     detect_present_files();
 }
@@ -205,7 +203,7 @@ void DictFilesController::setcurrent_file(const QString &newCurrent_file)
 void DictFilesController::detect_present_files()
 {
     m_files.clear();
-    QString dir_path = get_directory_path();
+    QString dir_path = FileSystemUtils::get_storage_dir();
     QStringList file_list = QDir(dir_path).entryList();
     for(const QString& file : file_list) {
         if(file == "." || file == "..") continue;
@@ -222,9 +220,12 @@ void DictFilesController::detect_present_files()
 
 QString DictFilesController::get_file_name_without_extension(QString full_path) const
 {
-    auto list = full_path.split(".");
+    // Filtering folders
+    QStringList folders = full_path.split(QDir::separator());
+    // Filtering extension "."
+    QStringList list = folders.back().split(".");
     int s = list.size();
-    if(s == 1) return full_path;
+    if(s == 1) return list.back();
     QString name;
     for(int i = 0; i < s - 1; i++) {
         name += list[i];

@@ -1,9 +1,20 @@
 #include "fileselectorcontroller.h"
 #include <QFileDialog>
+#include "../utils/filesystemutils.h"
 
 FileSelectorController::FileSelectorController() {}
 
 void FileSelectorController::openFile(QString filter)
+{
+    openFile(filter, false);
+}
+
+QByteArray FileSelectorController::getFileBytes()
+{
+    return m_file_bytes;
+}
+
+void FileSelectorController::openFile(QString filter, bool useMock)
 {
     auto fileContentReady = [&](const QString &fileName, const QByteArray &fileContent) {
         if (!fileName.isEmpty()) {
@@ -11,12 +22,13 @@ void FileSelectorController::openFile(QString filter)
             m_file_bytes = fileContent;
         }
     };
-    QFileDialog::getOpenFileContent(filter, fileContentReady);
-}
-
-QByteArray FileSelectorController::getFileBytes()
-{
-    return m_file_bytes;
+    if(useMock)
+        FileSystemUtils::read_file_with_function(
+            "test_mapper_basic.txt",
+            "test_mapper_basic.txt",
+            fileContentReady);
+    else
+        QFileDialog::getOpenFileContent(filter, fileContentReady);
 }
 
 QString FileSelectorController::file_name() const

@@ -7,6 +7,7 @@
 #include <QIcon>
 #include <thread>
 #include <chrono>
+#include "utils/filesystemutils.h"
 
 #if defined(Q_OS_WASM)
 #include <emscripten.h>
@@ -62,21 +63,8 @@ int main(int argc, char *argv[])
 {
     global_argc = argc;
     global_argv = argv;
-#if defined(Q_OS_WASM)
-    // Prepare Persistent storage for WASM
-    EM_ASM(
-        if (!FS.analyzePath('/src').exists)
-        FS.mkdir('/src');
 
-        FS.mount(IDBFS, {}, '/src');
-        FS.syncfs(true, function (err) {
-            if(err)
-                console.error(err);
-            Module._start();
-        });
-    );
-
-#endif
+    FileSystemUtils::prepare_storage();
 #if defined(Q_OS_WASM)
     return 0;
 #else

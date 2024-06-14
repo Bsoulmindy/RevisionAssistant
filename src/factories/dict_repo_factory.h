@@ -12,7 +12,6 @@ public:
     static void rename_dict_repo(const QString& old_file_name, const QString& new_file_name);
 private:
     static void appendExtensionToFileName(QString& file_name, DictRepoEnum type);
-    static QString get_repos_dir() noexcept;
 };
 
 #endif // DICTREPOFACTORY_H

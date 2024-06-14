@@ -45,7 +45,6 @@ public:
     Q_INVOKABLE bool removeEntry(int id);
     Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;
     Q_INVOKABLE bool insertNewEntry(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
-    // TODO : add new method
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
     QuestionResponseEntriesSet getCheckedQuestionsAndResponses();
 
