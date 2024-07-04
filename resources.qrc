@@ -17,5 +17,6 @@
         <file>fonts/stratum2demium.ttf</file>
         <file>icons/revert.png</file>
         <file>icons/remove.png</file>
+        <file>icons/mToM_example.png</file>
     </qresource>
 </RCC>
