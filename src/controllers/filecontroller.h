@@ -17,8 +17,12 @@ class FileController : public QObject
 public:
     explicit FileController(QObject *parent = nullptr);
 
+    // Construct OneToOne Dict
     Q_INVOKABLE void constructDictFromFile(QString file_path, QString line_separator);
     Q_INVOKABLE void constructDictFromBytes(QByteArray bytes, QString line_separator);
+    // Construct ManyToMany Dict
+    Q_INVOKABLE void constructMToMDictFromFile(QString file_path, QString line_separator, QString entry_separator);
+    Q_INVOKABLE void constructMToMDictFromBytes(QByteArray bytes, QString line_separator, QString entry_separator);
 
     QString actualState() const;
     void setactualState(const QString &newActualState);
@@ -35,8 +39,12 @@ signals:
 
 private:
     void init();
+    // OneToOne
     void processFile(QString file_path, QString line_separator);
     void processBytes(QByteArray bytes, QString line_separator);
+    // ManyToMany
+    void processFileMToM(QString file_path, QString line_separator, QString entry_separator);
+    void processBytesMToM(QByteArray bytes, QString line_separator, QString entry_separator);
     QString m_actualState;
     DictController *m_dict_controller = nullptr;
 };

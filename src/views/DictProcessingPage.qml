@@ -14,6 +14,8 @@ DictProcessingPageUi {
 
     required property var fileBytes
     required property string fileSeparator
+    required property string mode
+    required property string entrySeparator
 
     FileController {
         id: fileController
@@ -22,7 +24,12 @@ DictProcessingPageUi {
             listViewItem.model.append({ "output": output });
         }
         onInitialized: {
-            fileController.constructDictFromBytes(fileBytes, fileSeparator)
+            if (mode === "OneToOne") {
+                fileController.constructDictFromBytes(fileBytes, fileSeparator)
+            }
+            if(mode === "ManyToMany") {
+                fileController.constructMToMDictFromBytes(fileBytes, fileSeparator, entrySeparator)
+            }
         }
         onError: (message) => {
             if(message === "") {

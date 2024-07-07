@@ -365,6 +365,57 @@ void DictController::overrideDict(const std::vector<QVariantMap>& dict_rows)
     initInternalMemory();
 }
 
+void DictController::overrideDictMToM(const std::vector<QVariantMap> &dict_question_rows, const std::vector<QVariantMap> &dict_response_rows)
+{
+    try {
+        m_dict_repo->delete_all();
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return;
+    }
+
+    // Preparing questions
+    std::list<QuestionResponseEntry> question_rows;
+    for(int i = 0; i < dict_question_rows.size(); i++) {
+        const QVariantMap& dict_row = dict_question_rows[i];
+
+        question_rows.emplace_back(0,
+                       dict_row["question"].toString(),
+                       dict_row["response"].toString(),
+                       dict_row["isCheckedQuestion"].toBool(),
+                       dict_row["isCheckedResponse"].toBool());
+    }
+
+    // Preparing responses
+    std::list<QuestionResponseEntry> response_rows;
+    for(int i = 0; i < dict_response_rows.size(); i++) {
+        const QVariantMap& dict_row = dict_response_rows[i];
+
+        response_rows.emplace_back(0,
+                       dict_row["question"].toString(),
+                       dict_row["response"].toString(),
+                       dict_row["isCheckedQuestion"].toBool(),
+                       dict_row["isCheckedResponse"].toBool());
+    }
+
+    try {
+        m_dict_repo->insert_multiple_entries_MToM(question_rows, response_rows);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+    }
+
+    initInternalMemory();
+}
+
 QuestionResponseEntriesSet DictController::getCheckedQuestionsAndResponses()
 {
     std::unordered_set<QString> checked_questions;

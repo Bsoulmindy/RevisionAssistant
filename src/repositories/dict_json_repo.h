@@ -4,28 +4,22 @@
 #include "dict_repo_interface.h"
 #include <QString>
 #include <QJsonDocument>
+#include "../models/dict_mode_enum.h"
 
 /*
 Here's an example of the structured JSON should be like
-[
+"mode" : "ManyToMany",
+"questions" : [
     {
         "question": "q1",
         "response": "q2",
         "isCheckedQuestion": false,
         "isCheckedResponse": false
     },
-    {
-        "question": "q1",
-        "response": "q2",
-        "isCheckedQuestion": false,
-        "isCheckedResponse": false
-    },
-    {
-        "question": "q1",
-        "response": "q2",
-        "isCheckedQuestion": false,
-        "isCheckedResponse": false
-    }
+    ...
+],
+"responses" : [
+    ...
 ]
 the id of each entry is its index in the array
 */
@@ -41,8 +35,11 @@ public:
     void delete_all() override;
     std::list<QuestionResponseEntry> select_questions(bool is_checked) override;
     std::list<QuestionResponseEntry> select_responses(bool is_checked) override;
+    // OneToOne
     void insert_entry(const QuestionResponseEntry& entry) override;
     void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) override;
+    // ManyToMany
+    void insert_multiple_entries_MToM(const std::list<QuestionResponseEntry>& questions, const std::list<QuestionResponseEntry>& responses) override;
     QuestionResponseEntry select_by_id(int id) override;
     QString get_file_name() override;
     QByteArray get_byte_array() override;
@@ -53,7 +50,15 @@ private:
     // Called every time when a change has been made to the document
     void save() const;
 
+    // By default, the OneToOne mode will be selected
     void create_empty_json_file(QString json_path) const;
+    /**
+     * @brief Reads the json document if it is in a good format, tries to correct it if it is in old format,
+     * otherwise return exception.
+     */
+    QJsonObject check_json_format();
+    // true if it is possible to switch mode
+    bool switch_mode(DictModeEnum mode);
 
     QString m_json_path;
     QJsonDocument m_json_document;

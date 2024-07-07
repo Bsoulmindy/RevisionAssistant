@@ -45,7 +45,10 @@ public:
     Q_INVOKABLE bool removeEntry(int id);
     Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;
     Q_INVOKABLE bool insertNewEntry(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    // OneToOne override
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
+    // ManyToMany override
+    void overrideDictMToM(const std::vector<QVariantMap>& dict_question_rows, const std::vector<QVariantMap>& dict_response_rows);
     QuestionResponseEntriesSet getCheckedQuestionsAndResponses();
 
     void change_dict(QString dict_name, DictRepoEnum dict_type);

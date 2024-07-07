@@ -21,9 +21,12 @@ Page {
     property alias separatorHelpTextItem: separatorHelpText
     property alias searchTextFieldItem: searchTextField
     property alias invalidFileDialogItem: invalidFileDialog
+    property alias invalidFileDialogTextItem: invalidFileDialogText
     property alias separator_example_item: separator_example
     property alias fileSelectionStatusItem: fileSelectionStatus
     property alias separatorHelpDialogItem: separatorHelpDialog
+    property alias manyToManyCheckBoxItem: manyToManyCheckBox
+    property alias searchMtoMTextFieldItem: searchMtoMTextField
 
     ToolBar {
         id: dictEditPageToolBar
@@ -376,6 +379,7 @@ Page {
         height: 200
         contentItem: Item {
             PrimaryText {
+                id: invalidFileDialogText
                 height: contentHeight
                 text: "You must specify a valid .txt file AND a separator"
                 anchors.fill: parent

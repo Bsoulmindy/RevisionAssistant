@@ -4,6 +4,10 @@
 #include "../models/question_response_entry.h"
 #include <list>
 
+/**
+ * @brief The DictRepoInterface class
+ * The id should refer to an entry, independently to its location (question / response)
+ */
 class DictRepoInterface
 {
 public:
@@ -18,14 +22,17 @@ public:
     virtual QuestionResponseEntry select_by_id(int id) = 0;
     // If you want to insert multiple entries, please use the method <code>insert_multiple_entries</code>
     // Not doing so will result in multiple saves for each insertion
-    // Field 'Id' will be ignored
+    // OneToOne : Field 'Id' will be ignored
     virtual void insert_entry(const QuestionResponseEntry& entry) = 0;
-    // more performant because it will save only once
+    // OneToOne : more performant because it will save only once
     virtual void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) = 0;
+    // ManyToMany
+    virtual void insert_multiple_entries_MToM(const std::list<QuestionResponseEntry>& questions, const std::list<QuestionResponseEntry>& responses) = 0;
     virtual QString get_file_name() = 0;
     virtual QByteArray get_byte_array() = 0;
     /**
      * @brief
+     * The implementations are required to satisfy the following requirement:
      * Given an index i that satisfy the requirement : i > id
      * Then after executing this method: i -> i - 1
      */
