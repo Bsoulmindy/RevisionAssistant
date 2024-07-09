@@ -39,6 +39,8 @@ public:
     void insert_entry(const QuestionResponseEntry& entry) override;
     void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) override;
     // ManyToMany
+    void insert_question(const QuestionResponseEntry& question) override;
+    void insert_response(const QuestionResponseEntry& response) override;
     void insert_multiple_entries_MToM(const std::list<QuestionResponseEntry>& questions, const std::list<QuestionResponseEntry>& responses) override;
     QuestionResponseEntry select_by_id(int id) override;
     QString get_file_name() override;

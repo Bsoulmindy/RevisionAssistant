@@ -29,6 +29,30 @@ TestCase {
         }
     }
 
+    DictController {
+        id: dictController_MToM_empty
+        dict_file_name: "test_empty_MToM_dict"
+        Component.onCompleted: {
+            init()
+        }
+    }
+
+    DictController {
+        id: dictController_MToM_basic
+        dict_file_name: "test_basic_MToM_dict"
+        Component.onCompleted: {
+            init()
+        }
+    }
+
+    DictController {
+        id: dictController_MToM_large
+        dict_file_name: "test_large_MToM_dict"
+        Component.onCompleted: {
+            init()
+        }
+    }
+
     QuizController {
         id: quizController_empty
         dict_controller: dictController_empty
@@ -56,14 +80,48 @@ TestCase {
         }
     }
 
+    QuizController {
+        id: quizController_MToM_empty
+        dict_controller: dictController_MToM_empty
+        isQtoR: true
+        Component.onCompleted: {
+            init()
+        }
+    }
+
+    QuizController {
+        id: quizController_MToM_basic
+        dict_controller: dictController_MToM_basic
+        isQtoR: true
+        Component.onCompleted: {
+            init()
+        }
+    }
+
+    QuizController {
+        id: quizController_MToM_large
+        dict_controller: dictController_MToM_large
+        isQtoR: true
+        Component.onCompleted: {
+            init()
+        }
+    }
+
     function test_next_output_when_empty() {
         let isMarkedFinished = false;
         quizController_empty.finished.connect((msg) => {
             isMarkedFinished = true;
         });
-
         quizController_empty.next_output()
         verify(quizController_empty.current_output["question"] === "", "There should be no entry present");
+        verify(isMarkedFinished, "Should indicate that is finished");
+
+        isMarkedFinished = false;
+        quizController_MToM_empty.finished.connect((msg) => {
+            isMarkedFinished = true;
+        });
+        quizController_MToM_empty.next_output()
+        verify(quizController_MToM_empty.current_output["question"] === "", "There should be no entry present");
         verify(isMarkedFinished, "Should indicate that is finished");
     }
 
@@ -73,8 +131,14 @@ TestCase {
             maxLoop--;
             quizController_basic.next_output()
         }
-
         verify(quizController_empty.current_output["question"] !== "question3", "Couldn't find question3 after 100 tries");
+
+        maxLoop = 100;
+        while(quizController_MToM_basic.current_output["question"] !== "question3" && maxLoop > 0) {
+            maxLoop--;
+            quizController_MToM_basic.next_output()
+        }
+        verify(quizController_MToM_empty.current_output["question"] !== "question3", "Couldn't find question3 after 100 tries");
     }
 
     function test_mark_output() {
@@ -86,8 +150,17 @@ TestCase {
             maxLoop--;
             quizController_basic.next_output()
         }
-
         verify(quizController_basic.current_output["question"] !== curr_output, "We shouldn't find the marked question");
+
+        curr_output = quizController_MToM_basic.current_output["question"];
+        quizController_MToM_basic.mark_output();
+        quizController_MToM_basic.next_output();
+        maxLoop = 10;
+        while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
+            maxLoop--;
+            quizController_MToM_basic.next_output()
+        }
+        verify(quizController_MToM_basic.current_output["question"] !== curr_output, "We shouldn't find the marked question");
     }
 
     function test_unmark_output() {
@@ -100,8 +173,18 @@ TestCase {
             maxLoop--;
             quizController_basic.next_output()
         }
-
         verify(quizController_basic.current_output["question"] === curr_output, "We should find back the unmarked entry");
+
+        curr_output = quizController_MToM_basic.current_output["question"];
+        quizController_MToM_basic.mark_output();
+        quizController_MToM_basic.unmark_output();
+        quizController_MToM_basic.next_output();
+        maxLoop = 100;
+        while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
+            maxLoop--;
+            quizController_MToM_basic.next_output()
+        }
+        verify(quizController_MToM_basic.current_output["question"] === curr_output, "We should find back the unmarked entry");
     }
 
     function test_unmark_last_output() {
@@ -115,7 +198,18 @@ TestCase {
             maxLoop--;
             quizController_basic.next_output()
         }
-
         verify(quizController_basic.current_output["question"] === curr_output, "We should find back the unmarked entry");
+
+        curr_output = quizController_MToM_basic.current_output["question"];
+        quizController_MToM_basic.mark_output();
+        quizController_MToM_basic.next_output();
+        quizController_MToM_basic.unmark_last_output();
+        quizController_MToM_basic.next_output();
+        maxLoop = 100;
+        while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
+            maxLoop--;
+            quizController_MToM_basic.next_output()
+        }
+        verify(quizController_MToM_basic.current_output["question"] === curr_output, "We should find back the unmarked entry");
     }
 }

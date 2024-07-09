@@ -31,7 +31,7 @@ public:
     Q_INVOKABLE void export_database_file();
     Q_INVOKABLE void export_database_file(bool useMock);
     Q_INVOKABLE void import_database_file();
-    Q_INVOKABLE void import_database_file(bool useMock);
+    Q_INVOKABLE void import_database_file(bool useMock, QString mock_file_name);
     Q_INVOKABLE void rename_database_file(QString new_file_name);
     Q_INVOKABLE void init();
 

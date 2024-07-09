@@ -155,7 +155,7 @@ void DictJsonRepo::mark_all_entries_unchecked()
         response_array = object["responses"].toArray();
     }
     // Do the callback for both arrays
-    auto callback = [&](QJsonArray arr)
+    auto callback = [&](QJsonArray& arr)
     {
         for(int i = 0; i < arr.size(); i++) {
             auto entry_object = arr[i].toObject();
@@ -308,6 +308,20 @@ void DictJsonRepo::insert_multiple_entries(const std::list<QuestionResponseEntry
     save();
 }
 
+void DictJsonRepo::insert_question(const QuestionResponseEntry &question)
+{
+    std::list<QuestionResponseEntry> questions = {question};
+    std::list<QuestionResponseEntry> responses;
+    insert_multiple_entries_MToM(questions, responses);
+}
+
+void DictJsonRepo::insert_response(const QuestionResponseEntry &response)
+{
+    std::list<QuestionResponseEntry> questions;
+    std::list<QuestionResponseEntry> responses = {response};
+    insert_multiple_entries_MToM(questions, responses);
+}
+
 void DictJsonRepo::insert_multiple_entries_MToM(const std::list<QuestionResponseEntry> &questions, const std::list<QuestionResponseEntry> &responses)
 {
     QJsonObject object = check_json_format();
@@ -316,6 +330,7 @@ void DictJsonRepo::insert_multiple_entries_MToM(const std::list<QuestionResponse
     if(object["mode"].toString() != "ManyToMany" && !switch_mode(DictModeEnum::ManyToMany)) {
         throw FileInvalidJsonException("The dict is not in ManyToMany mode. It is in " + object["mode"].toString());
     }
+    object = check_json_format();
     questions_array = object["questions"].toArray();
     responses_array = object["responses"].toArray();
 

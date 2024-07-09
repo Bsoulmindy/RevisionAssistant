@@ -19,6 +19,7 @@ public:
     void test_select_responses();
     void test_insert_entry();
     void test_insert_multiple_entries();
+    void test_insert_multiple_entries_MToM();
     void test_select_by_id();
     void test_get_file_name();
     void test_get_byte_array();

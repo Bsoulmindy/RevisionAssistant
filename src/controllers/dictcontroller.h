@@ -45,6 +45,9 @@ public:
     Q_INVOKABLE bool removeEntry(int id);
     Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;
     Q_INVOKABLE bool insertNewEntry(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    // ManyToMany
+    Q_INVOKABLE bool insertNewQuestion(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    Q_INVOKABLE bool insertNewResponse(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
     // OneToOne override
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
     // ManyToMany override

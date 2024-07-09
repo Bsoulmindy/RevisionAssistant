@@ -562,6 +562,42 @@ bool DictController::insertNewEntry(const QString question, const QString respon
     return true;
 }
 
+bool DictController::insertNewQuestion(const QString question, const QString response, bool isQuestionChecked, bool isResponseChecked)
+{
+    QuestionResponseEntry entry(-1, question, response, isQuestionChecked, isResponseChecked);
+    try {
+        m_dict_repo->insert_question(entry);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+
+    return true;
+}
+
+bool DictController::insertNewResponse(const QString question, const QString response, bool isQuestionChecked, bool isResponseChecked)
+{
+    QuestionResponseEntry entry(-1, question, response, isQuestionChecked, isResponseChecked);
+    try {
+        m_dict_repo->insert_response(entry);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+
+    return true;
+}
+
 QString DictController::get_file_name() const
 {
     return m_dict_file_name;

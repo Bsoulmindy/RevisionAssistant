@@ -27,6 +27,8 @@ public:
     // OneToOne : more performant because it will save only once
     virtual void insert_multiple_entries(const std::list<QuestionResponseEntry>& entries) = 0;
     // ManyToMany
+    virtual void insert_question(const QuestionResponseEntry& question) = 0;
+    virtual void insert_response(const QuestionResponseEntry& response) = 0;
     virtual void insert_multiple_entries_MToM(const std::list<QuestionResponseEntry>& questions, const std::list<QuestionResponseEntry>& responses) = 0;
     virtual QString get_file_name() = 0;
     virtual QByteArray get_byte_array() = 0;
