@@ -78,6 +78,17 @@ void Setup::global_preparation()
         FileSystemUtils::write_file("test_mapper_basic.txt", bytes);
     }
 
+    // "test_mapper_basic_MToM.txt" which is valid file with multiple entries with 10 lines
+    {
+        QString content;
+        QTextStream stream(&content);
+        for (int i = 1; i <= 10; ++i) {
+            stream << "question " << i << "/question " << i+100 << "|response " << i << "/response " << i+100 << "\n";
+        }
+        QByteArray bytes = content.toUtf8();
+        FileSystemUtils::write_file("test_mapper_basic_MToM.txt", bytes);
+    }
+
     // "test_mapper_3parts.txt" which is invalid file with 2 separators (3 parts) each line
     {
         QString content;

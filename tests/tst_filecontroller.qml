@@ -41,6 +41,15 @@ TestCase {
         }
     }
 
+    QuizController {
+        id: quizController_MToM_basic
+        dict_controller: dictController_MToM_basic
+        isQtoR: true
+        Component.onCompleted: {
+            init()
+        }
+    }
+
     function test_construct_from_valid_file() {
         let nbWarnings = 0;
         fileController_basic.warningOutput.connect((output) => {
@@ -54,9 +63,27 @@ TestCase {
         fileController_MToM_basic.warningOutput.connect((output) => {
             nbWarnings++;
         });
-        fileController_MToM_basic.constructMToMDictFromFile("file:" + fileSystemUtils.get_dir() + "test_mapper_basic.txt", "|", "/");
+        fileController_MToM_basic.constructMToMDictFromFile("file:" + fileSystemUtils.get_dir() + "test_mapper_basic_MToM.txt", "|", "/");
         compare(nbWarnings, 0, "A valid file shouldn't have any warnings");
-        compare(fileController_MToM_basic.dict_controller.num_rows, 20, "The valid file should construct 10 entries correctly");
+        compare(fileController_MToM_basic.dict_controller.num_rows, 40, "The valid file should construct 20 questions + 20 responses");
+        // test if the format is correct
+        // ideally question i should have : response i/response i+100
+        for(let i=1; i <= 10; i++) {
+            let question = "";
+            let response = "";
+            for(let maxTries = 500; maxTries > 0; maxTries--) {
+                quizController_MToM_basic.next_output();
+                question = quizController_MToM_basic.current_output["question"];
+                response = quizController_MToM_basic.current_output["response"];
+                if(question === "question " + i) {
+                    break;
+                }
+            }
+            compare(question, "question " + i, "The question " + i + " could not be found!")
+            if(response != "response " + i + "/response " + (i+100) && response != "response " + (i+100) + "/response " + (i)) {
+                fail("The response is not correct");
+            }
+        }
     }
 
     function test_construct_from_3parts_case() {
@@ -74,7 +101,7 @@ TestCase {
         });
         fileController_MToM_basic.constructMToMDictFromFile("file:" + fileSystemUtils.get_dir() + "test_mapper_3parts.txt", "|", "/");
         compare(nbWarnings, 10, "On 3 parts, the file should have warning for each line");
-        compare(fileController_MToM_basic.dict_controller.num_rows, 20, "On 3 parts, the file controller should construct 10 entries whatsoever");
+        compare(fileController_MToM_basic.dict_controller.num_rows, 11, "On 3 parts, the file controller should construct 10 questions + 1 response");
     }
 
     function test_construct_from_1part_case() {

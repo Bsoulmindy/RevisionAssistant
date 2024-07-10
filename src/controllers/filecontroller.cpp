@@ -165,27 +165,35 @@ void FileController::processBytesMToM(QByteArray bytes, QString line_separator, 
         // Adding question lines
         std::vector<QVariantMap> dict_question_rows_to_be_inserted;
         for(auto& [question, responses] : question_entries) {
+            QString full_response;
             for(auto& response : responses) {
-                QVariantMap row;
-                row["question"] = question;
-                row["response"] = response;
-                row["isCheckedQuestion"] = false;
-                row["isCheckedResponse"] = false;
-                dict_question_rows_to_be_inserted.push_back(row);
+                full_response.append(response);
+                full_response.append('/');
             }
+            full_response = full_response.removeLast();
+            QVariantMap row;
+            row["question"] = question;
+            row["response"] = full_response;
+            row["isCheckedQuestion"] = false;
+            row["isCheckedResponse"] = false;
+            dict_question_rows_to_be_inserted.push_back(row);
         }
 
         // Adding response lines
         std::vector<QVariantMap> dict_response_rows_to_be_inserted;
         for(auto& [response, questions] : response_entries) {
+            QString full_question;
             for(auto& question : questions) {
-                QVariantMap row;
-                row["question"] = question;
-                row["response"] = response;
-                row["isCheckedQuestion"] = false;
-                row["isCheckedResponse"] = false;
-                dict_response_rows_to_be_inserted.push_back(row);
+                full_question.append(question);
+                full_question.append(entry_separator);
             }
+            full_question = full_question.removeLast();
+            QVariantMap row;
+            row["question"] = full_question;
+            row["response"] = response;
+            row["isCheckedQuestion"] = false;
+            row["isCheckedResponse"] = false;
+            dict_response_rows_to_be_inserted.push_back(row);
         }
 
         setactualState("Saving to the database");

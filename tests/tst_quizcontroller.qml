@@ -179,7 +179,7 @@ TestCase {
         quizController_MToM_basic.mark_output();
         quizController_MToM_basic.unmark_output();
         quizController_MToM_basic.next_output();
-        maxLoop = 100;
+        maxLoop = 500;
         while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
             maxLoop--;
             quizController_MToM_basic.next_output()
