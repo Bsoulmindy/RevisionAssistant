@@ -20,6 +20,8 @@ class DictController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int num_rows READ num_rows WRITE set_num_rows NOTIFY num_rowsChanged FINAL)
+    Q_PROPERTY(int num_questions READ num_questions WRITE set_num_questions NOTIFY num_questionsChanged FINAL)
+    Q_PROPERTY(int num_responses READ num_responses WRITE set_num_responses NOTIFY num_responsesChanged FINAL)
     Q_PROPERTY(int num_not_checked_questions READ num_not_checked_questions WRITE set_num_not_checked_questions NOTIFY num_not_checked_questionsChanged FINAL)
     Q_PROPERTY(int num_not_checked_responses READ num_not_checked_responses WRITE set_num_not_checked_responses NOTIFY num_not_checked_responsesChanged FINAL)
     Q_PROPERTY(QString dict_file_name READ get_file_name WRITE setdict_file_name NOTIFY dict_file_nameChanged FINAL)
@@ -69,6 +71,12 @@ public:
     void setdict_file_name(const QString &newDict_file_name);
 
     QByteArray get_dict_content_binary() const;
+    int num_questions() const;
+    void set_num_questions(int newNum_questions);
+
+    int num_responses() const;
+    void set_num_responses(int newNum_responses);
+
 signals:
     void fileProcessingLineWarning(const QString &output);
     void num_rowsChanged();
@@ -78,16 +86,23 @@ signals:
 
     void dict_file_nameChanged();
 
+    void num_questionsChanged();
+
+    void num_responsesChanged();
+
 private:
     std::unique_ptr<DictRepoInterface> m_dict_repo;
     std::vector<QuestionResponseEntry> m_not_checked_qsts;
     std::vector<QuestionResponseEntry> m_not_checked_rsps;
 
     void initInternalMemory();
-    int m_num_rows;
+    // Cache for repo->select_all().size()
+    int m_num_rows; // Holds OneToOne countings
     int m_num_not_checked_questions;
     int m_num_not_checked_responses;
     QString m_dict_file_name;
+    int m_num_questions;
+    int m_num_responses;
 };
 
 #endif // DICTCONTROLLER_H

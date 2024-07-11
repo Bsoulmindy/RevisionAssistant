@@ -3,6 +3,7 @@
 
 #include "../models/question_response_entry.h"
 #include <list>
+#include "../models/dict_mode_enum.h"
 
 /**
  * @brief The DictRepoInterface class
@@ -13,6 +14,8 @@ class DictRepoInterface
 public:
     virtual ~DictRepoInterface() {}
     virtual std::list<QuestionResponseEntry> select_all() = 0;
+    virtual std::list<QuestionResponseEntry> select_all_questions() = 0;
+    virtual std::list<QuestionResponseEntry> select_all_responses() = 0;
     virtual void update_question(int id, bool is_checked) = 0;
     virtual void update_response(int id, bool is_checked) = 0;
     virtual void mark_all_entries_unchecked() = 0;
@@ -40,6 +43,7 @@ public:
      */
     virtual void delete_by_id(int id) = 0;
     virtual void edit_entry(int id, const QString& question, const QString& response) = 0;
+    virtual DictModeEnum get_mode() = 0;
 };
 
 #endif // DICTREPOINTERFACE_H

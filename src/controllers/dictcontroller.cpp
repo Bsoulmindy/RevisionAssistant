@@ -462,31 +462,70 @@ void DictController::change_dict(QString dict_name, DictRepoEnum dict_type)
 void DictController::initInternalMemory()
 {
     m_num_rows = 0;
+    m_num_questions = 0;
+    m_num_responses = 0;
     m_not_checked_qsts.clear();
     m_not_checked_rsps.clear();
 
-    std::list<QuestionResponseEntry> entries;
+    if (m_dict_repo->get_mode() == DictModeEnum::OneToOne) {
+        std::list<QuestionResponseEntry> entries;
 
-    try {
-        entries = m_dict_repo->select_all();
-    } catch (RepoException& e) {
-        qCritical() << e.what();
-        emit error(e.what());
-    } catch(std::exception& e) {
-        qCritical() << e.what();
-        emit error("");
+        try {
+            entries = m_dict_repo->select_all();
+        } catch (RepoException& e) {
+            qCritical() << e.what();
+            emit error(e.what());
+        } catch(std::exception& e) {
+            qCritical() << e.what();
+            emit error("");
+        }
+
+        for(auto& entry : entries) {
+            auto m = entry.getMap();
+            if(!m["isCheckedQuestion"].toBool()) {
+                m_not_checked_qsts.push_back(entry);
+            }
+            if(!m["isCheckedResponse"].toBool()) {
+                m_not_checked_rsps.push_back(entry);
+            }
+            m_num_rows++;
+            m_num_questions++;
+            m_num_responses++;
+        }
+    } else if(m_dict_repo->get_mode() == DictModeEnum::ManyToMany) {
+        std::list<QuestionResponseEntry> questions;
+        std::list<QuestionResponseEntry> responses;
+
+        try {
+            questions = m_dict_repo->select_all_questions();
+            responses = m_dict_repo->select_all_responses();
+        } catch (RepoException& e) {
+            qCritical() << e.what();
+            emit error(e.what());
+        } catch(std::exception& e) {
+            qCritical() << e.what();
+            emit error("");
+        }
+
+        for(auto& question : questions) {
+            auto m = question.getMap();
+            if(!m["isCheckedQuestion"].toBool()) {
+                m_not_checked_qsts.push_back(question);
+            }
+            m_num_rows++;
+            m_num_questions++;
+        }
+
+        for(auto& response : responses) {
+            auto m = response.getMap();
+            if(!m["isCheckedResponse"].toBool()) {
+                m_not_checked_rsps.push_back(response);
+            }
+            m_num_rows++;
+            m_num_responses++;
+        }
     }
 
-    for(auto& entry : entries) {
-        auto m = entry.getMap();
-        if(!m["isCheckedQuestion"].toBool()) {
-            m_not_checked_qsts.push_back(entry);
-        }
-        if(!m["isCheckedResponse"].toBool()) {
-            m_not_checked_rsps.push_back(entry);
-        }
-        m_num_rows++;
-    }
 
     set_num_not_checked_questions(m_not_checked_qsts.size());
     set_num_not_checked_responses(m_not_checked_rsps.size());
@@ -614,4 +653,30 @@ void DictController::setdict_file_name(const QString &newDict_file_name)
 QByteArray DictController::get_dict_content_binary() const
 {
     return m_dict_repo->get_byte_array();
+}
+
+int DictController::num_questions() const
+{
+    return m_num_questions;
+}
+
+void DictController::set_num_questions(int newNum_questions)
+{
+    if (m_num_questions == newNum_questions)
+        return;
+    m_num_questions = newNum_questions;
+    emit num_questionsChanged();
+}
+
+int DictController::num_responses() const
+{
+    return m_num_responses;
+}
+
+void DictController::set_num_responses(int newNum_responses)
+{
+    if (m_num_responses == newNum_responses)
+        return;
+    m_num_responses = newNum_responses;
+    emit num_responsesChanged();
 }

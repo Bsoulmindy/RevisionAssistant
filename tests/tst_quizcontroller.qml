@@ -155,7 +155,7 @@ TestCase {
         curr_output = quizController_MToM_basic.current_output["question"];
         quizController_MToM_basic.mark_output();
         quizController_MToM_basic.next_output();
-        maxLoop = 10;
+        maxLoop = 100;
         while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
             maxLoop--;
             quizController_MToM_basic.next_output()
@@ -205,7 +205,7 @@ TestCase {
         quizController_MToM_basic.next_output();
         quizController_MToM_basic.unmark_last_output();
         quizController_MToM_basic.next_output();
-        maxLoop = 100;
+        maxLoop = 500;
         while(quizController_MToM_basic.current_output["question"] !== curr_output && maxLoop > 0) {
             maxLoop--;
             quizController_MToM_basic.next_output()

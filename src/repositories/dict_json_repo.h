@@ -29,6 +29,9 @@ public:
     DictJsonRepo(QString json_path);
 
     std::list<QuestionResponseEntry> select_all() override;
+    // TODO : need tests
+    std::list<QuestionResponseEntry> select_all_questions() override;
+    std::list<QuestionResponseEntry> select_all_responses() override;
     void update_question(int id, bool is_checked) override;
     void update_response(int id, bool is_checked) override;
     void mark_all_entries_unchecked() override;
@@ -47,6 +50,8 @@ public:
     QByteArray get_byte_array() override;
     void delete_by_id(int id) override;
     void edit_entry(int id, const QString& question, const QString& response) override;
+    // TODO : need tests
+    DictModeEnum get_mode() override;
 private:
     // Save the changes to the json file
     // Called every time when a change has been made to the document

@@ -77,6 +77,78 @@ std::list<QuestionResponseEntry> DictJsonRepo::select_all()
     return all_entries;
 }
 
+std::list<QuestionResponseEntry> DictJsonRepo::select_all_questions()
+{
+    std::list<QuestionResponseEntry> all_entries;
+    QJsonObject object = check_json_format();
+    QJsonArray entries_array;
+    if(object["mode"].toString() == "OneToOne") {
+        entries_array = object["data"].toArray();
+    } else if(object["mode"].toString() == "ManyToMany") {
+        // Append questions
+        entries_array = object["questions"].toArray();
+    }
+
+    for(int i = 0; i < entries_array.size(); i++) {
+        QJsonValue entry_object = entries_array[i];
+        if(!entry_object.isObject()) {
+            continue;
+        }
+        auto question_value = entry_object["question"];
+        auto response_value = entry_object["response"];
+        auto is_checked_question_value = entry_object["isCheckedQuestion"];
+        auto is_checked_response_value = entry_object["isCheckedResponse"];
+
+        if(!question_value.isString() || !response_value.isString() || !is_checked_question_value.isBool() || !is_checked_response_value.isBool()) {
+            continue;
+        }
+        auto question = question_value.toString();
+        auto response = response_value.toString();
+        auto is_checked_question = is_checked_question_value.toBool();
+        auto is_checked_response = is_checked_response_value.toBool();
+
+        all_entries.emplace_back(i, question, response, is_checked_question, is_checked_response);
+    }
+    return all_entries;
+}
+
+std::list<QuestionResponseEntry> DictJsonRepo::select_all_responses()
+{
+    std::list<QuestionResponseEntry> all_entries;
+    QJsonObject object = check_json_format();
+    QJsonArray entries_array;
+    int index_offset = 0;
+    if(object["mode"].toString() == "OneToOne") {
+        entries_array = object["data"].toArray();
+    } else if(object["mode"].toString() == "ManyToMany") {
+        // Append responses
+        index_offset = object["questions"].toArray().size();
+        entries_array = object["responses"].toArray();
+    }
+
+    for(int i = 0; i < entries_array.size(); i++) {
+        QJsonValue entry_object = entries_array[i];
+        if(!entry_object.isObject()) {
+            continue;
+        }
+        auto question_value = entry_object["question"];
+        auto response_value = entry_object["response"];
+        auto is_checked_question_value = entry_object["isCheckedQuestion"];
+        auto is_checked_response_value = entry_object["isCheckedResponse"];
+
+        if(!question_value.isString() || !response_value.isString() || !is_checked_question_value.isBool() || !is_checked_response_value.isBool()) {
+            continue;
+        }
+        auto question = question_value.toString();
+        auto response = response_value.toString();
+        auto is_checked_question = is_checked_question_value.toBool();
+        auto is_checked_response = is_checked_response_value.toBool();
+
+        all_entries.emplace_back(i + index_offset, question, response, is_checked_question, is_checked_response);
+    }
+    return all_entries;
+}
+
 void DictJsonRepo::update_question(int id, bool is_checked)
 {
     QJsonObject object = check_json_format();
@@ -476,6 +548,17 @@ void DictJsonRepo::edit_entry(int id, const QString& question, const QString& re
     m_json_document.setObject(object);
 
     save();
+}
+
+DictModeEnum DictJsonRepo::get_mode()
+{
+    QJsonObject object = check_json_format();
+    if(object["mode"].toString() == "OneToOne") {
+        return OneToOne;
+    } else if(object["mode"].toString() == "ManyToMany") {
+        return ManyToMany;
+    }
+    return Unknown;
 }
 
 void DictJsonRepo::save() const

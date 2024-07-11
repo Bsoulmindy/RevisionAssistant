@@ -50,6 +50,15 @@ TestCase {
         }
     }
 
+    QuizController {
+        id: quizController_MToM_response_basic
+        dict_controller: dictController_MToM_basic
+        isQtoR: false
+        Component.onCompleted: {
+            init()
+        }
+    }
+
     function test_construct_from_valid_file() {
         let nbWarnings = 0;
         fileController_basic.warningOutput.connect((output) => {
@@ -65,12 +74,16 @@ TestCase {
         });
         fileController_MToM_basic.constructMToMDictFromFile("file:" + fileSystemUtils.get_dir() + "test_mapper_basic_MToM.txt", "|", "/");
         compare(nbWarnings, 0, "A valid file shouldn't have any warnings");
-        compare(fileController_MToM_basic.dict_controller.num_rows, 40, "The valid file should construct 20 questions + 20 responses");
+        compare(fileController_MToM_basic.dict_controller.num_questions, 20, "The valid file should construct 20 questions");
+        compare(fileController_MToM_basic.dict_controller.num_responses, 20, "The valid file should construct 20 responses");
         // test if the format is correct
         // ideally question i should have : response i/response i+100
-        for(let i=1; i <= 10; i++) {
-            let question = "";
-            let response = "";
+        let i=1;
+        let question = "";
+        let response = "";
+        for(i=1; i <= 10; i++) {
+            question = "";
+            response = "";
             for(let maxTries = 500; maxTries > 0; maxTries--) {
                 quizController_MToM_basic.next_output();
                 question = quizController_MToM_basic.current_output["question"];
@@ -81,6 +94,57 @@ TestCase {
             }
             compare(question, "question " + i, "The question " + i + " could not be found!")
             if(response != "response " + i + "/response " + (i+100) && response != "response " + (i+100) + "/response " + (i)) {
+                fail("The response is not correct");
+            }
+        }
+        // ideally question i+100 should have : response i/response i+100
+        for(i=101; i <= 110; i++) {
+            question = "";
+            response = "";
+            for(let maxTries = 500; maxTries > 0; maxTries--) {
+                quizController_MToM_basic.next_output();
+                question = quizController_MToM_basic.current_output["question"];
+                response = quizController_MToM_basic.current_output["response"];
+                if(question === "question " + i) {
+                    break;
+                }
+            }
+            compare(question, "question " + i, "The question " + i + " could not be found!")
+            if(response != "response " + i + "/response " + (i-100) && response != "response " + (i-100) + "/response " + (i)) {
+                fail("The response is not correct");
+            }
+        }
+        // ideally response i should have : question i/question i+100
+        for(i=1; i <= 10; i++) {
+            question = "";
+            response = "";
+            for(let maxTries = 500; maxTries > 0; maxTries--) {
+                quizController_MToM_response_basic.next_output();
+                question = quizController_MToM_response_basic.current_output["question"];
+                response = quizController_MToM_response_basic.current_output["response"];
+                if(response === "response " + i) {
+                    break;
+                }
+            }
+            compare(response, "response " + i, "The response " + i + " could not be found!")
+            if(question != "question " + i + "/question " + (i+100) && question != "question " + (i+100) + "/question " + (i)) {
+                fail("The response is not correct");
+            }
+        }
+        // ideally response i+100 should have : question i/question i+100
+        for(i=101; i <= 110; i++) {
+            question = "";
+            response = "";
+            for(let maxTries = 500; maxTries > 0; maxTries--) {
+                quizController_MToM_response_basic.next_output();
+                question = quizController_MToM_response_basic.current_output["question"];
+                response = quizController_MToM_response_basic.current_output["response"];
+                if(response === "response " + i) {
+                    break;
+                }
+            }
+            compare(response, "response " + i, "The response " + i + " could not be found!")
+            if(question != "question " + i + "/question " + (i-100) && question != "question " + (i-100) + "/question " + (i)) {
                 fail("The response is not correct");
             }
         }
