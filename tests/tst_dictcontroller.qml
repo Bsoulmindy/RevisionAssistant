@@ -161,4 +161,38 @@ TestCase {
         verify(!dictController_MToM_large.getAllRecords("response #105")[0]["isCheckedQuestion"], "Should not be checked");
         verify(!dictController_MToM_large.getAllRecords("response #106")[0]["isCheckedQuestion"], "Should not be checked");
     }
+
+    function test_canQuestionBeChecked() {
+        compare(dictController_basic.canQuestionBeChecked(5), true, "The question id range is [0; 9]");
+        compare(dictController_basic.canQuestionBeChecked(0), true, "The question id range is [0; 9]");
+        compare(dictController_basic.canQuestionBeChecked(9), true, "The question id range is [0; 9]");
+        compare(dictController_basic.canQuestionBeChecked(-1), false, "The question id range is [0; 9]");
+        compare(dictController_basic.canQuestionBeChecked(10), false, "The question id range is [0; 9]");
+        compare(dictController_basic.canQuestionBeChecked(15), false, "The question id range is [0; 9]");
+
+        compare(dictController_MToM_basic.canQuestionBeChecked(5), true, "The question id range is [0; 9]");
+        compare(dictController_MToM_basic.canQuestionBeChecked(0), true, "The question id range is [0; 9]");
+        compare(dictController_MToM_basic.canQuestionBeChecked(9), true, "The question id range is [0; 9]");
+        compare(dictController_MToM_basic.canQuestionBeChecked(-1), false, "The question id range is [0; 9]");
+        compare(dictController_MToM_basic.canQuestionBeChecked(10), false, "The question id range is [0; 9]");
+        compare(dictController_MToM_basic.canQuestionBeChecked(15), false, "The question id range is [0; 9]");
+    }
+
+    function test_canResponseBeChecked() {
+        compare(dictController_basic.canResponseBeChecked(5), true, "The response id range is [0; 9]");
+        compare(dictController_basic.canResponseBeChecked(0), true, "The response id range is [0; 9]");
+        compare(dictController_basic.canResponseBeChecked(9), true, "The response id range is [0; 9]");
+        compare(dictController_basic.canResponseBeChecked(-1), false, "The response id range is [0; 9]");
+        compare(dictController_basic.canResponseBeChecked(10), false, "The response id range is [0; 9]");
+        compare(dictController_basic.canResponseBeChecked(15), false, "The response id range is [0; 9]");
+
+        compare(dictController_MToM_basic.canResponseBeChecked(15), true, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(10), true, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(19), true, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(-1), false, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(9), false, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(20), false, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(5), false, "The response id range is [10; 19]");
+        compare(dictController_MToM_basic.canResponseBeChecked(25), false, "The response id range is [10; 19]");
+    }
 }

@@ -16,6 +16,8 @@ public:
     virtual std::list<QuestionResponseEntry> select_all() = 0;
     virtual std::list<QuestionResponseEntry> select_all_questions() = 0;
     virtual std::list<QuestionResponseEntry> select_all_responses() = 0;
+    virtual bool is_valid_question_id(int id) = 0;
+    virtual bool is_valid_response_id(int id) = 0;
     virtual void update_question(int id, bool is_checked) = 0;
     virtual void update_response(int id, bool is_checked) = 0;
     virtual void mark_all_entries_unchecked() = 0;

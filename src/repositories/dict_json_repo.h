@@ -32,6 +32,9 @@ public:
     // TODO : need tests
     std::list<QuestionResponseEntry> select_all_questions() override;
     std::list<QuestionResponseEntry> select_all_responses() override;
+    bool is_valid_question_id(int id) override;
+    bool is_valid_response_id(int id) override;
+
     void update_question(int id, bool is_checked) override;
     void update_response(int id, bool is_checked) override;
     void mark_all_entries_unchecked() override;

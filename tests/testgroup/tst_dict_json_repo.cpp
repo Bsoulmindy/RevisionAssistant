@@ -20,6 +20,10 @@ void DictJSONRepoTest::run_tests()
     test_get_byte_array();
     test_delete_by_id();
     test_edit_entry();
+    test_select_all_questions();
+    test_select_all_responses();
+    test_is_valid_question_id();
+    test_is_valid_response_id();
 }
 
 void DictJSONRepoTest::test_select_all()
@@ -350,6 +354,83 @@ void DictJSONRepoTest::test_edit_entry()
         QCOMPARE(map["isCheckedQuestion"].toBool(), false);
         QCOMPARE(map["isCheckedResponse"].toBool(), false);
         repo.edit_entry(9, "question 10", "response 10");
+    }
+}
+
+void DictJSONRepoTest::test_select_all_questions()
+{
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_dict.json");
+        auto entries = repo.select_all_questions();
+        QCOMPARE(entries.size(), 10);
+    }
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_MToM_dict.json");
+        auto entries = repo.select_all_questions();
+        QCOMPARE(entries.size(), 10);
+    }
+}
+
+void DictJSONRepoTest::test_select_all_responses()
+{
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_dict.json");
+        auto entries = repo.select_all_responses();
+        QCOMPARE(entries.size(), 10);
+    }
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_MToM_dict.json");
+        auto entries = repo.select_all_responses();
+        QCOMPARE(entries.size(), 10);
+    }
+}
+
+void DictJSONRepoTest::test_is_valid_question_id()
+{
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_dict.json");
+        // id should be in range [0;9]
+        QCOMPARE(repo.is_valid_question_id(5), true);
+        QCOMPARE(repo.is_valid_question_id(0), true);
+        QCOMPARE(repo.is_valid_question_id(9), true);
+        QCOMPARE(repo.is_valid_question_id(-1), false);
+        QCOMPARE(repo.is_valid_question_id(10), false);
+        QCOMPARE(repo.is_valid_question_id(15), false);
+    }
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_MToM_dict.json");
+        // id should be in range [0;9]
+        QCOMPARE(repo.is_valid_question_id(5), true);
+        QCOMPARE(repo.is_valid_question_id(0), true);
+        QCOMPARE(repo.is_valid_question_id(9), true);
+        QCOMPARE(repo.is_valid_question_id(-1), false);
+        QCOMPARE(repo.is_valid_question_id(10), false);
+        QCOMPARE(repo.is_valid_question_id(15), false);
+    }
+}
+
+void DictJSONRepoTest::test_is_valid_response_id()
+{
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_dict.json");
+        // id should be in range [0;9]
+        QCOMPARE(repo.is_valid_response_id(5), true);
+        QCOMPARE(repo.is_valid_response_id(0), true);
+        QCOMPARE(repo.is_valid_response_id(9), true);
+        QCOMPARE(repo.is_valid_response_id(-1), false);
+        QCOMPARE(repo.is_valid_response_id(10), false);
+        QCOMPARE(repo.is_valid_response_id(15), false);
+    }
+    {
+        DictJsonRepo repo(FileSystemUtils::get_storage_dir() + "test_basic_MToM_dict.json");
+        // id should be in range [10;19] since question ids is taking [0;9]
+        QCOMPARE(repo.is_valid_response_id(15), true);
+        QCOMPARE(repo.is_valid_response_id(10), true);
+        QCOMPARE(repo.is_valid_response_id(19), true);
+        QCOMPARE(repo.is_valid_response_id(-1), false);
+        QCOMPARE(repo.is_valid_response_id(9), false);
+        QCOMPARE(repo.is_valid_response_id(20), false);
+        QCOMPARE(repo.is_valid_response_id(25), false);
     }
 }
 

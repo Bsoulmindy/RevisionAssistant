@@ -296,6 +296,36 @@ void DictController::init()
     initInternalMemory();
 }
 
+bool DictController::canQuestionBeChecked(int id)
+{
+    try {
+        return m_dict_repo->is_valid_question_id(id);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+}
+
+bool DictController::canResponseBeChecked(int id)
+{
+    try {
+        return m_dict_repo->is_valid_response_id(id);
+    } catch (RepoException& e) {
+        qCritical() << e.what();
+        emit error(e.what());
+        return false;
+    } catch(std::exception& e) {
+        qCritical() << e.what();
+        emit error("");
+        return false;
+    }
+}
+
 bool DictController::editQuestionResponse(int id, const QString new_question, const QString new_response)
 {
     try {

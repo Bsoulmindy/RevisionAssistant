@@ -149,6 +149,31 @@ std::list<QuestionResponseEntry> DictJsonRepo::select_all_responses()
     return all_entries;
 }
 
+bool DictJsonRepo::is_valid_question_id(int id)
+{
+    if(id < 0) return false;
+    QJsonObject object = check_json_format();
+    if(object["mode"].toString() == "OneToOne") {
+        return object["data"].toArray().size() > id;
+    } else if(object["mode"].toString() == "ManyToMany") {
+        return object["questions"].toArray().size() > id;
+    }
+    throw JsonException("Current Dict is in invalid state! Please recreate it!");
+}
+
+bool DictJsonRepo::is_valid_response_id(int id)
+{
+    if(id < 0) return false;
+    QJsonObject object = check_json_format();
+    if(object["mode"].toString() == "OneToOne") {
+        return object["data"].toArray().size() > id;
+    } else if(object["mode"].toString() == "ManyToMany") {
+        int offset =  object["questions"].toArray().size();
+        return id >= offset && object["responses"].toArray().size() + offset > id;
+    }
+    throw JsonException("Current Dict is in invalid state! Please recreate it!");
+}
+
 void DictJsonRepo::update_question(int id, bool is_checked)
 {
     QJsonObject object = check_json_format();
@@ -688,6 +713,8 @@ bool DictJsonRepo::switch_mode(DictModeEnum mode)
             return true;
         }
         return false;
+    default:
+        break;
     }
 
     return false;

@@ -43,6 +43,9 @@ public:
     Q_INVOKABLE void uncheckResponseInDatabase(int id);
     Q_INVOKABLE void resetDict();
     Q_INVOKABLE void init();
+    // TODO : needs test
+    Q_INVOKABLE bool canQuestionBeChecked(int id);
+    Q_INVOKABLE bool canResponseBeChecked(int id);
     Q_INVOKABLE bool editQuestionResponse(int id, const QString new_question, const QString new_response);
     Q_INVOKABLE bool removeEntry(int id);
     Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;

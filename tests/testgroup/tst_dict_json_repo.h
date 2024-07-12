@@ -25,6 +25,10 @@ public:
     void test_get_byte_array();
     void test_delete_by_id();
     void test_edit_entry();
+    void test_select_all_questions();
+    void test_select_all_responses();
+    void test_is_valid_question_id();
+    void test_is_valid_response_id();
 };
 
 #endif // TST_DICT_JSON_REPO_H
