@@ -17,11 +17,12 @@ Each `Dict` holds a set of questions and their answers, along with their progres
 
 All `Dict`s are independent of each other. Users can have multiple dictionaries at the same time and add new data sets easily without altering other dictionaries.
 
-## One-To-One Association
-
+## Associations
+### One-To-One
 Each entry of a `Dict` consists of a single question with a single response. This is a One-To-One Association, which means each question has exactly one response, and that response has exactly that question.
 
-Many-To-Many Association is not currently supported. However, based on your criteria, you can transform it into a One-To-One Association by combining all the 'many' elements from each side. For example, `question1 / question2 | response1 / response2`. Here, the application will display `question1 / question2` entirely, and the user is expected to answer with `response1 / response2`.
+### Many-To-Many
+Since version `0.4.0`, Many-To-Many Association is supported. Unlike One-To-One, each question can have multiple responses. There's no limit of how many responses a question can have, or vice versa.
 
 ## Modes
 
