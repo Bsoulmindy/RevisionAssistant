@@ -168,9 +168,9 @@ void FileController::processBytesMToM(QByteArray bytes, QString line_separator, 
             QString full_response;
             for(auto& response : responses) {
                 full_response.append(response);
-                full_response.append('/');
+                full_response.append(entry_separator);
             }
-            full_response = full_response.removeLast();
+            full_response = full_response.remove(full_response.size() - entry_separator.size(), entry_separator.size());
             QVariantMap row;
             row["question"] = question;
             row["response"] = full_response;
@@ -187,7 +187,7 @@ void FileController::processBytesMToM(QByteArray bytes, QString line_separator, 
                 full_question.append(question);
                 full_question.append(entry_separator);
             }
-            full_question = full_question.removeLast();
+            full_question = full_question.remove(full_question.size() - entry_separator.size(), entry_separator.size());
             QVariantMap row;
             row["question"] = full_question;
             row["response"] = response;
