@@ -4,6 +4,7 @@
 #include <QString>
 #include <QTimer>
 #include "../exceptions/repo_exception.h"
+#include <unordered_map>
 
 FileController::FileController(QObject *parent)
     : QObject{parent}
