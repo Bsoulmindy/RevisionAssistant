@@ -25,9 +25,17 @@ DictAddPageUi {
     selectSeparatorHelpItem.onClicked: separatorHelpDialogItem.open()
     addDictButtonItem.onClicked: {
         if (fileSelectorController.file_name === "" || searchTextFieldItem.text === "") {
+            invalidFileDialogTextItem.text = "You must specify a valid .txt file AND a separator";
+            invalidFileDialogItem.open()
+        } else if (manyToManyCheckBoxItem.checked && searchMtoMTextFieldItem.text === "") {
+            invalidFileDialogTextItem.text = "You must specify a sub separator!";
             invalidFileDialogItem.open()
         } else {
-            stackView.push("DictProcessingPage.qml", {"fileBytes": fileSelectorController.getFileBytes(), "fileSeparator": searchTextFieldItem.text})
+            stackView.push("DictProcessingPage.qml", {
+                            "fileBytes": fileSelectorController.getFileBytes(),
+                            "fileSeparator": searchTextFieldItem.text,
+                            "mode": manyToManyCheckBoxItem.checked ? "ManyToMany" : "OneToOne",
+                            "entrySeparator": searchMtoMTextFieldItem.text})
         }
     }
     separatorHelpTextItem.onLineLaidOut: (line)=> {

@@ -45,6 +45,7 @@ RowLayout {
             anchors.leftMargin: 0
             anchors.bottomMargin: 0
             anchors.topMargin: 0
+            visible: dictController.canQuestionBeChecked(modelDataId)
             checkState: isCheckedQuestion ? Qt.Checked : Qt.Unchecked
 
             onCheckedChanged: {
@@ -131,6 +132,7 @@ RowLayout {
             anchors.leftMargin: 0
             anchors.bottomMargin: 0
             anchors.topMargin: 0
+            visible: dictController.canResponseBeChecked(modelDataId)
             checkState: isCheckedResponse ? Qt.Checked : Qt.Unchecked
 
             onCheckedChanged: {
@@ -235,6 +237,7 @@ RowLayout {
         onAccepted: {
             if(dictController.removeEntry(modelDataId)) {
                 isVisible = false;
+                listView.model = dictController.getAllRecords(searchTextField.text)
             }
         }
     }

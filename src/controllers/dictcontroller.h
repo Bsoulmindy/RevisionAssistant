@@ -20,6 +20,8 @@ class DictController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int num_rows READ num_rows WRITE set_num_rows NOTIFY num_rowsChanged FINAL)
+    Q_PROPERTY(int num_questions READ num_questions WRITE set_num_questions NOTIFY num_questionsChanged FINAL)
+    Q_PROPERTY(int num_responses READ num_responses WRITE set_num_responses NOTIFY num_responsesChanged FINAL)
     Q_PROPERTY(int num_not_checked_questions READ num_not_checked_questions WRITE set_num_not_checked_questions NOTIFY num_not_checked_questionsChanged FINAL)
     Q_PROPERTY(int num_not_checked_responses READ num_not_checked_responses WRITE set_num_not_checked_responses NOTIFY num_not_checked_responsesChanged FINAL)
     Q_PROPERTY(QString dict_file_name READ get_file_name WRITE setdict_file_name NOTIFY dict_file_nameChanged FINAL)
@@ -41,11 +43,20 @@ public:
     Q_INVOKABLE void uncheckResponseInDatabase(int id);
     Q_INVOKABLE void resetDict();
     Q_INVOKABLE void init();
+    // TODO : needs test
+    Q_INVOKABLE bool canQuestionBeChecked(int id);
+    Q_INVOKABLE bool canResponseBeChecked(int id);
     Q_INVOKABLE bool editQuestionResponse(int id, const QString new_question, const QString new_response);
     Q_INVOKABLE bool removeEntry(int id);
     Q_INVOKABLE QString get_file_name_without_extension(QString file_name) const;
     Q_INVOKABLE bool insertNewEntry(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    // ManyToMany
+    Q_INVOKABLE bool insertNewQuestion(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    Q_INVOKABLE bool insertNewResponse(const QString question, const QString response, bool isQuestionChecked = false, bool isResponseChecked = false);
+    // OneToOne override
     void overrideDict(const std::vector<QVariantMap>& dict_rows);
+    // ManyToMany override
+    void overrideDictMToM(const std::vector<QVariantMap>& dict_question_rows, const std::vector<QVariantMap>& dict_response_rows);
     QuestionResponseEntriesSet getCheckedQuestionsAndResponses();
 
     void change_dict(QString dict_name, DictRepoEnum dict_type);
@@ -63,6 +74,12 @@ public:
     void setdict_file_name(const QString &newDict_file_name);
 
     QByteArray get_dict_content_binary() const;
+    int num_questions() const;
+    void set_num_questions(int newNum_questions);
+
+    int num_responses() const;
+    void set_num_responses(int newNum_responses);
+
 signals:
     void fileProcessingLineWarning(const QString &output);
     void num_rowsChanged();
@@ -72,16 +89,23 @@ signals:
 
     void dict_file_nameChanged();
 
+    void num_questionsChanged();
+
+    void num_responsesChanged();
+
 private:
     std::unique_ptr<DictRepoInterface> m_dict_repo;
     std::vector<QuestionResponseEntry> m_not_checked_qsts;
     std::vector<QuestionResponseEntry> m_not_checked_rsps;
 
     void initInternalMemory();
-    int m_num_rows;
+    // Cache for repo->select_all().size()
+    int m_num_rows; // Holds OneToOne countings
     int m_num_not_checked_questions;
     int m_num_not_checked_responses;
     QString m_dict_file_name;
+    int m_num_questions;
+    int m_num_responses;
 };
 
 #endif // DICTCONTROLLER_H
