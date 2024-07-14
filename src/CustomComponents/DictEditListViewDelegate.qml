@@ -237,6 +237,7 @@ RowLayout {
         onAccepted: {
             if(dictController.removeEntry(modelDataId)) {
                 isVisible = false;
+                listView.model = dictController.getAllRecords(searchTextField.text)
             }
         }
     }
