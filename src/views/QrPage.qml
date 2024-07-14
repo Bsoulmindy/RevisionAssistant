@@ -9,6 +9,7 @@ QrPageUi {
     id: qrPage
     required property bool isQtoR
     property int not_checked_records: isQtoR ? dictController.num_not_checked_questions : dictController.num_not_checked_responses
+    property int total_entries: isQtoR ? dictController.num_questions : dictController.num_responses
 
     width: root.width
     height: root.height
@@ -21,16 +22,16 @@ QrPageUi {
     nextButtonItem.onClicked: {
         quizController.next_output()
     }
-    progressRevisionBarItem.value: ((dictController.num_rows - qrPage.not_checked_records) / dictController.num_rows).toFixed(2)
+    progressRevisionBarItem.value: ((total_entries - qrPage.not_checked_records) / total_entries).toFixed(2)
 
     titlePageItem.text: isQtoR ? qsTr("Question To Response") : qsTr(
                                      "Response To Question")
     backButtonItem.icon.source: "qrc:/icons/back.png"
     progressTextDescItem.text: qsTr("Your progress : ") + "("
-                               + (dictController.num_rows - qrPage.not_checked_records)
-                               + " / " + dictController.num_rows + ")"
-    progressTextPercentItem.text: dictController.num_rows === 0 ? "0 %" : ((dictController.num_rows - qrPage.not_checked_records)
-                               / dictController.num_rows * 100).toFixed(0) + " %"
+                               + (total_entries - qrPage.not_checked_records)
+                               + " / " + total_entries + ")"
+    progressTextPercentItem.text: total_entries === 0 ? "0 %" : ((total_entries - qrPage.not_checked_records)
+                               / total_entries * 100).toFixed(0) + " %"
     listViewItem.model: ListModel {}
     outputTextItem.text: isQtoR ? quizController.current_output["question"] : quizController.current_output["response"]
 

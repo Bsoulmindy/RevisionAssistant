@@ -124,10 +124,10 @@ void DictFilesController::export_database_file(bool useMock)
 
 void DictFilesController::import_database_file()
 {
-    import_database_file(false);
+    import_database_file(false, "");
 }
 
-void DictFilesController::import_database_file(bool useMock)
+void DictFilesController::import_database_file(bool useMock, QString mock_file_name)
 {
     auto fileContentReady = [&](const QString &filePath, const QByteArray &fileContent) {
         if (filePath.isEmpty()) {
@@ -146,7 +146,7 @@ void DictFilesController::import_database_file(bool useMock)
 
     if(useMock)
         FileSystemUtils::read_file_with_function(m_selected_file + ".export",
-            "mock.json",
+            mock_file_name,
             fileContentReady);
     else
         QFileDialog::getOpenFileContent("*",  fileContentReady);
